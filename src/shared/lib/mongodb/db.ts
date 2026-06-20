@@ -6,13 +6,7 @@ import mongoose from 'mongoose'
 import {setServers} from 'node:dns/promises'
 setServers(['1.1.1.1', '8.8.8.8'])
 
-const MONGODB_URI = process.env.DATABASE_URL!
-
-if (!MONGODB_URI) {
-	throw new Error(
-		'Please define the DATABASE_URL environment variable inside .env.local',
-	)
-}
+const MONGODB_URI = process.env.DATABASE_URL ?? process.env.MONGODB_URI
 
 interface MongooseCache {
 	conn: typeof mongoose | null
@@ -32,6 +26,12 @@ if (!global.mongoose) {
 async function connectDB() {
 	if (cached.conn) {
 		return cached.conn
+	}
+
+	if (!MONGODB_URI) {
+		throw new Error(
+			'Database connection URL is not set. Define DATABASE_URL (or MONGODB_URI) in your environment.',
+		)
 	}
 
 	if (!cached.promise) {
