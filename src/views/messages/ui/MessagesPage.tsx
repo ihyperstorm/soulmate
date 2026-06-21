@@ -3,7 +3,7 @@ import {ChatBox} from '@/widgets/chat-box'
 import {ChatsList} from '@/widgets/chats-list'
 import {Sidebar} from '@/widgets/sidebar'
 import {useSearchParams} from 'next/navigation'
-import {useMemo, useState} from 'react'
+import {Suspense, useMemo, useState} from 'react'
 
 type ChatSelection = {
 	chatId: string | null
@@ -12,7 +12,7 @@ type ChatSelection = {
 	systemNotice: string | null
 }
 
-export default function MessagesPage() {
+function MessagesContent() {
 	const searchParams = useSearchParams()
 
 	const fromQuery = useMemo<ChatSelection>(() => {
@@ -56,5 +56,13 @@ export default function MessagesPage() {
 				systemNotice={activeChat.systemNotice}
 			/>
 		</div>
+	)
+}
+
+export default function MessagesPage() {
+	return (
+		<Suspense fallback={null}>
+			<MessagesContent />
+		</Suspense>
 	)
 }
