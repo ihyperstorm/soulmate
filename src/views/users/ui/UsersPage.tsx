@@ -4,9 +4,9 @@ import {Sidebar} from '@/widgets/sidebar'
 
 export default function UsersPage() {
 	return (
-		<div className='grid grid-cols-[11rem_minmax(0,1fr)_minmax(0,1fr)] gap-4 py-10'>
+		<div className='grid grid-cols-[11rem_minmax(0,1fr)] gap-6 py-10'>
 			<Sidebar />
-			<Users />
+			<Users direction='grid2' />
 		</div>
 	)
 }

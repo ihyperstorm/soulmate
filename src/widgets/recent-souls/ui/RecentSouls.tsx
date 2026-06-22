@@ -21,8 +21,9 @@ const RecentSouls = () => {
 
 	return (
 		<section>
-			<h1 className="text-2xl font-semibold text-ink mb-1">Recent souls</h1>
-			<div className="mt-4">
+			<h1 className="text-3xl font-bold text-ink mb-1">Recent chats</h1>
+			<p className="text-sm text-muted">People you&apos;ve been talking to.</p>
+			<div className="mt-5">
 				<Users direction="row" onlyUserIds={peerIds} />
 			</div>
 		</section>

@@ -37,16 +37,16 @@ export const SignInForm = () => {
 		setSuccess(false)
 
 		try {
-			await queryClient.setQueryData(['user'], null)
 			const response = await axios.post('/api/auth/login', {
 				email: data.email,
 				password: data.password,
 			})
-			await queryClient.setQueryData(['user'], response.data.user)
+			queryClient.setQueryData(['user'], response.data.user)
 			setSuccess(true)
-			router.push('/dashboard')
+			router.replace('/dashboard')
+			router.refresh()
 		} catch (error) {
-			await queryClient.invalidateQueries({queryKey: ['user']})
+			queryClient.setQueryData(['user'], null)
 			if (axios.isAxiosError(error) && error.response?.data?.error) {
 				setError(error.response.data.error)
 			} else {

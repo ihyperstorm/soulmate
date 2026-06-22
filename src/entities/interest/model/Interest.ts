@@ -5,6 +5,7 @@ export interface IInterest extends Document {
 	createdAt: Date
 	updatedAt: Date
 	weight: number
+	userCount: number
 }
 
 const InterestSchema = new Schema<IInterest>(
@@ -19,6 +20,11 @@ const InterestSchema = new Schema<IInterest>(
 			type: Number,
 			required: true,
 			default: 1,
+		},
+		userCount: {
+			type: Number,
+			default: 0,
+			index: true,
 		},
 	},
 	{

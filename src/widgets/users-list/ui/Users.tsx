@@ -1,4 +1,8 @@
-import { calculateMatchPercent, userInterestsToWeights } from "@/entities/interest"
+import {
+	calculateCoveragePercent,
+	userInterestsToWeights,
+	type IdfMap,
+} from "@/entities/interest"
 import { UserCard, type UserCardData } from "@/widgets/user-card"
 import { useQuery } from "@tanstack/react-query"
 import axios from "axios"
@@ -11,7 +15,7 @@ interface IUser extends UserCardData {
 	updatedAt: string
 }
 
-type UsersDirection = "row" | "col"
+type UsersDirection = "row" | "col" | "grid2"
 
 interface UsersProps {
 	userCount?: number
@@ -22,8 +26,9 @@ interface UsersProps {
 }
 
 const directionClass: Record<UsersDirection, string> = {
-	row: "flex flex-row gap-3",
+	row: "grid grid-cols-[repeat(auto-fill,minmax(260px,1fr))] gap-3",
 	col: "flex flex-col gap-3",
+	grid2: "grid grid-cols-1 md:grid-cols-2 gap-4",
 }
 
 const Users = ({
@@ -47,6 +52,12 @@ const Users = ({
 	const { data: me } = useQuery<IUser>({
 		queryKey: ["me"],
 		queryFn: () => axios.get("/api/users/me").then((res) => res.data),
+	})
+
+	const { data: idfMap } = useQuery<IdfMap>({
+		queryKey: ["interests", "idf"],
+		queryFn: () => axios.get("/api/interests/idf").then((res) => res.data),
+		staleTime: 5 * 60 * 1000,
 	})
 
 	const handleChatClick = (receiverId: string, receiverUsername: string) => {
@@ -80,8 +91,11 @@ const Users = ({
 	if (typeof minMatchPercent === "number") {
 		candidates = candidates.filter(
 			(user) =>
-				calculateMatchPercent(myWeights, userInterestsToWeights(user.userInterests)) >=
-				minMatchPercent,
+				calculateCoveragePercent(
+					myWeights,
+					userInterestsToWeights(user.userInterests),
+					idfMap,
+				) >= minMatchPercent,
 		)
 	}
 
@@ -94,7 +108,13 @@ const Users = ({
 	return (
 		<div className={directionClass[direction]}>
 			{visible.map((user) => (
-				<UserCard key={user._id} user={user} myWeights={myWeights} onChatClick={handleChatClick} />
+				<UserCard
+					key={user._id}
+					user={user}
+					myWeights={myWeights}
+					idfMap={idfMap}
+					onChatClick={handleChatClick}
+				/>
 			))}
 		</div>
 	)

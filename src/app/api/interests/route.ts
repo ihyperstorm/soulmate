@@ -86,8 +86,25 @@ export async function POST(request: Request) {
 			)
 		}
 
+		const oldDocs = await UserInterest.find({ userId: userIdObj })
+			.select({ interestId: 1, _id: 0 })
+			.lean()
+		const oldInterestIds = oldDocs.map((d) => d.interestId)
+
 		await UserInterest.deleteMany({ userId: userIdObj })
+		if (oldInterestIds.length > 0) {
+			await Interest.updateMany(
+				{ _id: { $in: oldInterestIds } },
+				{ $inc: { userCount: -1 } },
+			)
+		}
+
 		await UserInterest.insertMany(userInterests)
+		const newInterestIds = userInterests.map((ui) => ui.interestId)
+		await Interest.updateMany(
+			{ _id: { $in: newInterestIds } },
+			{ $inc: { userCount: 1 } },
+		)
 
 		return NextResponse.json({ message: 'Interests saved successfully' }, { status: 200 })
 	} catch (error) {

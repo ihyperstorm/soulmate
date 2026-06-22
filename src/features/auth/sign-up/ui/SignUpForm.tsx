@@ -39,23 +39,22 @@ export const SignUpForm = () => {
 		setSuccess(false);
 
 		try {
-			await queryClient.setQueryData(["user"], null);
 			const response = await axios.post("/api/auth/register", {
 				username: data.username,
 				email: data.email,
 				password: data.password,
 			});
-			await queryClient.setQueryData(["user"], response.data.user);
+			queryClient.setQueryData(["user"], response.data.user);
 
-			// Сохраняем userId в localStorage для использования на других страницах
 			if (response.data.user?._id) {
 				localStorage.setItem("userId", response.data.user._id);
 			}
 
 			setSuccess(true);
-			router.push("/interests");
+			router.replace("/interests");
+			router.refresh();
 		} catch (err) {
-			await queryClient.invalidateQueries({ queryKey: ["user"] });
+			queryClient.setQueryData(["user"], null);
 			setError("Registration failed");
 			console.error(err);
 		}
