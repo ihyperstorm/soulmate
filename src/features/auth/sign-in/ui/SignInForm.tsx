@@ -7,6 +7,7 @@ import Link from 'next/link'
 import {useRouter} from 'next/navigation'
 import {useState} from 'react'
 import {useForm} from 'react-hook-form'
+import {CURRENT_USER_KEY} from '@/entities/user'
 import {useAppQueryClient} from '@/shared/api/providers'
 
 type LoginFormData = {
@@ -41,12 +42,11 @@ export const SignInForm = () => {
 				email: data.email,
 				password: data.password,
 			})
-			queryClient.setQueryData(['user'], response.data.user)
+			queryClient.setQueryData(CURRENT_USER_KEY, response.data.user)
 			setSuccess(true)
 			router.replace('/dashboard')
-			router.refresh()
 		} catch (error) {
-			queryClient.setQueryData(['user'], null)
+			queryClient.setQueryData(CURRENT_USER_KEY, null)
 			if (axios.isAxiosError(error) && error.response?.data?.error) {
 				setError(error.response.data.error)
 			} else {

@@ -1,8 +1,8 @@
 import type {
 	IInterest,
-	IUserInterest,
 	IdfMap,
 	InterestWeights,
+	PopulatedUserInterest,
 } from "@/entities/interest"
 import {
 	calculateCoveragePercent,
@@ -11,16 +11,12 @@ import {
 import Image from "next/image"
 import Link from "next/link"
 
-export type UserInterestWithName = IUserInterest & {
-	interestId: string | { _id: string; name: string } | null
-}
-
 export interface UserCardData {
 	_id: string
 	username: string
 	avatarUrl?: string
 	interests?: IInterest[]
-	userInterests?: UserInterestWithName[]
+	userInterests?: PopulatedUserInterest[]
 }
 
 interface UserCardProps {
@@ -36,7 +32,7 @@ const RARE_IDF_THRESHOLD = 2.0
 type NamedInterest = { _id: string; name: string; idf: number }
 
 const getNamedInterest = (
-	ui: UserInterestWithName,
+	ui: PopulatedUserInterest,
 	idfMap: IdfMap | undefined,
 ): NamedInterest | null => {
 	if (typeof ui.interestId !== "object" || ui.interestId === null) return null

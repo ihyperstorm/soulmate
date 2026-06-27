@@ -2,6 +2,7 @@ import axios from 'axios'
 import ChatsItem from './ChatsItem'
 import {useQuery} from '@tanstack/react-query'
 import type {IUser} from '@/entities/user'
+import {useCurrentUser} from '@/entities/user'
 import {buildChatId} from '@/entities/chat'
 
 export type SelectedChat = {
@@ -28,10 +29,7 @@ const ChatsList = ({onSelectChat}: ChatsListProps) => {
 		queryFn: () => axios.get('/api/chats').then(res => res.data)
 	})
 
-	const {data: me} = useQuery<IUser>({
-		queryKey: ['me'],
-		queryFn: () => axios.get('/api/users/me').then(res => res.data)
-	})
+	const {data: me} = useCurrentUser()
 
 	const realUsers = chats?.filter((chat: IChat) => chat.peer._id !== me?._id)
 

@@ -4,6 +4,7 @@ import axios from 'axios'
 import {useRouter} from 'next/navigation'
 import {useState} from 'react'
 import {LogOut} from 'lucide-react'
+import {CURRENT_USER_KEY} from '@/entities/user'
 import {useAppQueryClient} from '@/shared/api/providers'
 
 export const LogoutButton = () => {
@@ -13,14 +14,14 @@ export const LogoutButton = () => {
 
 	const logoutHandler = async () => {
 		setIsLoading(true)
-		queryClient.setQueryData(['user'], null)
+		queryClient.setQueryData(CURRENT_USER_KEY, null)
 
 		try {
 			await axios.post('/api/auth/logout')
-			await queryClient.cancelQueries({queryKey: ['user']})
+			await queryClient.cancelQueries({queryKey: CURRENT_USER_KEY})
 			router.replace('/signin')
 		} catch {
-			await queryClient.invalidateQueries({queryKey: ['user']})
+			await queryClient.invalidateQueries({queryKey: CURRENT_USER_KEY})
 		} finally {
 			setIsLoading(false)
 		}

@@ -1,1 +1,1 @@
-export {UserCard, type UserCardData, type UserInterestWithName} from './ui/UserCard'
+export {UserCard, type UserCardData} from './ui/UserCard'

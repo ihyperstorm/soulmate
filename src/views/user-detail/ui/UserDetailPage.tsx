@@ -1,6 +1,7 @@
 'use client'
 import {Sidebar} from '@/widgets/sidebar'
-import type {IInterest, IUserInterest} from '@/entities/interest'
+import type {IInterest, PopulatedUserInterest} from '@/entities/interest'
+import {useCurrentUser} from '@/entities/user'
 import {useQuery} from '@tanstack/react-query'
 import axios from 'axios'
 import Image from 'next/image'
@@ -18,11 +19,7 @@ interface IUser {
 	createdAt: string
 	updatedAt: string
 	interests: IInterest[]
-	userInterests: UserInterestWithName[]
-}
-
-type UserInterestWithName = IUserInterest & {
-	interestId: string | {_id: string; name: string} | null
+	userInterests: PopulatedUserInterest[]
 }
 
 export default function UserDetailPage() {
@@ -40,10 +37,7 @@ export default function UserDetailPage() {
 		enabled: Boolean(userId),
 	})
 
-	const {data: me} = useQuery<IUser>({
-		queryKey: ['me'],
-		queryFn: () => axios.get('/api/users/me').then(res => res.data),
-	})
+	const {data: me} = useCurrentUser()
 
 	const isOnline = true
 	const createdAt = user?.createdAt
@@ -92,7 +86,7 @@ export default function UserDetailPage() {
 
 						<div className='flex flex-wrap gap-1.5 mt-2'>
 							{(user?.userInterests ?? []).map(
-								(userInterest: UserInterestWithName) =>
+								(userInterest: PopulatedUserInterest) =>
 									typeof userInterest.interestId === 'object' &&
 									userInterest.interestId !== null ? (
 										<span

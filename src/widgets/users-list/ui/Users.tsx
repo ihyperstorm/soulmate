@@ -3,6 +3,7 @@ import {
 	userInterestsToWeights,
 	type IdfMap,
 } from "@/entities/interest"
+import { useCurrentUser } from "@/entities/user"
 import { UserCard, type UserCardData } from "@/widgets/user-card"
 import { useQuery } from "@tanstack/react-query"
 import axios from "axios"
@@ -49,10 +50,7 @@ const Users = ({
 		queryFn: () => axios.get("/api/users").then((res) => res.data),
 	})
 
-	const { data: me } = useQuery<IUser>({
-		queryKey: ["me"],
-		queryFn: () => axios.get("/api/users/me").then((res) => res.data),
-	})
+	const { data: me } = useCurrentUser()
 
 	const { data: idfMap } = useQuery<IdfMap>({
 		queryKey: ["interests", "idf"],

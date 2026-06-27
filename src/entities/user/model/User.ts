@@ -1,6 +1,6 @@
-import mongoose, {Document, Model, Schema} from 'mongoose'
-import {IInterest} from '@/entities/interest/model/Interest'
-import {IUserInterest} from '@/entities/interest/model/UserInterest'
+import { IInterest } from "@/entities/interest/model/Interest"
+import { IUserInterest } from "@/entities/interest/model/UserInterest"
+import mongoose, { Document, Model, Schema } from "mongoose"
 
 export interface IUser extends Document {
 	username: string
@@ -42,15 +42,15 @@ const UserSchema = new Schema<IUser>(
 		},
 		avatarUrl: {
 			type: String,
-			default: '',
+			default: "",
 		},
 		bio: {
 			type: String,
-			default: '',
+			default: "",
 		},
 		location: {
 			type: String,
-			default: '',
+			default: "",
 		},
 		birthday: {
 			type: Date,
@@ -58,7 +58,11 @@ const UserSchema = new Schema<IUser>(
 		},
 		gender: {
 			type: String,
-			default: '',
+			default: "",
+		},
+		isPremium: {
+			type: Boolean,
+			default: false,
 		},
 	},
 	{
@@ -68,11 +72,10 @@ const UserSchema = new Schema<IUser>(
 
 // Next.js dev / HMR: переиспользуется закэшированная модель со старой схемой,
 // тогда новые поля (например avatarUrl) не попадают в Mongo через update.
-if (process.env.NODE_ENV !== 'production' && mongoose.models.User) {
+if (process.env.NODE_ENV !== "production" && mongoose.models.User) {
 	delete mongoose.models.User
 }
 
-const User: Model<IUser> =
-	mongoose.models.User ?? mongoose.model<IUser>('User', UserSchema)
+const User: Model<IUser> = mongoose.models.User ?? mongoose.model<IUser>("User", UserSchema)
 
 export default User

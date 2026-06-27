@@ -1,5 +1,4 @@
-import type {IInterest} from '@/entities/interest'
-import type {IUserInterest} from '@/entities/interest'
+import type {IInterest, PopulatedUserInterest} from '@/entities/interest'
 
 export interface IUser {
 	_id: string
@@ -21,5 +20,5 @@ export interface IUser {
 	isPremium: boolean
 	balance: number
 	interests: IInterest[]
-	userInterests: IUserInterest[]
+	userInterests: PopulatedUserInterest[]
 }

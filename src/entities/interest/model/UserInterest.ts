@@ -7,6 +7,19 @@ export interface IUserInterest extends Document {
 	createdAt: Date
 }
 
+/**
+ * Форма UserInterest, как её ОТДАЁТ API (/api/users, /api/users/me):
+ * interestId популирован до {_id, name} через .populate('interestId', 'name').
+ * Это клиентский DTO — единый источник правды для всех, кто читает userInterests.
+ */
+export type PopulatedUserInterest = {
+	_id?: string
+	userId?: string
+	interestId: string | {_id: string; name: string} | null
+	weight: number
+	createdAt?: string
+}
+
 const UserInterestSchema = new Schema<IUserInterest>(
 	{
 		userId: {

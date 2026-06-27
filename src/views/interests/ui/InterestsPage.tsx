@@ -1,6 +1,7 @@
 'use client'
 
 import {InterestStarRating} from '@/entities/interest'
+import {CURRENT_USER_KEY} from '@/entities/user'
 import {interestsSchema} from '@/features/interest/rate-interests'
 import {yupResolver} from '@hookform/resolvers/yup'
 import {mongoIdString} from '@/shared/lib/mongoId'
@@ -164,14 +165,14 @@ export default function InterestsPage() {
 				},
 			)
 
-			queryClient.setQueryData(['me'], (prev: unknown) => {
+			queryClient.setQueryData(CURRENT_USER_KEY, (prev: unknown) => {
 				if (!prev || typeof prev !== 'object') return prev
 				return {
 					...(prev as Record<string, unknown>),
 					userInterests: optimisticUserInterests,
 				}
 			})
-			await queryClient.invalidateQueries({queryKey: ['me']})
+			await queryClient.invalidateQueries({queryKey: CURRENT_USER_KEY})
 			await queryClient.invalidateQueries({queryKey: ['users']})
 
 			toast.success('Interests saved successfully')

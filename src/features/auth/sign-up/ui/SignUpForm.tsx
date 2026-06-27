@@ -1,25 +1,26 @@
-"use client";
+"use client"
 
-import { registerSchema } from "../model/registerSchema";
-import { yupResolver } from "@hookform/resolvers/yup";
-import { useAppQueryClient } from "@/shared/api/providers";
-import axios from "axios";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { useState } from "react";
-import { useForm } from "react-hook-form";
+import { CURRENT_USER_KEY } from "@/entities/user"
+import { useAppQueryClient } from "@/shared/api/providers"
+import { yupResolver } from "@hookform/resolvers/yup"
+import axios from "axios"
+import Link from "next/link"
+import { useRouter } from "next/navigation"
+import { useState } from "react"
+import { useForm } from "react-hook-form"
+import { registerSchema } from "../model/registerSchema"
 
 type RegisterFormData = {
-	username: string;
-	email: string;
-	password: string;
-};
+	username: string
+	email: string
+	password: string
+}
 
 export const SignUpForm = () => {
-	const [error, setError] = useState<string | null>(null);
-	const [success, setSuccess] = useState(false);
-	const router = useRouter();
-	const queryClient = useAppQueryClient();
+	const [error, setError] = useState<string | null>(null)
+	const [success, setSuccess] = useState(false)
+	const router = useRouter()
+	const queryClient = useAppQueryClient()
 
 	const {
 		register,
@@ -32,33 +33,32 @@ export const SignUpForm = () => {
 			password: "",
 		},
 		resolver: yupResolver(registerSchema),
-	});
+	})
 
 	const onSubmit = async (data: RegisterFormData) => {
-		setError(null);
-		setSuccess(false);
+		setError(null)
+		setSuccess(false)
 
 		try {
 			const response = await axios.post("/api/auth/register", {
 				username: data.username,
 				email: data.email,
 				password: data.password,
-			});
-			queryClient.setQueryData(["user"], response.data.user);
+			})
+			queryClient.setQueryData(CURRENT_USER_KEY, response.data.user)
 
 			if (response.data.user?._id) {
-				localStorage.setItem("userId", response.data.user._id);
+				localStorage.setItem("userId", response.data.user._id)
 			}
 
-			setSuccess(true);
-			router.replace("/interests");
-			router.refresh();
+			setSuccess(true)
+			router.replace("/interests")
 		} catch (err) {
-			queryClient.setQueryData(["user"], null);
-			setError("Registration failed");
-			console.error(err);
+			queryClient.setQueryData(CURRENT_USER_KEY, null)
+			setError("Registration failed")
+			console.error(err)
 		}
-	};
+	}
 
 	return (
 		<div className="w-full max-w-sm bg-surface border border-divider rounded-2xl p-8">
@@ -67,16 +67,8 @@ export const SignUpForm = () => {
 				<p className="text-sm text-muted">Join Soulmate and meet your people</p>
 			</div>
 			<form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-3">
-				{error && (
-					<p className="text-sm text-danger bg-danger-soft border border-danger/20 rounded-lg px-3 py-2">
-						{error}
-					</p>
-				)}
-				{success && (
-					<p className="text-sm text-accent bg-accent-soft border border-accent/20 rounded-lg px-3 py-2">
-						Registration successful!
-					</p>
-				)}
+				{error && <p className="text-sm text-danger bg-danger-soft border border-danger/20 rounded-lg px-3 py-2">{error}</p>}
+				{success && <p className="text-sm text-accent bg-accent-soft border border-accent/20 rounded-lg px-3 py-2">Registration successful!</p>}
 				<div className="flex flex-col gap-1">
 					<label className="text-xs font-medium text-muted">Full name</label>
 					<input
@@ -85,9 +77,7 @@ export const SignUpForm = () => {
 						placeholder="Your name"
 						{...register("username")}
 					/>
-					{errors.username && (
-						<p className="text-xs text-danger mt-0.5">{errors.username.message}</p>
-					)}
+					{errors.username && <p className="text-xs text-danger mt-0.5">{errors.username.message}</p>}
 				</div>
 				<div className="flex flex-col gap-1">
 					<label className="text-xs font-medium text-muted">Email</label>
@@ -97,9 +87,7 @@ export const SignUpForm = () => {
 						placeholder="you@example.com"
 						{...register("email")}
 					/>
-					{errors.email && (
-						<p className="text-xs text-danger mt-0.5">{errors.email.message}</p>
-					)}
+					{errors.email && <p className="text-xs text-danger mt-0.5">{errors.email.message}</p>}
 				</div>
 				<div className="flex flex-col gap-1">
 					<label className="text-xs font-medium text-muted">Password</label>
@@ -109,9 +97,7 @@ export const SignUpForm = () => {
 						placeholder="••••••••"
 						{...register("password")}
 					/>
-					{errors.password && (
-						<p className="text-xs text-danger mt-0.5">{errors.password.message}</p>
-					)}
+					{errors.password && <p className="text-xs text-danger mt-0.5">{errors.password.message}</p>}
 				</div>
 				<button
 					type="submit"
@@ -121,12 +107,9 @@ export const SignUpForm = () => {
 					{isSubmitting ? "Creating account…" : "Sign up"}
 				</button>
 			</form>
-			<Link
-				href="/signin"
-				className="block text-sm text-center mt-5 text-muted hover:text-primary transition-colors"
-			>
+			<Link href="/signin" className="block text-sm text-center mt-5 text-muted hover:text-primary transition-colors">
 				Already have an account? <span className="text-primary font-medium">Sign in</span>
 			</Link>
 		</div>
-	);
-};
+	)
+}

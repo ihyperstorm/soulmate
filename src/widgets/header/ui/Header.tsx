@@ -1,48 +1,26 @@
 "use client"
-import type { IUser } from "@/entities/user"
+import { useCurrentUser } from "@/entities/user"
 import { LogoutButton } from "@/features/auth/logout"
-import { useQuery } from "@tanstack/react-query"
-import axios from "axios"
+import { LogIn } from "lucide-react"
+import Image from "next/image"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
-import Image from "next/image"
-import { LogIn } from "lucide-react"
 
 const Header = () => {
 	const router = useRouter()
 
-	const { data: user } = useQuery<IUser | null>({
-		queryKey: ["user"],
-		queryFn: async () => {
-			try {
-				const res = await axios.get("/api/users/me")
-				return res.data as IUser
-			} catch (error) {
-				if (axios.isAxiosError(error) && error.response?.status === 401) {
-					return null
-				}
-				throw error
-			}
-		},
-		retry: false,
-		refetchOnWindowFocus: false,
-	})
+	const { data: user } = useCurrentUser()
 
 	return (
 		<header className="sticky top-0 z-30 bg-surface/85 backdrop-blur border-b border-divider">
 			<div className="max-w-7xl mx-auto flex items-center justify-between px-6 py-3">
-				<Link
-					href="/"
-					className="flex items-center gap-2 text-ink text-base font-semibold tracking-tight"
-				>
-					<span className="inline-flex items-center justify-center w-7 h-7 rounded-lg bg-primary text-white text-sm font-semibold">
-						S
-					</span>
+				<Link href="/" className="flex items-center gap-2 text-ink text-base font-semibold tracking-tight">
+					<span className="inline-flex items-center justify-center w-7 h-7 rounded-lg bg-primary text-white text-sm font-semibold">S</span>
 					Soulmate
 				</Link>
 				<div className="flex items-center gap-2">
 					{user && (
-						<div className="flex items-center gap-2 pl-1 pr-3 py-1 rounded-full bg-surface-muted">
+						<Link href="/users/me" className="flex items-center gap-2 pl-1 pr-3 py-1 rounded-full bg-surface-muted">
 							<Image
 								src={user?.avatarUrl || "/9dba1c75826cde0e6cf64a5a8fd25bf6.jpg"}
 								alt="avatar"
@@ -51,7 +29,7 @@ const Header = () => {
 								className="rounded-full object-cover w-7 h-7"
 							/>
 							<span className="text-sm font-medium text-ink">{user.username}</span>
-						</div>
+						</Link>
 					)}
 					{!user ? (
 						<button

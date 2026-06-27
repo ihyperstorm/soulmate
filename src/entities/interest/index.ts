@@ -9,5 +9,5 @@ export {
 	type UserInterestRow,
 } from "./lib/match"
 export type { IInterest } from "./model/Interest"
-export type { IUserInterest } from "./model/UserInterest"
+export type { IUserInterest, PopulatedUserInterest } from "./model/UserInterest"
 export { InterestStarRating } from "./ui/InterestStarRating"
