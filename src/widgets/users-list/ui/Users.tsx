@@ -7,6 +7,7 @@ import { useCurrentUser } from "@/entities/user"
 import { UserCard, type UserCardData } from "@/widgets/user-card"
 import { useQuery } from "@tanstack/react-query"
 import axios from "axios"
+import Link from "next/link"
 import { useRouter } from "next/navigation"
 
 interface IUser extends UserCardData {
@@ -24,6 +25,7 @@ interface UsersProps {
 	minMatchPercent?: number
 	onlyUserIds?: string[]
 	emptyMessage?: string
+	emptyAction?: { label: string; href: string }
 }
 
 const directionClass: Record<UsersDirection, string> = {
@@ -38,6 +40,7 @@ const Users = ({
 	minMatchPercent,
 	onlyUserIds,
 	emptyMessage,
+	emptyAction,
 }: UsersProps) => {
 	const router = useRouter()
 
@@ -100,7 +103,20 @@ const Users = ({
 	const visible = candidates.slice(0, userCount ?? candidates.length)
 
 	if (visible.length === 0) {
-		return emptyMessage ? <div className="py-6 text-sm text-muted">{emptyMessage}</div> : null
+		if (!emptyMessage) return null
+		return (
+			<div className="flex flex-col items-center gap-3 rounded-xl border border-dashed border-line py-10 px-6 text-center">
+				<p className="max-w-xs text-sm text-muted">{emptyMessage}</p>
+				{emptyAction && (
+					<Link
+						href={emptyAction.href}
+						className="inline-flex items-center justify-center px-4 py-2.5 rounded-lg text-sm font-semibold text-white bg-primary hover:bg-primary-hover transition-colors"
+					>
+						{emptyAction.label}
+					</Link>
+				)}
+			</div>
+		)
 	}
 
 	return (

@@ -9,7 +9,8 @@ const TopSouls = () => {
 				<Users
 					direction="row"
 					minMatchPercent={30}
-					emptyMessage="Rate more interests to start seeing matches."
+					emptyMessage="No matches yet — add or tweak your interests to surface people who overlap with you."
+					emptyAction={{ label: "Edit interests", href: "/users/me/edit" }}
 					userCount={3}
 				/>
 			</div>

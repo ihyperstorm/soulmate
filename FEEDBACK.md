@@ -45,11 +45,11 @@
 - [x] ~~**Иерархия кнопок**: "Chat" — primary крупная, "View Profile" — secondary ghost.~~ «Start chat» — primary на всю ширину, «View full profile» — текстовая ссылка.
 - [x] ~~**Microcopy на дашборде**: "Top souls" → "People who share your interests" / "Top matches by interests". Заголовок должен сразу сказать о чём сервис.~~ Сейчас «Top matches» + «People who share your interests the most.».
 
-#### 🎨 P1 — пустота и масштаб
+#### 🎨 P1 — пустота и масштаб — ✅ закрыт (3/3)
 
-- [ ] Hero/summary блок на дашборде, который объясняет концепцию (1 строка). Сейчас "Welcome back. Here's a quick look at your space." — пустота.
-- [ ] Увеличить базовый шрифт / spacing — Олега сказал "мелко". Скорее всего нужна крупнее типографика на главной.
-- [ ] Заполнить пустые состояния (если матчей нет — не просто текст, а CTA "пройти rate-interests, чтобы появились матчи").
+- [x] ~~Hero/summary блок на дашборде, который объясняет концепцию (1 строка). Сейчас "Welcome back. Here's a quick look at your space." — пустота.~~ `DashboardHero`: приветствие + «Meet people who share your interests» + контекстный CTA.
+- [x] ~~Увеличить базовый шрифт / spacing — Олега сказал "мелко". Скорее всего нужна крупнее типографика на главной.~~ Hero-заголовок `text-4xl`, крупнее интервалы (`gap-10`, `md:p-8`) на дашборде.
+- [x] ~~Заполнить пустые состояния (если матчей нет — не просто текст, а CTA "пройти rate-interests, чтобы появились матчи").~~ Пустое состояние `Users` → панель с CTA «Rate interests» → `/interests`.
 
 #### 💬 P2 — Icebreakers в контексте карточки
 
