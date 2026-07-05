@@ -1,5 +1,5 @@
 "use client"
-import Button from "@/shared/ui/Button"
+import { Button } from "@/components/ui/button"
 import { useRouter } from "next/navigation"
 
 const Hero = () => {
@@ -15,7 +15,7 @@ const Hero = () => {
 			<p className="text-base md:text-lg text-muted max-w-md mb-8">
 				Connect with people who share your interests and start meaningful conversations.
 			</p>
-			<Button className="bg-primary text-white px-6 py-3 hover:bg-primary-hover" onClick={() => router.push("/dashboard")}>
+			<Button size="lg" className="h-11 px-8 text-base" onClick={() => router.push("/dashboard")}>
 				Get Started
 			</Button>
 		</section>

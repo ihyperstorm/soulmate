@@ -1,12 +1,14 @@
 "use client"
 
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
 import type { IUser } from "@/entities/user"
 import { InterestsEditor } from "@/features/interest/edit-interests"
 import { useAppQueryClient } from "@/shared/api/providers"
 import { useQuery } from "@tanstack/react-query"
 import axios from "axios"
 import { format } from "date-fns"
-import Image from "next/image"
 import { useParams, useRouter } from "next/navigation"
 import { useState } from "react"
 import toast from "react-hot-toast"
@@ -89,15 +91,12 @@ export default function UserEditPage() {
 	return (
 		<div className="py-10">
 			<div className="grid grid-cols-1 md:grid-cols-[20rem_minmax(0,1fr)] gap-8 max-w-5xl mx-auto">
-				<div className="bg-surface border border-divider rounded-2xl p-6 flex flex-col items-center">
+				<div className="h-fit bg-surface border border-divider rounded-2xl p-6 flex flex-col items-center">
 					<div className="relative w-full flex justify-center items-center">
-						<Image
-							src={avatarUrl || "/9dba1c75826cde0e6cf64a5a8fd25bf6.jpg"}
-							alt="avatar"
-							width={300}
-							height={300}
-							className="rounded-2xl object-cover w-64 h-64"
-						/>
+						<Avatar className="size-64">
+							<AvatarImage src={avatarUrl || "/9dba1c75826cde0e6cf64a5a8fd25bf6.jpg"} alt="avatar" />
+							<AvatarFallback>{username?.charAt(0)?.toUpperCase()}</AvatarFallback>
+						</Avatar>
 					</div>
 					<label
 						htmlFor="avatarUrl"
@@ -127,14 +126,7 @@ export default function UserEditPage() {
 							<label htmlFor="username" className="text-xs font-medium text-muted">
 								Username
 							</label>
-							<input
-								type="text"
-								id="username"
-								name="username"
-								value={username}
-								onChange={(e) => setUsername(e.target.value)}
-								className={inputClass}
-							/>
+							<Input type="text" id="username" name="username" value={username} onChange={(e) => setUsername(e.target.value)} />
 						</div>
 						<div className="flex flex-col gap-1">
 							<label htmlFor="bio" className="text-xs font-medium text-muted">
@@ -146,50 +138,27 @@ export default function UserEditPage() {
 							<label htmlFor="location" className="text-xs font-medium text-muted">
 								Location
 							</label>
-							<input
-								type="text"
-								id="location"
-								name="location"
-								value={location}
-								onChange={(e) => setLocation(e.target.value)}
-								className={inputClass}
-							/>
+							<Input type="text" id="location" name="location" value={location} onChange={(e) => setLocation(e.target.value)} />
 						</div>
 						<div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
 							<div className="flex flex-col gap-1">
 								<label htmlFor="birthday" className="text-xs font-medium text-muted">
 									Birthday
 								</label>
-								<input
-									type="date"
-									id="birthday"
-									name="birthday"
-									value={birthday}
-									onChange={(e) => setBirthday(e.target.value)}
-									className={inputClass}
-								/>
+								<Input type="date" id="birthday" name="birthday" value={birthday} onChange={(e) => setBirthday(e.target.value)} />
 							</div>
 							<div className="flex flex-col gap-1">
 								<label htmlFor="gender" className="text-xs font-medium text-muted">
 									Gender
 								</label>
-								<input type="text" id="gender" name="gender" value={sex} onChange={(e) => setSex(e.target.value)} className={inputClass} />
+								<Input type="text" id="gender" name="gender" value={sex} onChange={(e) => setSex(e.target.value)} />
 							</div>
 						</div>
 						<div className="flex gap-2 mt-2">
-							<button
-								className="inline-flex items-center justify-center px-4 py-2 rounded-lg text-sm font-medium text-white bg-primary hover:bg-primary-hover transition-colors cursor-pointer"
-								type="submit"
-							>
-								Save changes
-							</button>
-							<button
-								className="inline-flex items-center justify-center px-4 py-2 rounded-lg text-sm font-medium text-muted bg-surface border border-line hover:bg-surface-muted transition-colors cursor-pointer"
-								type="button"
-								onClick={() => router.back()}
-							>
+							<Button type="submit">Save changes</Button>
+							<Button variant="outline" type="button" onClick={() => router.back()}>
 								Cancel
-							</button>
+							</Button>
 						</div>
 					</form>
 

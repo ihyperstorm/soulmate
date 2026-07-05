@@ -1,3 +1,6 @@
+"use client"
+
+import { pickQuestion } from "@/shared/data/talkQuestions"
 import type {
 	IInterest,
 	IdfMap,
@@ -8,8 +11,10 @@ import {
 	calculateCoveragePercent,
 	userInterestsToWeights,
 } from "@/entities/interest"
-import Image from "next/image"
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar"
+import { Button } from "@/components/ui/button"
 import Link from "next/link"
+import { useMemo } from "react"
 
 export interface UserCardData {
 	_id: string
@@ -23,7 +28,7 @@ interface UserCardProps {
 	user: UserCardData
 	myWeights?: InterestWeights
 	idfMap?: IdfMap
-	onChatClick?: (userId: string, username: string) => void
+	onChatClick?: (userId: string, username: string, draft?: string) => void
 }
 
 const FALLBACK_AVATAR = "/9dba1c75826cde0e6cf64a5a8fd25bf6.jpg"
@@ -66,6 +71,23 @@ export const UserCard = ({ user, myWeights, idfMap, onChatClick }: UserCardProps
 	}
 	shared.sort((a, b) => b.idf - a.idf)
 
+	// Айсбрейкеры из общих интересов (если общих нет — из прочих).
+	// useMemo по id, чтобы вопросы не перемешивались на каждый ре-рендер.
+	const iceSource = shared.length > 0 ? shared : other
+	const iceKey = iceSource
+		.slice(0, 3)
+		.map((i) => i._id)
+		.join("|")
+	const icebreakers = useMemo(
+		() =>
+			iceSource.slice(0, 3).map((i) => ({
+				interest: i.name,
+				question: pickQuestion(i.name),
+			})),
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+		[iceKey],
+	)
+
 	const matchColorClass =
 		coveragePercent >= 70
 			? "text-emerald-500"
@@ -86,13 +108,10 @@ export const UserCard = ({ user, myWeights, idfMap, onChatClick }: UserCardProps
 	return (
 		<div className="flex flex-col justify-between bg-surface border border-divider rounded-2xl p-5 transition-all hover:border-line hover:-translate-y-0.5 hover:shadow-lg">
 			<div className="flex items-center gap-4">
-				<Image
-					src={user.avatarUrl || FALLBACK_AVATAR}
-					alt="avatar"
-					width={120}
-					height={120}
-					className="shrink-0 rounded-2xl object-cover w-16 h-16"
-				/>
+				<Avatar className="size-16 shrink-0">
+					<AvatarImage src={user.avatarUrl || FALLBACK_AVATAR} alt="avatar" />
+					<AvatarFallback>{user.username?.charAt(0)?.toUpperCase()}</AvatarFallback>
+				</Avatar>
 				<div className="flex-1 min-w-0">
 					<h3 className="text-lg font-bold text-ink truncate">{user.username}</h3>
 					<p className="text-xs text-muted mt-0.5">{subtitle}</p>
@@ -203,14 +222,34 @@ export const UserCard = ({ user, myWeights, idfMap, onChatClick }: UserCardProps
 				</div>
 			)}
 
+			{onChatClick && icebreakers.length > 0 && (
+				<div className="mt-4">
+					<p className="text-[11px] uppercase tracking-wider text-muted font-semibold mb-2">
+						💬 Break the ice
+					</p>
+					<div className="flex flex-col gap-1.5">
+						{icebreakers.map((ice, i) => (
+							<button
+								key={`${ice.interest}-${i}`}
+								type="button"
+								onClick={() => onChatClick(user._id, user.username, ice.question)}
+								className="text-left text-xs text-ink bg-surface-muted hover:bg-primary-soft hover:text-primary rounded-lg px-3 py-2 transition-colors cursor-pointer"
+							>
+								“{ice.question}”
+							</button>
+						))}
+					</div>
+				</div>
+			)}
+
 			<div className="mt-5 flex flex-col gap-2">
 				{onChatClick && (
-					<button
+					<Button
+						className="w-full"
 						onClick={() => onChatClick(user._id, user.username)}
-						className="w-full inline-flex items-center justify-center px-4 py-2.5 rounded-lg text-sm font-semibold text-white bg-primary hover:bg-primary-hover transition-colors cursor-pointer"
 					>
 						Start chat
-					</button>
+					</Button>
 				)}
 				<Link
 					href={`/users/${user._id}`}

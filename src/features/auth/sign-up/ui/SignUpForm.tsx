@@ -2,6 +2,8 @@
 
 import { CURRENT_USER_KEY } from "@/entities/user"
 import { useAppQueryClient } from "@/shared/api/providers"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
 import { yupResolver } from "@hookform/resolvers/yup"
 import axios from "axios"
 import Link from "next/link"
@@ -71,8 +73,7 @@ export const SignUpForm = () => {
 				{success && <p className="text-sm text-accent bg-accent-soft border border-accent/20 rounded-lg px-3 py-2">Registration successful!</p>}
 				<div className="flex flex-col gap-1">
 					<label className="text-xs font-medium text-muted">Full name</label>
-					<input
-						className="bg-surface border border-line rounded-lg px-3 py-2.5 text-sm text-ink placeholder:text-faint focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary-soft transition-all"
+					<Input
 						type="text"
 						placeholder="Your name"
 						{...register("username")}
@@ -81,8 +82,7 @@ export const SignUpForm = () => {
 				</div>
 				<div className="flex flex-col gap-1">
 					<label className="text-xs font-medium text-muted">Email</label>
-					<input
-						className="bg-surface border border-line rounded-lg px-3 py-2.5 text-sm text-ink placeholder:text-faint focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary-soft transition-all"
+					<Input
 						type="email"
 						placeholder="you@example.com"
 						{...register("email")}
@@ -91,21 +91,16 @@ export const SignUpForm = () => {
 				</div>
 				<div className="flex flex-col gap-1">
 					<label className="text-xs font-medium text-muted">Password</label>
-					<input
-						className="bg-surface border border-line rounded-lg px-3 py-2.5 text-sm text-ink placeholder:text-faint focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary-soft transition-all"
+					<Input
 						type="password"
 						placeholder="••••••••"
 						{...register("password")}
 					/>
 					{errors.password && <p className="text-xs text-danger mt-0.5">{errors.password.message}</p>}
 				</div>
-				<button
-					type="submit"
-					disabled={isSubmitting}
-					className="mt-2 inline-flex items-center justify-center px-4 py-2.5 rounded-lg text-sm font-medium text-white bg-primary hover:bg-primary-hover transition-colors disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
-				>
+				<Button type="submit" disabled={isSubmitting} className="mt-2 w-full">
 					{isSubmitting ? "Creating account…" : "Sign up"}
-				</button>
+				</Button>
 			</form>
 			<Link href="/signin" className="block text-sm text-center mt-5 text-muted hover:text-primary transition-colors">
 				Already have an account? <span className="text-primary font-medium">Sign in</span>

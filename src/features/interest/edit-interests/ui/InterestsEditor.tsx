@@ -3,18 +3,26 @@
 import {InterestStarRating} from '@/entities/interest'
 import type {IInterest, PopulatedUserInterest} from '@/entities/interest'
 import {CURRENT_USER_KEY, useCurrentUser} from '@/entities/user'
+import {Button} from '@/components/ui/button'
+import {
+	Combobox,
+	ComboboxContent,
+	ComboboxEmpty,
+	ComboboxInput,
+	ComboboxItem,
+	ComboboxList,
+} from '@/components/ui/combobox'
 import {useAppQueryClient} from '@/shared/api/providers'
 import {mongoIdString} from '@/shared/lib/mongoId'
 import {useQuery} from '@tanstack/react-query'
 import axios from 'axios'
-import {Search, X} from 'lucide-react'
-import {useEffect, useMemo, useRef, useState} from 'react'
+import {X} from 'lucide-react'
+import {useState} from 'react'
 import toast from 'react-hot-toast'
 
 // Вес (1–5) нужен матчингу (calculateMatch) — у каждого чипа свои звёзды.
 // Новый интерес стартует с нейтрального DEFAULT_WEIGHT, дальше юзер правит звёздами.
 const DEFAULT_WEIGHT = 3
-const MAX_RESULTS = 50
 
 type SelectedInterest = {_id: string; name: string; weight: number}
 type Option = {_id: string; name: string}
@@ -54,54 +62,35 @@ export function InterestsEditor({onSaved}: InterestsEditorProps) {
 
 	const [selected, setSelected] = useState<SelectedInterest[]>([])
 	const [seededForUser, setSeededForUser] = useState<string | null>(null)
-	const [query, setQuery] = useState('')
-	const [open, setOpen] = useState(false)
-	const [highlight, setHighlight] = useState(0)
 	const [isSaving, setIsSaving] = useState(false)
-	const boxRef = useRef<HTMLDivElement>(null)
 
-	// Сидируем чипы из текущих интересов юзера один раз, когда приходят данные.
-	// Делаем это в фазе рендера с guard'ом (а не в useEffect) — рекомендованный React-
-	// паттерн инициализации стейта из данных без каскадных ре-рендеров.
+	// Сидируем чипы из текущих интересов юзера один раз, когда приходят данные
+	// (render-phase с guard'ом — без useEffect и каскадных ре-рендеров).
 	const meId = me?._id ?? null
 	if (meId && seededForUser !== meId) {
 		setSeededForUser(meId)
 		setSelected(buildSelectedFromUser(me?.userInterests))
 	}
 
-	const selectedIds = useMemo(
-		() => new Set(selected.map(s => s._id)),
-		[selected],
-	)
+	// Данные для shadcn Combobox (мультиселект): все опции + текущее значение.
+	const options: Option[] = allInterests.map(i => ({
+		_id: mongoIdString(i._id),
+		name: i.name,
+	}))
+	const value: Option[] = selected.map(s => ({_id: s._id, name: s.name}))
 
-	// Доступные для добавления: все интересы минус уже выбранные, отфильтрованные запросом.
-	const matches = useMemo<Option[]>(() => {
-		const q = query.trim().toLowerCase()
-		return allInterests
-			.map(i => ({_id: mongoIdString(i._id), name: i.name}))
-			.filter(o => !selectedIds.has(o._id) && (q === '' || o.name.toLowerCase().includes(q)))
-			.slice(0, MAX_RESULTS)
-	}, [allInterests, selectedIds, query])
-
-	// Клик вне компонента — закрыть выпадашку.
-	useEffect(() => {
-		const onMouseDown = (e: MouseEvent) => {
-			if (boxRef.current && !boxRef.current.contains(e.target as Node)) {
-				setOpen(false)
-			}
-		}
-		document.addEventListener('mousedown', onMouseDown)
-		return () => document.removeEventListener('mousedown', onMouseDown)
-	}, [])
-
-	const addInterest = (option: Option) => {
+	// Тогл из списка комбобокса: новым даём DEFAULT_WEIGHT, у оставшихся сохраняем вес.
+	const handleValueChange = (next: Option[]) => {
 		setSelected(prev =>
-			prev.some(s => s._id === option._id)
-				? prev
-				: [...prev, {...option, weight: DEFAULT_WEIGHT}],
+			next.map(
+				opt =>
+					prev.find(s => s._id === opt._id) ?? {
+						_id: opt._id,
+						name: opt.name,
+						weight: DEFAULT_WEIGHT,
+					},
+			),
 		)
-		setQuery('')
-		setHighlight(0)
 	}
 
 	const removeInterest = (id: string) => {
@@ -110,26 +99,6 @@ export function InterestsEditor({onSaved}: InterestsEditorProps) {
 
 	const setWeight = (id: string, weight: number) => {
 		setSelected(prev => prev.map(s => (s._id === id ? {...s, weight} : s)))
-	}
-
-	const onKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-		if (e.key === 'ArrowDown') {
-			e.preventDefault()
-			setOpen(true)
-			setHighlight(h => Math.min(h + 1, matches.length - 1))
-		} else if (e.key === 'ArrowUp') {
-			e.preventDefault()
-			setHighlight(h => Math.max(h - 1, 0))
-		} else if (e.key === 'Enter') {
-			e.preventDefault()
-			const option = matches[highlight]
-			if (option) addInterest(option)
-		} else if (e.key === 'Escape') {
-			setOpen(false)
-		} else if (e.key === 'Backspace' && query === '' && selected.length > 0) {
-			// Backspace в пустом инпуте удаляет последний чип — привычное поведение.
-			removeInterest(selected[selected.length - 1]._id)
-		}
 	}
 
 	const save = async () => {
@@ -183,62 +152,27 @@ export function InterestsEditor({onSaved}: InterestsEditorProps) {
 				<span className='text-xs text-faint'>{selected.length} selected</span>
 			</div>
 
-			{/* Поиск: добавление интересов */}
-			<div ref={boxRef} className='relative'>
-				<div className='flex items-center gap-2 bg-surface border border-line rounded-lg px-3 py-2 focus-within:border-primary focus-within:ring-2 focus-within:ring-primary-soft transition-all'>
-					<Search className='w-4 h-4 text-faint shrink-0' />
-					<input
-						value={query}
-						onChange={e => {
-							setQuery(e.target.value)
-							setOpen(true)
-							setHighlight(0)
-						}}
-						onFocus={() => setOpen(true)}
-						onKeyDown={onKeyDown}
-						placeholder={selected.length ? 'Add more…' : 'Search interests…'}
-						className='flex-1 bg-transparent text-sm text-ink placeholder:text-faint focus:outline-none py-0.5'
-						role='combobox'
-						aria-expanded={open}
-						aria-controls='interests-listbox'
-					/>
-				</div>
-
-				{open && matches.length > 0 && (
-					<ul
-						id='interests-listbox'
-						role='listbox'
-						className='absolute z-20 mt-1 w-full max-h-60 overflow-auto bg-surface border border-divider rounded-lg shadow-lg py-1'
-					>
-						{matches.map((option, index) => (
-							<li
-								key={option._id}
-								role='option'
-								aria-selected={index === highlight}
-								// onMouseDown, чтобы добавить ДО того как input потеряет фокус (blur).
-								onMouseDown={e => {
-									e.preventDefault()
-									addInterest(option)
-								}}
-								onMouseEnter={() => setHighlight(index)}
-								className={`px-3 py-2 text-sm cursor-pointer transition-colors ${
-									index === highlight
-										? 'bg-primary-soft text-primary'
-										: 'text-ink hover:bg-surface-muted'
-								}`}
-							>
+			{/* Поиск + добавление — shadcn Combobox в мультиселекте */}
+			<Combobox
+				multiple
+				items={options}
+				value={value}
+				onValueChange={handleValueChange}
+				itemToStringLabel={(o: Option) => o.name}
+				isItemEqualToValue={(a: Option, b: Option) => a._id === b._id}
+			>
+				<ComboboxInput placeholder='Search interests…' />
+				<ComboboxContent>
+					<ComboboxEmpty>No interests found</ComboboxEmpty>
+					<ComboboxList>
+						{(option: Option) => (
+							<ComboboxItem key={option._id} value={option}>
 								{option.name}
-							</li>
-						))}
-					</ul>
-				)}
-
-				{open && query.trim() !== '' && matches.length === 0 && (
-					<div className='absolute z-20 mt-1 w-full bg-surface border border-divider rounded-lg shadow-lg px-3 py-2 text-sm text-muted'>
-						No interests found
-					</div>
-				)}
-			</div>
+							</ComboboxItem>
+						)}
+					</ComboboxList>
+				</ComboboxContent>
+			</Combobox>
 
 			{/* Выбранные интересы: чип + звёзды (вес для матчинга) + удаление */}
 			{selected.length > 0 && (
@@ -270,14 +204,9 @@ export function InterestsEditor({onSaved}: InterestsEditorProps) {
 			)}
 
 			<div>
-				<button
-					type='button'
-					onClick={save}
-					disabled={isSaving}
-					className='inline-flex items-center justify-center px-4 py-2 rounded-lg text-sm font-medium text-white bg-primary hover:bg-primary-hover transition-colors disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer'
-				>
+				<Button type='button' onClick={save} disabled={isSaving}>
 					{isSaving ? 'Saving…' : 'Save interests'}
-				</button>
+				</Button>
 			</div>
 		</div>
 	)

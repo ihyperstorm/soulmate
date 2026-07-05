@@ -1,4 +1,4 @@
-import Image from 'next/image'
+import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar'
 
 type Props = {
 	avatar: string
@@ -14,13 +14,10 @@ const ChatsItem = ({avatar, name, unreadCount, onClick}: Props) => {
 			onClick={onClick}
 			className='flex items-center gap-3 hover:bg-surface-muted rounded-xl p-2 cursor-pointer transition-colors text-left'
 		>
-			<Image
-				src={avatar}
-				alt='avatar'
-				width={100}
-				height={100}
-				className='rounded-full object-cover w-10 h-10'
-			/>
+			<Avatar className='size-10'>
+				<AvatarImage src={avatar} alt='avatar' />
+				<AvatarFallback>{name?.charAt(0)?.toUpperCase()}</AvatarFallback>
+			</Avatar>
 			<div className='flex items-center justify-between gap-2 flex-1 min-w-0'>
 				<span className='text-sm font-medium text-ink truncate'>{name}</span>
 				{unreadCount > 0 && (

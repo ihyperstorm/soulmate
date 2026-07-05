@@ -10,6 +10,7 @@ type ChatSelection = {
 	senderId: string | null
 	receiverId: string | null
 	systemNotice: string | null
+	draft?: string | null
 }
 
 function MessagesContent() {
@@ -24,6 +25,7 @@ function MessagesContent() {
 		const qSenderId = searchParams.get('senderId')
 		const qReceiverId = searchParams.get('receiverId')
 		const qUsername = searchParams.get('username')
+		const qDraft = searchParams.get('draft')
 
 		if (qChatId && qSenderId && qReceiverId) {
 			return {
@@ -31,6 +33,7 @@ function MessagesContent() {
 				senderId: qSenderId,
 				receiverId: qReceiverId,
 				systemNotice: qUsername ? `You started a chat with ${qUsername}` : null,
+				draft: qDraft,
 			}
 		}
 
@@ -54,6 +57,7 @@ function MessagesContent() {
 				senderId={activeChat.senderId}
 				receiverId={activeChat.receiverId}
 				systemNotice={activeChat.systemNotice}
+				draft={activeChat.draft}
 			/>
 		</div>
 	)

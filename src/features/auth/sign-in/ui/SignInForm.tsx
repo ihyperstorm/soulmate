@@ -8,6 +8,8 @@ import {useState} from 'react'
 import {useForm} from 'react-hook-form'
 import {CURRENT_USER_KEY} from '@/entities/user'
 import {useAppQueryClient} from '@/shared/api/providers'
+import {Button} from '@/components/ui/button'
+import {Input} from '@/components/ui/input'
 
 type LoginFormData = {
 	email: string
@@ -77,8 +79,7 @@ export const SignInForm = () => {
 				)}
 				<div className='flex flex-col gap-1'>
 					<label className='text-xs font-medium text-muted'>Email</label>
-					<input
-						className='bg-surface border border-line rounded-lg px-3 py-2.5 text-sm text-ink placeholder:text-faint focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary-soft transition-all'
+					<Input
 						type='email'
 						placeholder='you@example.com'
 						{...register('email')}
@@ -89,8 +90,7 @@ export const SignInForm = () => {
 				</div>
 				<div className='flex flex-col gap-1'>
 					<label className='text-xs font-medium text-muted'>Password</label>
-					<input
-						className='bg-surface border border-line rounded-lg px-3 py-2.5 text-sm text-ink placeholder:text-faint focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary-soft transition-all'
+					<Input
 						type='password'
 						placeholder='••••••••'
 						{...register('password')}
@@ -101,13 +101,9 @@ export const SignInForm = () => {
 						</p>
 					)}
 				</div>
-				<button
-					type='submit'
-					disabled={isSubmitting}
-					className='mt-2 inline-flex items-center justify-center px-4 py-2.5 rounded-lg text-sm font-medium text-white bg-primary hover:bg-primary-hover transition-colors disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer'
-				>
+				<Button type='submit' disabled={isSubmitting} className='mt-2 w-full'>
 					{isSubmitting ? 'Signing in…' : 'Sign in'}
-				</button>
+				</Button>
 			</form>
 			<Link
 				href='/signup'

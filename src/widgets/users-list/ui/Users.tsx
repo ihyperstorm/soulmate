@@ -61,11 +61,16 @@ const Users = ({
 		staleTime: 5 * 60 * 1000,
 	})
 
-	const handleChatClick = (receiverId: string, receiverUsername: string) => {
+	const handleChatClick = (
+		receiverId: string,
+		receiverUsername: string,
+		draft?: string,
+	) => {
 		if (!me?._id) return
 		const chatId = [me._id, receiverId].sort().join("_")
+		const draftParam = draft ? `&draft=${encodeURIComponent(draft)}` : ""
 		router.push(
-			`/messages?chatId=${chatId}&senderId=${me._id}&receiverId=${receiverId}&username=${encodeURIComponent(receiverUsername)}`,
+			`/messages?chatId=${chatId}&senderId=${me._id}&receiverId=${receiverId}&username=${encodeURIComponent(receiverUsername)}${draftParam}`,
 		)
 	}
 

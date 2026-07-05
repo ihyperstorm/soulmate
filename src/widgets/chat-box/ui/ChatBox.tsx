@@ -3,7 +3,7 @@
 import axios from "axios";
 import { useCallback, useEffect, useRef, useState } from "react";
 import {
-	MessageList,
+	MessageBubble,
 	appendMessageDeduped,
 	mergeMessagesDeduped,
 	type ChatMessagePayload,
@@ -11,17 +11,29 @@ import {
 } from "@/entities/message";
 import toast from "react-hot-toast";
 import { useAppQueryClient } from "@/shared/api/providers";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import {
+	MessageScroller,
+	MessageScrollerContent,
+	MessageScrollerItem,
+	MessageScrollerProvider,
+	MessageScrollerViewport,
+} from "@/components/ui/message-scroller";
 
 type Props = {
 	chatId: string | null;
 	senderId: string | null;
 	receiverId: string | null;
 	systemNotice: string | null;
+	draft?: string | null;
 };
 
-const ChatBox = ({ chatId, senderId, receiverId, systemNotice }: Props) => {
+const ChatBox = ({ chatId, senderId, receiverId, systemNotice, draft }: Props) => {
 	const [messages, setMessages] = useState<ChatMessagePayload[]>([]);
-	const [text, setText] = useState<string>("");
+	// Предзаполнение опенером (айсбрейкер из карточки). ChatBox монтируется заново
+	// на каждый chatId (key в MessagesPage), поэтому init из props достаточно.
+	const [text, setText] = useState<string>(draft ?? "");
 	const [isOnline, setIsOnline] = useState(() =>
 		typeof navigator === "undefined" ? true : navigator.onLine,
 	);
@@ -33,7 +45,6 @@ const ChatBox = ({ chatId, senderId, receiverId, systemNotice }: Props) => {
 	const queryClient = useAppQueryClient();
 
 	const lastReadSentRef = useRef<string | null>(null);
-	const scrollRef = useRef<HTMLDivElement | null>(null);
 	const typingActiveRef = useRef(false);
 
 	const postTyping = useCallback(
@@ -152,15 +163,6 @@ const ChatBox = ({ chatId, senderId, receiverId, systemNotice }: Props) => {
 	}, []);
 
 	useEffect(() => {
-		if (scrollRef.current) {
-			scrollRef.current?.scrollTo({
-				top: scrollRef.current.scrollHeight,
-				behavior: "smooth",
-			});
-		}
-	}, [messages.length]);
-
-	useEffect(() => {
 		if (!chatId || !senderId || !receiverId || messages.length === 0) return;
 		if (document.visibilityState !== "visible") return;
 
@@ -220,18 +222,32 @@ const ChatBox = ({ chatId, senderId, receiverId, systemNotice }: Props) => {
 				)}
 				{!isOnline && <div className="text-xs text-warning">Reconnecting…</div>}
 			</div>
-			<div ref={scrollRef} className="flex-1 overflow-y-auto p-4 space-y-2 bg-background">
-				<MessageList
-					messages={messages}
-					senderId={senderId ?? ""}
-					receiverId={receiverId ?? ""}
-				/>
-			</div>
+			<MessageScrollerProvider autoScroll defaultScrollPosition="end">
+				<MessageScroller className="flex-1 min-h-0 bg-background">
+					<MessageScrollerViewport className="p-4">
+						<MessageScrollerContent className="gap-2">
+							{messages.map((m, i) => (
+								<MessageScrollerItem
+									key={m._id}
+									messageId={m._id}
+									scrollAnchor={i === messages.length - 1}
+									className="flex flex-col"
+								>
+									<MessageBubble
+										message={m.text}
+										isMine={m.senderId === senderId}
+									/>
+								</MessageScrollerItem>
+							))}
+						</MessageScrollerContent>
+					</MessageScrollerViewport>
+				</MessageScroller>
+			</MessageScrollerProvider>
 			<form
 				onSubmit={sendMessage}
 				className="p-3 border-t border-divider flex gap-2 bg-surface"
 			>
-				<input
+				<Input
 					type="text"
 					value={text}
 					onChange={(e) => {
@@ -258,16 +274,12 @@ const ChatBox = ({ chatId, senderId, receiverId, systemNotice }: Props) => {
 							postTyping(false);
 						}
 					}}
-					className="flex-1 bg-surface-muted border border-transparent rounded-xl px-4 py-2.5 text-sm text-ink placeholder:text-faint focus:outline-none focus:border-primary focus:bg-surface transition-colors"
+					className="flex-1"
 					placeholder="Type a message…"
 				/>
-				<button
-					disabled={sending || !text.trim()}
-					type="submit"
-					className="inline-flex items-center justify-center px-5 py-2.5 rounded-xl text-sm font-medium text-white bg-primary hover:bg-primary-hover transition-colors disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
-				>
+				<Button disabled={sending || !text.trim()} type="submit">
 					{sending ? "Sending…" : "Send"}
-				</button>
+				</Button>
 			</form>
 		</div>
 	);

@@ -1,8 +1,8 @@
 "use client"
 import { useCurrentUser } from "@/entities/user"
 import { LogoutButton } from "@/features/auth/logout"
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar"
 import { LogIn } from "lucide-react"
-import Image from "next/image"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 
@@ -21,13 +21,10 @@ const Header = () => {
 				<div className="flex items-center gap-2">
 					{user && (
 						<Link href="/users/me" className="flex items-center gap-2 pl-1 pr-3 py-1 rounded-full bg-surface-muted">
-							<Image
-								src={user?.avatarUrl || "/9dba1c75826cde0e6cf64a5a8fd25bf6.jpg"}
-								alt="avatar"
-								width={64}
-								height={64}
-								className="rounded-full object-cover w-7 h-7"
-							/>
+							<Avatar className="size-7">
+								<AvatarImage src={user?.avatarUrl || "/9dba1c75826cde0e6cf64a5a8fd25bf6.jpg"} alt="avatar" />
+								<AvatarFallback>{user.username?.charAt(0)?.toUpperCase()}</AvatarFallback>
+							</Avatar>
 							<span className="text-sm font-medium text-ink">{user.username}</span>
 						</Link>
 					)}

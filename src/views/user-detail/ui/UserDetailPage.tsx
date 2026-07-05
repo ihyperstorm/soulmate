@@ -4,7 +4,8 @@ import type {IInterest, PopulatedUserInterest} from '@/entities/interest'
 import {useCurrentUser} from '@/entities/user'
 import {useQuery} from '@tanstack/react-query'
 import axios from 'axios'
-import Image from 'next/image'
+import {Avatar, AvatarImage, AvatarFallback} from '@/components/ui/avatar'
+import {Button} from '@/components/ui/button'
 import {useParams, useRouter} from 'next/navigation'
 
 interface IUser {
@@ -64,13 +65,10 @@ export default function UserDetailPage() {
 			<div className='flex-1 bg-surface border border-divider rounded-2xl p-6 md:p-8'>
 				<div className='flex flex-col md:flex-row gap-6 md:gap-8'>
 					<div className='shrink-0 flex justify-center'>
-						<Image
-							src={user?.avatarUrl || '/9dba1c75826cde0e6cf64a5a8fd25bf6.jpg'}
-							alt='avatar'
-							width={300}
-							height={300}
-							className='rounded-2xl object-cover w-40 h-40 md:w-48 md:h-48'
-						/>
+						<Avatar className='size-40 md:size-48'>
+							<AvatarImage src={user?.avatarUrl || '/9dba1c75826cde0e6cf64a5a8fd25bf6.jpg'} alt='avatar' />
+							<AvatarFallback>{user?.username?.charAt(0)?.toUpperCase()}</AvatarFallback>
+						</Avatar>
 					</div>
 					<div className='flex flex-col gap-3 flex-1'>
 						<div className='flex items-center gap-3 flex-wrap'>
@@ -123,12 +121,12 @@ export default function UserDetailPage() {
 						</dl>
 
 						{user?._id === me?._id && (
-							<button
+							<Button
+								className='mt-6 self-start'
 								onClick={() => router.push(`/users/${userId}/edit`)}
-								className='mt-6 self-start inline-flex items-center justify-center px-4 py-2 rounded-lg text-sm font-medium text-white bg-primary hover:bg-primary-hover transition-colors cursor-pointer'
 							>
 								Edit profile
-							</button>
+							</Button>
 						)}
 					</div>
 				</div>
