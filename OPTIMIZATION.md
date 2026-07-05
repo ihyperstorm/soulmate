@@ -16,12 +16,11 @@
 |---|---|---|---|
 | 1 | Убрать password hash из ответов `/api/auth/login` и `/register` | 💸 | 🔴 |
 | 2 | Добавить проверку владельца в `PATCH /api/users/[id]` | 💸 | 🔴 |
-| 3 | Добавить `getAuthUserId()` в `proxy.ts` (verify, не только existence) | 💸 | 🟠 |
 | 4 | Лимит размера файла на upload аватара (5MB) | 💸 | 🟠 |
 | 5 | Whitelist MIME-типов аватара (`image/jpeg`/`png`/`webp`) | 💸 | 🟠 |
 | 6 | Заменить N+1 unread counts в `/api/chats` на одну aggregation | 💸 | 🟠 |
 | 7 | Удалить `localStorage.setItem('userId')` из `SignUpForm` и `InterestsPage` | 💸 | 🟡 |
-| 8 | Добавить refresh-token / sliding session (30 мин → ≥ 24 ч) | 💰 | 🟠 |
+| 8 | Полноценный refresh-token flow (short access + long refresh, ротация, revoke) | 💰 | 🟠 |
 | 9 | Пагинация на `GET /api/users` + серверный фильтр по `userIds` | 💰 | 🟠 |
 | 10 | Rate limiting на `/api/auth/login` (5 попыток / 15 мин) | 💰 | 🟠 |
 
@@ -42,13 +41,6 @@
 - **Почему важно:** Полный bypass owner-only обновлений. Серьёзная дыра в matching-приложении (можно подменить чужие фото/био).
 - **Фикс:** В начале handler'а: `const authId = await getAuthUserId(); if (!authId || authId !== id) return NextResponse.json({error: 'Forbidden'}, {status: 403})`.
 - **💸 Cheap** — 3 строки.
-
-### 🟠 3. Middleware (`proxy.ts`) проверяет только наличие cookie, не валидность
-- **Где:** `src/proxy.ts:4`
-- **Что:** `req.cookies.get('accessToken')?.value` — если cookie есть, пропускает. Но не вызывает `verifyToken()`. Просроченный или подделанный токен проходит middleware.
-- **Почему важно:** Юзер с устаревшим JWT попадает на `/dashboard`, потом получает 401 с API — плохой UX. С подделанным cookie (без секрета подписать нельзя, но мог быть украден ранее) — поведение определяется только API-эндпоинтами.
-- **Фикс:** Импортировать `verifyToken` и обернуть в `try/catch`. Если throw — redirect на `/signin`.
-- **💸 Cheap** — 5 строк.
 
 ### 🟠 4. Avatar upload без лимита размера
 - **Где:** `src/app/api/users/me/route.ts:93-114`, `src/app/api/users/[id]/route.ts:65-86`
@@ -109,13 +101,18 @@
 - **Фикс (правильно):** CSRF-токены через `next-csrf` или вручную.
 - **💸 Cheap (origin check)** / **💰 Medium (tokens)**
 
-### 🟡 11. JWT 30 минут без refresh-токена
-- **Где:** `src/entities/session/model/jwt.ts:6`
-- **Что:** `expiresIn: '30m'`, и в cookie `maxAge: 60 * 30`. Никакого механизма продления — после 30 минут юзера выкидывает.
-- **Почему важно:** Уже жалоба от тестера. Главный UX-pain.
-- **Фикс (дёшево, sliding):** В `proxy.ts` после `verifyToken` — если до expiry < 15 мин, перевыдать токен с новым сроком и `Set-Cookie` в response. Делается в одном файле.
-- **Фикс (правильно):** Настоящий refresh-token flow — short access (15 мин) + long refresh (30 дней), endpoint `/api/auth/refresh`, ротация. Хранить refresh-tokens в БД с возможностью revoke.
-- **💸 Cheap (sliding)** / **💰 Medium (full refresh flow)**
+### 🟠 11. Полноценный refresh-token flow (revocable sessions)
+- **Где:** `src/entities/session/*`, `src/app/api/auth/*`, `src/proxy.ts`
+- **Что:** Сейчас — sliding session: один access-токен (JWT, 30 мин), продлевается в `proxy.ts`. Нет отдельного refresh-токена, нет хранилища сессий, токен нельзя отозвать до истечения.
+- **Почему важно:** Sliding закрыл UX-боль («выкидывает через 30 мин»), но не даёт: (1) logout со всех устройств; (2) принудительный разлогин при смене пароля / компрометации; (3) короткое окно жизни access-токена (украденный токен валиден все 30 мин, отозвать нельзя). Это следующий уровень безопасности сессий поверх sliding.
+- **Фикс:** Два токена:
+  - **access** — короткий JWT (5–15 мин), stateless, как сейчас.
+  - **refresh** — длинный (~30 дней), httpOnly-cookie, **хранится в БД** (модель `Session`: `userId`, `tokenHash`, `expiresAt`, `userAgent`, `createdAt`).
+  - `POST /api/auth/refresh`: валидирует refresh по БД → выдаёт новый access.
+  - **Ротация:** каждый refresh инвалидирует старый и выдаёт новый (защита от повторного использования украденного).
+  - **Revoke:** logout удаляет запись из БД; «выйти со всех устройств» — удалить все записи юзера.
+  - Фронт: молчаливый refresh access-токена на 401 (axios-interceptor).
+- **💰 Medium** — модель `Session` + endpoint + ротация + interceptor. Полдня–день.
 
 ### 🟡 12. Сообщения об ошибках светят детали БД
 - **Где:** Большинство catch-блоков в `/api/*` — `error: error instanceof Error ? error.message : '...'`
@@ -311,10 +308,8 @@
 
 Эти пункты ты уже знаешь — здесь как памятка:
 
-- **30-мин JWT без refresh** → см. Security #11.
 - **Cookie `secure: true` для всех окружений** → уже починено (теперь зависит от `NODE_ENV`).
 - **SSE single-instance broker** → см. Performance #4.
-- **proxy.ts не валидирует JWT** → Security #3.
 - **/api/users/me с upload аватара** → нужен лимит размера и MIME (Security #4, #5).
 
 ---
@@ -322,10 +317,10 @@
 ## 🗺️ Дорожная карта (моё мнение)
 
 **Неделя 1 (3-4 часа):**
-Top-10 пункты 1-7 целиком + 11 (sliding session). Это закроет основные дыры безопасности и пофиксит главную UX-жалобу (выкидывает через 30 мин).
+Top-10 пункты 1-7 целиком. Это закроет основные дыры безопасности. (Sliding session — главная UX-жалоба «выкидывает через 30 мин» — уже сделан.)
 
 **Неделя 2 (полдня):**
-Top-10 пункты 8-10 — пагинация, rate limit, refresh flow если sliding session не зашёл. Лучше параллельно: `error.tsx`, prettier, constants для fallback-аватара.
+Top-10 пункты 8-10 — пагинация, rate limit, полноценный refresh-token flow (опционально — sliding уже закрывает главную боль). Лучше параллельно: `error.tsx`, prettier, constants для fallback-аватара.
 
 **Месяц 1 (когда юзеры будут):**
 - Логирование (winston/pino)

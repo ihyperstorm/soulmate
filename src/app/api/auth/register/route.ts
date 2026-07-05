@@ -24,7 +24,7 @@ export async function POST(request: Request) {
 
 		const newUser = await User.create({ username, email, password: hashedPassword })
 
-		const token = signToken({ userId: newUser._id.toString() })
+		const token = await signToken({ userId: newUser._id.toString() })
 
 		const res = NextResponse.json(
 			{ message: 'User created successfully', user: newUser.toObject() },

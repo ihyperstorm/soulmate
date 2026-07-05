@@ -4,7 +4,6 @@ import {loginSchema} from '../model/loginSchema'
 import {yupResolver} from '@hookform/resolvers/yup'
 import axios from 'axios'
 import Link from 'next/link'
-import {useRouter} from 'next/navigation'
 import {useState} from 'react'
 import {useForm} from 'react-hook-form'
 import {CURRENT_USER_KEY} from '@/entities/user'
@@ -18,7 +17,6 @@ type LoginFormData = {
 export const SignInForm = () => {
 	const [error, setError] = useState<string | null>(null)
 	const [success, setSuccess] = useState(false)
-	const router = useRouter()
 	const queryClient = useAppQueryClient()
 
 	const {
@@ -44,7 +42,12 @@ export const SignInForm = () => {
 			})
 			queryClient.setQueryData(CURRENT_USER_KEY, response.data.user)
 			setSuccess(true)
-			router.replace('/dashboard')
+			// Полный переход документа, а не router.replace: маршрут /dashboard
+			// защищён proxy.ts, который проверяет cookie accessToken. При soft-navigation
+			// сразу после логина proxy не видит только что установленную httpOnly-cookie
+			// и редиректит обратно на /signin. Хард-навигация гарантирует, что браузер
+			// приложит cookie к top-level запросу и proxy пропустит на /dashboard.
+			window.location.replace('/dashboard')
 		} catch (error) {
 			queryClient.setQueryData(CURRENT_USER_KEY, null)
 			if (axios.isAxiosError(error) && error.response?.data?.error) {

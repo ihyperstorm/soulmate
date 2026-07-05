@@ -6,10 +6,6 @@ export const getAuthUserId = async (): Promise<string | null> => {
 	const token = cookieStore.get('accessToken')?.value
 	if (!token) return null
 
-	try {
-		const payload = verifyToken(token) as {userId?: string}
-		return payload.userId ?? null
-	} catch {
-		return null
-	}
+	const payload = await verifyToken(token)
+	return payload?.userId ?? null
 }

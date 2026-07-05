@@ -1,4 +1,4 @@
-@import 'tailwindcss';
+@import "tailwindcss";
 
 :root {
 	--background: #f7f8fa;
@@ -33,6 +33,28 @@
 	--color-online: #22c55e;
 
 	--font-sans: var(--font-geist-sans);
+}
+
+@theme {
+	/* Мягкий бесконечный «перелив» градиента (для текста с bg-clip-text). */
+	--animate-gradient-x: gradient-x 4s ease-in-out infinite;
+}
+
+@keyframes gradient-x {
+	0%,
+	100% {
+		background-position: 0% 50%;
+	}
+	50% {
+		background-position: 100% 50%;
+	}
+}
+
+/* Уважаем настройку «меньше движения» — отключаем перелив. */
+@media (prefers-reduced-motion: reduce) {
+	.animate-gradient-x {
+		animation: none;
+	}
 }
 
 body {

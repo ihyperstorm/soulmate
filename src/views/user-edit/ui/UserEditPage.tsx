@@ -1,14 +1,14 @@
 "use client"
 
-import { IUserInterest } from "@/entities/interest"
 import type { IUser } from "@/entities/user"
+import { InterestsEditor } from "@/features/interest/edit-interests"
 import { useAppQueryClient } from "@/shared/api/providers"
 import { useQuery } from "@tanstack/react-query"
 import axios from "axios"
 import { format } from "date-fns"
 import Image from "next/image"
 import { useParams, useRouter } from "next/navigation"
-import { useEffect, useState } from "react"
+import { useState } from "react"
 import toast from "react-hot-toast"
 
 /** Для input type="date" — только YYYY-MM-DD; API отдаёт строку/Date. */
@@ -36,7 +36,7 @@ export default function UserEditPage() {
 		enabled: Boolean(userId),
 	})
 
-	const [interests, setInterests] = useState<IUserInterest[]>([])
+	const [seededForUser, setSeededForUser] = useState<string | null>(null)
 	const [username, setUsername] = useState<string>("")
 	const [avatarUrl, setAvatarUrl] = useState<string>("")
 	const [avatarFile, setAvatarFile] = useState<File | null>(null)
@@ -44,15 +44,16 @@ export default function UserEditPage() {
 	const [location, setLocation] = useState<string>("")
 	const [birthday, setBirthday] = useState<string>("")
 	const [sex, setSex] = useState<string>("")
-	useEffect(() => {
-		if (!user) return
+
+	if (user && seededForUser !== user._id) {
+		setSeededForUser(user._id)
 		setUsername(user.username ?? "")
 		setAvatarUrl(user.avatarUrl ?? "")
 		setBio(user.bio ?? "")
 		setLocation(user.location ?? "")
 		setBirthday(toDateInputValue(user.birthday))
 		setSex(user.gender ?? "")
-	}, [user])
+	}
 
 	const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault()
@@ -191,6 +192,15 @@ export default function UserEditPage() {
 							</button>
 						</div>
 					</form>
+
+					<div className="mt-8 pt-6 border-t border-divider">
+						<InterestsEditor
+							onSaved={async () => {
+								await queryClient.invalidateQueries({ queryKey: ["user", userId] })
+								router.push(`/users/${userId}`)
+							}}
+						/>
+					</div>
 				</div>
 			</div>
 		</div>

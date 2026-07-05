@@ -28,6 +28,8 @@ interface UserCardProps {
 
 const FALLBACK_AVATAR = "/9dba1c75826cde0e6cf64a5a8fd25bf6.jpg"
 const RARE_IDF_THRESHOLD = 2.0
+const MATCH_RING_SIZE = 64
+const MATCH_RING_STROKE = 6
 
 type NamedInterest = { _id: string; name: string; idf: number }
 
@@ -64,38 +66,76 @@ export const UserCard = ({ user, myWeights, idfMap, onChatClick }: UserCardProps
 	}
 	shared.sort((a, b) => b.idf - a.idf)
 
-	const matchTone =
+	const matchColorClass =
 		coveragePercent >= 70
-			? "from-emerald-500 to-emerald-600"
+			? "text-emerald-500"
 			: coveragePercent >= 40
-				? "from-amber-500 to-orange-500"
-				: "from-slate-400 to-slate-500"
+				? "text-amber-500"
+				: "text-slate-400"
 
+	const sharedCount = shared.length
 	const subtitle =
-		shared.length === 0
+		sharedCount === 0
 			? "No shared interests yet"
-			: `Covers ${coveragePercent}% of your interests`
+			: `${sharedCount} shared ${sharedCount === 1 ? "interest" : "interests"}`
+
+	const ringRadius = (MATCH_RING_SIZE - MATCH_RING_STROKE) / 2
+	const ringCircumference = 2 * Math.PI * ringRadius
+	const ringOffset = ringCircumference * (1 - coveragePercent / 100)
 
 	return (
 		<div className="flex flex-col justify-between bg-surface border border-divider rounded-2xl p-5 transition-all hover:border-line hover:-translate-y-0.5 hover:shadow-lg">
 			<div className="flex items-center gap-4">
-				<div className="shrink-0 relative">
-					<Image
-						src={user.avatarUrl || FALLBACK_AVATAR}
-						alt="avatar"
-						width={120}
-						height={120}
-						className="rounded-2xl object-cover w-20 h-20"
-					/>
-					<div
-						className={`absolute -bottom-2 -right-2 inline-flex items-center justify-center px-2 py-0.5 rounded-full bg-linear-to-br ${matchTone} text-white text-xs font-bold shadow-md`}
-					>
-						{coveragePercent}%
-					</div>
-				</div>
+				<Image
+					src={user.avatarUrl || FALLBACK_AVATAR}
+					alt="avatar"
+					width={120}
+					height={120}
+					className="shrink-0 rounded-2xl object-cover w-16 h-16"
+				/>
 				<div className="flex-1 min-w-0">
 					<h3 className="text-lg font-bold text-ink truncate">{user.username}</h3>
 					<p className="text-xs text-muted mt-0.5">{subtitle}</p>
+				</div>
+				{/* % match — центральный визуальный элемент карточки */}
+				<div
+					className={`relative shrink-0 ${matchColorClass}`}
+					style={{ width: MATCH_RING_SIZE, height: MATCH_RING_SIZE }}
+					title={`Covers ${coveragePercent}% of your interests`}
+				>
+					<svg
+						width={MATCH_RING_SIZE}
+						height={MATCH_RING_SIZE}
+						viewBox={`0 0 ${MATCH_RING_SIZE} ${MATCH_RING_SIZE}`}
+						className="-rotate-90"
+					>
+						<circle
+							cx={MATCH_RING_SIZE / 2}
+							cy={MATCH_RING_SIZE / 2}
+							r={ringRadius}
+							fill="none"
+							stroke="currentColor"
+							strokeWidth={MATCH_RING_STROKE}
+							className="text-divider"
+						/>
+						<circle
+							cx={MATCH_RING_SIZE / 2}
+							cy={MATCH_RING_SIZE / 2}
+							r={ringRadius}
+							fill="none"
+							stroke="currentColor"
+							strokeWidth={MATCH_RING_STROKE}
+							strokeLinecap="round"
+							strokeDasharray={ringCircumference}
+							strokeDashoffset={ringOffset}
+						/>
+					</svg>
+					<div className="absolute inset-0 flex flex-col items-center justify-center leading-none">
+						<span className="text-lg font-extrabold text-ink">{coveragePercent}</span>
+						<span className="text-[9px] font-semibold uppercase tracking-wide text-muted">
+							match
+						</span>
+					</div>
 				</div>
 			</div>
 

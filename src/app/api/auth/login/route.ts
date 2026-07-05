@@ -26,7 +26,7 @@ export async function POST(request: Request) {
 			return NextResponse.json({ error: 'Invalid password' }, { status: 401 })
 		}
 
-		const token = signToken({ userId: user._id.toString() })
+		const token = await signToken({ userId: user._id.toString() })
 
 		const res = NextResponse.json({ message: 'Login successful', user: user.toObject() }, { status: 200 })
 

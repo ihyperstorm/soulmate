@@ -15,10 +15,8 @@ export async function GET() {
 		if (!token) {
 			return NextResponse.json({error: 'Unauthorized'}, {status: 401})
 		}
-		let payload: {userId: string}
-		try {
-			payload = verifyToken(token) as {userId: string}
-		} catch {
+		const payload = await verifyToken(token)
+		if (!payload?.userId) {
 			return NextResponse.json({error: 'Unauthorized'}, {status: 401})
 		}
 
@@ -48,10 +46,8 @@ export async function PATCH(request: Request) {
 		if (!token) {
 			return NextResponse.json({error: 'Unauthorized'}, {status: 401})
 		}
-		let payload: {userId: string}
-		try {
-			payload = verifyToken(token) as {userId: string}
-		} catch {
+		const payload = await verifyToken(token)
+		if (!payload?.userId) {
 			return NextResponse.json({error: 'Unauthorized'}, {status: 401})
 		}
 

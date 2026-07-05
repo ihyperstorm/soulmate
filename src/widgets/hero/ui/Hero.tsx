@@ -9,16 +9,13 @@ const Hero = () => {
 			<span className="inline-flex items-center gap-2 px-3 py-1 mb-6 rounded-full text-xs font-medium bg-primary-soft text-primary">
 				Find people who share your spark
 			</span>
-			<h1 className="mb-4 bg-linear-to-r from-[#0a66c2] via-[#0f9f6f] to-[#8443ce] bg-clip-text text-5xl font-semibold tracking-tight text-transparent md:text-6xl">
+			<h1 className="mb-4 bg-linear-to-r from-[#0a66c2] via-[#0f9f6f] to-[#8443ce] bg-[length:200%_auto] bg-clip-text text-5xl font-semibold tracking-tight text-transparent md:text-6xl animate-gradient-x">
 				Welcome to Soulmate
 			</h1>
 			<p className="text-base md:text-lg text-muted max-w-md mb-8">
 				Connect with people who share your interests and start meaningful conversations.
 			</p>
-			<Button
-				className="bg-primary text-white px-6 py-3 hover:bg-primary-hover"
-				onClick={() => router.push("/dashboard")}
-			>
+			<Button className="bg-primary text-white px-6 py-3 hover:bg-primary-hover" onClick={() => router.push("/dashboard")}>
 				Get Started
 			</Button>
 		</section>
