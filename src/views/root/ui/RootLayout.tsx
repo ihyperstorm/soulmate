@@ -1,5 +1,3 @@
-import {Header} from '@/widgets/header'
-import {Footer} from '@/widgets/footer'
 import Providers from '@/shared/api/providers'
 import type {Metadata} from 'next'
 import {Geist} from 'next/font/google'
@@ -22,15 +20,9 @@ export default function RootLayout({
 }>) {
 	return (
 		<html lang='en'>
-			<body
-				className={`${geistSans.variable} antialiased min-h-screen flex flex-col`}
-			>
+			<body className={`${geistSans.variable} antialiased min-h-screen`}>
 				<Providers>
-					<div className='min-h-screen flex flex-col'>
-						<Header />
-						<main className='flex-1 flex flex-col min-h-0'>{children}</main>
-						<Footer />
-					</div>
+					{children}
 					<Toaster position='top-center' />
 				</Providers>
 			</body>

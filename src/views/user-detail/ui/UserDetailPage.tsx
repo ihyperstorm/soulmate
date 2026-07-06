@@ -1,5 +1,4 @@
 'use client'
-import {Sidebar} from '@/widgets/sidebar'
 import type {IInterest, PopulatedUserInterest} from '@/entities/interest'
 import {useCurrentUser} from '@/entities/user'
 import {useQuery} from '@tanstack/react-query'
@@ -60,9 +59,8 @@ export default function UserDetailPage() {
 		)
 
 	return (
-		<div className='flex gap-4 py-10'>
-			<Sidebar />
-			<div className='flex-1 bg-surface border border-divider rounded-2xl p-6 md:p-8'>
+		<div className='py-10'>
+			<div className='bg-surface border border-divider rounded-2xl p-6 md:p-8'>
 				<div className='flex flex-col md:flex-row gap-6 md:gap-8'>
 					<div className='shrink-0 flex justify-center'>
 						<Avatar className='size-40 md:size-48'>

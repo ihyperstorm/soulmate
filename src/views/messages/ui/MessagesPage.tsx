@@ -1,7 +1,6 @@
 'use client'
 import {ChatBox} from '@/widgets/chat-box'
 import {ChatsList} from '@/widgets/chats-list'
-import {Sidebar} from '@/widgets/sidebar'
 import {useSearchParams} from 'next/navigation'
 import {Suspense, useMemo, useState} from 'react'
 
@@ -44,8 +43,7 @@ function MessagesContent() {
 	const activeChat = selectedChat ?? fromQuery
 
 	return (
-		<div className='grid grid-cols-[11rem_minmax(0,1fr)_minmax(0,1.5fr)] gap-4 py-10'>
-			<Sidebar />
+		<div className='grid grid-cols-[minmax(0,1fr)_minmax(0,1.5fr)] gap-4 py-10'>
 			<ChatsList
 				onSelectChat={chat => {
 					setSelectedChat(chat)
