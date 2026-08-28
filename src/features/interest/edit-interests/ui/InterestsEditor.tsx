@@ -191,7 +191,7 @@ export function InterestsEditor({onSavedAction}: InterestsEditorProps) {
 							</span>
 							<InterestStarRating
 								value={chip.weight}
-								onChange={n => setWeight(chip._id, n)}
+								onChangeAction={n => setWeight(chip._id, n)}
 								size={13}
 							/>
 							<button

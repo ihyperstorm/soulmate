@@ -287,7 +287,7 @@ export default function InterestsPage() {
 												? interest.weight
 												: 0)
 										}
-										onChange={n => handleRating(id, n)}
+										onChangeAction={n => handleRating(id, n)}
 										size={22}
 									/>
 								</div>
