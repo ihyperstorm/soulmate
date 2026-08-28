@@ -1,12 +1,9 @@
-import {
-	calculateCoveragePercent,
-	userInterestsToWeights,
-	type IdfMap,
-} from "@/entities/interest"
+import { calculateCoveragePercent, userInterestsToWeights, type IdfMap } from "@/entities/interest"
 import { useCurrentUser } from "@/entities/user"
 import { UserCard, type UserCardData } from "@/widgets/user-card"
 import { useQuery } from "@tanstack/react-query"
 import axios from "axios"
+import { useTranslations } from "next-intl"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 
@@ -29,20 +26,14 @@ interface UsersProps {
 }
 
 const directionClass: Record<UsersDirection, string> = {
-	row: "grid grid-cols-[repeat(auto-fill,minmax(260px,1fr))] gap-3",
+	row: "grid grid-cols-[repeat(auto-fill,minmax(360px,1fr))] gap-3",
 	col: "flex flex-col gap-3",
 	grid2: "grid grid-cols-1 md:grid-cols-2 gap-4",
 }
 
-const Users = ({
-	userCount,
-	direction = "col",
-	minMatchPercent,
-	onlyUserIds,
-	emptyMessage,
-	emptyAction,
-}: UsersProps) => {
+const Users = ({ userCount, direction = "col", minMatchPercent, onlyUserIds, emptyMessage, emptyAction }: UsersProps) => {
 	const router = useRouter()
+	const t = useTranslations("users")
 
 	const {
 		data: users,
@@ -61,11 +52,7 @@ const Users = ({
 		staleTime: 5 * 60 * 1000,
 	})
 
-	const handleChatClick = (
-		receiverId: string,
-		receiverUsername: string,
-		draft?: string,
-	) => {
+	const handleChatClick = (receiverId: string, receiverUsername: string, draft?: string) => {
 		if (!me?._id) return
 		const chatId = [me._id, receiverId].sort().join("_")
 		const draftParam = draft ? `&draft=${encodeURIComponent(draft)}` : ""
@@ -74,16 +61,8 @@ const Users = ({
 		)
 	}
 
-	if (isLoading)
-		return (
-			<div className="flex justify-center items-center py-20 text-muted text-sm">Loading...</div>
-		)
-	if (isError)
-		return (
-			<div className="flex justify-center items-center py-20 text-danger text-sm">
-				Error. Please try again later.
-			</div>
-		)
+	if (isLoading) return <div className="flex justify-center items-center py-20 text-muted text-sm">{t("loading")}</div>
+	if (isError) return <div className="flex justify-center items-center py-20 text-danger text-sm">{t("loadError")}</div>
 
 	const myWeights = userInterestsToWeights(me?.userInterests)
 
@@ -96,12 +75,7 @@ const Users = ({
 
 	if (typeof minMatchPercent === "number") {
 		candidates = candidates.filter(
-			(user) =>
-				calculateCoveragePercent(
-					myWeights,
-					userInterestsToWeights(user.userInterests),
-					idfMap,
-				) >= minMatchPercent,
+			(user) => calculateCoveragePercent(myWeights, userInterestsToWeights(user.userInterests), idfMap) >= minMatchPercent,
 		)
 	}
 
@@ -127,13 +101,7 @@ const Users = ({
 	return (
 		<div className={directionClass[direction]}>
 			{visible.map((user) => (
-				<UserCard
-					key={user._id}
-					user={user}
-					myWeights={myWeights}
-					idfMap={idfMap}
-					onChatClick={handleChatClick}
-				/>
+				<UserCard key={user._id} user={user} myWeights={myWeights} idfMap={idfMap} onChatClick={handleChatClick} />
 			))}
 		</div>
 	)

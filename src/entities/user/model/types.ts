@@ -1,4 +1,5 @@
 import type {IInterest, PopulatedUserInterest} from '@/entities/interest'
+import type {ConversationMood} from '@/entities/mood'
 
 export interface IUser {
 	_id: string
@@ -21,4 +22,7 @@ export interface IUser {
 	balance: number
 	interests: IInterest[]
 	userInterests: PopulatedUserInterest[]
+	/** Сырые значения из базы — в UI читать только через getActiveMoods(). */
+	moods?: ConversationMood[]
+	moodUpdatedAt?: string | null
 }

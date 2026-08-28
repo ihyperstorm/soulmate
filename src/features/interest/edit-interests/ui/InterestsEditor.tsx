@@ -17,6 +17,7 @@ import {mongoIdString} from '@/shared/lib/mongoId'
 import {useQuery} from '@tanstack/react-query'
 import axios from 'axios'
 import {X} from 'lucide-react'
+import {useTranslations} from 'next-intl'
 import {useState} from 'react'
 import toast from 'react-hot-toast'
 
@@ -28,7 +29,7 @@ type SelectedInterest = {_id: string; name: string; weight: number}
 type Option = {_id: string; name: string}
 type InterestsEditorProps = {
 	// Вызывается после успешного сохранения (напр. для навигации на профиль).
-	onSaved?: () => void
+	onSavedAction?: () => void
 }
 
 // Текущие интересы юзера (с весами) → список выбранных чипов.
@@ -50,8 +51,9 @@ function buildSelectedFromUser(
 	return seed
 }
 
-export function InterestsEditor({onSaved}: InterestsEditorProps) {
+export function InterestsEditor({onSavedAction}: InterestsEditorProps) {
 	const queryClient = useAppQueryClient()
+	const t = useTranslations('interestsEditor')
 	const {data: me} = useCurrentUser()
 
 	const {data: allInterests = []} = useQuery<IInterest[]>({
@@ -103,11 +105,11 @@ export function InterestsEditor({onSaved}: InterestsEditorProps) {
 
 	const save = async () => {
 		if (!me?._id) {
-			toast.error('You must be signed in')
+			toast.error(t('mustBeSignedIn'))
 			return
 		}
 		if (selected.length === 0) {
-			toast.error('Add at least one interest')
+			toast.error(t('addAtLeastOne'))
 			return
 		}
 		setIsSaving(true)
@@ -132,13 +134,13 @@ export function InterestsEditor({onSaved}: InterestsEditorProps) {
 			await queryClient.invalidateQueries({queryKey: CURRENT_USER_KEY})
 			await queryClient.invalidateQueries({queryKey: ['users']})
 
-			toast.success('Interests updated')
-			onSaved?.()
+			toast.success(t('saved'))
+			onSavedAction?.()
 		} catch (err) {
 			toast.error(
 				axios.isAxiosError(err) && err.response?.data?.error
 					? err.response.data.error
-					: 'Failed to save interests',
+					: t('saveError'),
 			)
 		} finally {
 			setIsSaving(false)
@@ -148,8 +150,10 @@ export function InterestsEditor({onSaved}: InterestsEditorProps) {
 	return (
 		<div className='flex flex-col gap-3'>
 			<div className='flex items-center justify-between'>
-				<h2 className='text-sm font-medium text-muted'>Interests</h2>
-				<span className='text-xs text-faint'>{selected.length} selected</span>
+				<h2 className='text-sm font-medium text-muted'>{t('title')}</h2>
+				<span className='text-xs text-faint'>
+					{t('selectedCount', {count: selected.length})}
+				</span>
 			</div>
 
 			{/* Поиск + добавление — shadcn Combobox в мультиселекте */}
@@ -161,9 +165,9 @@ export function InterestsEditor({onSaved}: InterestsEditorProps) {
 				itemToStringLabel={(o: Option) => o.name}
 				isItemEqualToValue={(a: Option, b: Option) => a._id === b._id}
 			>
-				<ComboboxInput placeholder='Search interests…' />
+				<ComboboxInput placeholder={t('searchPlaceholder')} />
 				<ComboboxContent>
-					<ComboboxEmpty>No interests found</ComboboxEmpty>
+					<ComboboxEmpty>{t('notFound')}</ComboboxEmpty>
 					<ComboboxList>
 						{(option: Option) => (
 							<ComboboxItem key={option._id} value={option}>
@@ -193,7 +197,7 @@ export function InterestsEditor({onSaved}: InterestsEditorProps) {
 							<button
 								type='button'
 								onClick={() => removeInterest(chip._id)}
-								aria-label={`Remove ${chip.name}`}
+								aria-label={t('remove', {name: chip.name})}
 								className='inline-flex items-center justify-center w-4 h-4 rounded-full text-primary hover:bg-primary/15 transition-colors cursor-pointer'
 							>
 								<X className='w-3 h-3' />
@@ -205,7 +209,7 @@ export function InterestsEditor({onSaved}: InterestsEditorProps) {
 
 			<div>
 				<Button type='button' onClick={save} disabled={isSaving}>
-					{isSaving ? 'Saving…' : 'Save interests'}
+					{isSaving ? t('saving') : t('save')}
 				</Button>
 			</div>
 		</div>

@@ -1,6 +1,7 @@
 'use client'
 
 import axios from 'axios'
+import {useTranslations} from 'next-intl'
 import {useRouter} from 'next/navigation'
 import {useState} from 'react'
 import {LogOut} from 'lucide-react'
@@ -9,6 +10,7 @@ import {useAppQueryClient} from '@/shared/api/providers'
 
 export const LogoutButton = () => {
 	const router = useRouter()
+	const t = useTranslations('header')
 	const queryClient = useAppQueryClient()
 	const [isLoading, setIsLoading] = useState(false)
 
@@ -34,7 +36,7 @@ export const LogoutButton = () => {
 			disabled={isLoading}
 		>
 			<LogOut className='w-4 h-4' />
-			{isLoading ? 'Signing out...' : 'Sign out'}
+			{isLoading ? t('signingOut') : t('signOut')}
 		</button>
 	)
 }

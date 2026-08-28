@@ -4,13 +4,13 @@ import {CURRENT_USER_KEY, useCurrentUser} from '@/entities/user'
 import {useAppQueryClient} from '@/shared/api/providers'
 import {PaymentWidget} from '@/widgets/payment-widget'
 import axios from 'axios'
+import {useTranslations} from 'next-intl'
 import {useState} from 'react'
-
-// Premium price in KZT (TipTopPay `amount` is in major currency units).
-const PREMIUM_PRICE_KZT = 990
+import {PREMIUM_PRICE_KZT} from '../model/price'
 
 export const BecomePremiumButton = () => {
 	const queryClient = useAppQueryClient()
+	const t = useTranslations('premium')
 	const [status, setStatus] = useState<'idle' | 'upgrading' | 'done' | 'error'>(
 		'idle',
 	)
@@ -20,7 +20,7 @@ export const BecomePremiumButton = () => {
 	if (user?.isPremium) {
 		return (
 			<div className='inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-accent-soft text-accent text-sm font-medium'>
-				<span aria-hidden>✨</span> Premium active
+				<span aria-hidden>✨</span> {t('active')}
 			</div>
 		)
 	}
@@ -42,20 +42,20 @@ export const BecomePremiumButton = () => {
 			<PaymentWidget
 				amount={PREMIUM_PRICE_KZT}
 				currency='KZT'
-				description='Soulmate Premium'
+				description={t('description')}
 				externalId={user?._id}
 				email={user?.email}
 				onSuccess={handleSuccess}
 				onFail={() => setStatus('error')}
 			/>
 			{status === 'upgrading' && (
-				<p className='text-xs text-muted'>Activating premium…</p>
+				<p className='text-xs text-muted'>{t('activating')}</p>
 			)}
 			{status === 'done' && (
-				<p className='text-xs text-accent'>Premium activated! 🎉</p>
+				<p className='text-xs text-accent'>{t('activated')}</p>
 			)}
 			{status === 'error' && (
-				<p className='text-xs text-danger'>Could not activate premium.</p>
+				<p className='text-xs text-danger'>{t('activationError')}</p>
 			)}
 		</div>
 	)

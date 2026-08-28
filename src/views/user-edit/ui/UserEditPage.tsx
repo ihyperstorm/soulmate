@@ -9,6 +9,7 @@ import { useAppQueryClient } from "@/shared/api/providers"
 import { useQuery } from "@tanstack/react-query"
 import axios from "axios"
 import { format } from "date-fns"
+import { useTranslations } from "next-intl"
 import { useParams, useRouter } from "next/navigation"
 import { useState } from "react"
 import toast from "react-hot-toast"
@@ -27,6 +28,8 @@ export default function UserEditPage() {
 	const userId = Array.isArray(params?.id) ? params.id[0] : params?.id
 	const router = useRouter()
 	const queryClient = useAppQueryClient()
+	const t = useTranslations("profileEdit")
+	const tCommon = useTranslations("common")
 
 	const {
 		data: user,
@@ -57,7 +60,7 @@ export default function UserEditPage() {
 		setSex(user.gender ?? "")
 	}
 
-	const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+	const onSubmit = async (e: React.SubmitEvent<HTMLFormElement>) => {
 		e.preventDefault()
 		try {
 			const formData = new FormData()
@@ -74,16 +77,16 @@ export default function UserEditPage() {
 
 			await axios.patch(`/api/users/me`, formData)
 			await queryClient.invalidateQueries({ queryKey: ["user", userId] })
-			toast.success("User updated")
+			toast.success(t("saved"))
 			router.push(`/users/${userId}`)
 		} catch (err) {
 			console.log("err", err)
-			toast.error("Error updating user")
+			toast.error(t("saveError"))
 		}
 	}
 
-	if (isLoading) return <div className="flex justify-center items-center min-h-[60vh] text-sm text-muted">Loading…</div>
-	if (isError) return <div className="flex justify-center items-center py-20 text-sm text-danger">Error: {String(isError)}</div>
+	if (isLoading) return <div className="flex justify-center items-center min-h-[60vh] text-sm text-muted">{tCommon("loading")}</div>
+	if (isError) return <div className="flex justify-center items-center py-20 text-sm text-danger">{tCommon("loadError")}</div>
 
 	const inputClass =
 		"bg-surface border border-line rounded-lg px-3 py-2 text-sm text-ink placeholder:text-faint focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary-soft transition-all w-full"
@@ -102,7 +105,7 @@ export default function UserEditPage() {
 						htmlFor="avatarUrl"
 						className="mt-4 inline-flex items-center justify-center px-4 py-2 rounded-lg text-sm font-medium text-ink bg-surface-muted hover:bg-divider transition-colors cursor-pointer"
 					>
-						Change photo
+						{t("changePhoto")}
 						<input
 							type="file"
 							id="avatarUrl"
@@ -120,51 +123,51 @@ export default function UserEditPage() {
 					</label>
 				</div>
 				<div className="bg-surface border border-divider rounded-2xl p-6 md:p-8">
-					<h1 className="text-2xl font-semibold text-ink mb-6">Edit profile</h1>
+					<h1 className="text-2xl font-semibold text-ink mb-6">{t("title")}</h1>
 					<form onSubmit={onSubmit} className="flex flex-col gap-4">
 						<div className="flex flex-col gap-1">
 							<label htmlFor="username" className="text-xs font-medium text-muted">
-								Username
+								{t("username")}
 							</label>
 							<Input type="text" id="username" name="username" value={username} onChange={(e) => setUsername(e.target.value)} />
 						</div>
 						<div className="flex flex-col gap-1">
 							<label htmlFor="bio" className="text-xs font-medium text-muted">
-								Bio
+								{t("bio")}
 							</label>
 							<textarea id="bio" name="bio" value={bio} onChange={(e) => setBio(e.target.value)} className={`${inputClass} resize-none h-24`} />
 						</div>
 						<div className="flex flex-col gap-1">
 							<label htmlFor="location" className="text-xs font-medium text-muted">
-								Location
+								{t("location")}
 							</label>
 							<Input type="text" id="location" name="location" value={location} onChange={(e) => setLocation(e.target.value)} />
 						</div>
 						<div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
 							<div className="flex flex-col gap-1">
 								<label htmlFor="birthday" className="text-xs font-medium text-muted">
-									Birthday
+									{t("birthday")}
 								</label>
 								<Input type="date" id="birthday" name="birthday" value={birthday} onChange={(e) => setBirthday(e.target.value)} />
 							</div>
 							<div className="flex flex-col gap-1">
 								<label htmlFor="gender" className="text-xs font-medium text-muted">
-									Gender
+									{t("gender")}
 								</label>
 								<Input type="text" id="gender" name="gender" value={sex} onChange={(e) => setSex(e.target.value)} />
 							</div>
 						</div>
 						<div className="flex gap-2 mt-2">
-							<Button type="submit">Save changes</Button>
+							<Button type="submit">{t("submit")}</Button>
 							<Button variant="outline" type="button" onClick={() => router.back()}>
-								Cancel
+								{t("cancel")}
 							</Button>
 						</div>
 					</form>
 
 					<div className="mt-8 pt-6 border-t border-divider">
 						<InterestsEditor
-							onSaved={async () => {
+							onSavedAction={async () => {
 								await queryClient.invalidateQueries({ queryKey: ["user", userId] })
 								router.push(`/users/${userId}`)
 							}}

@@ -1,9 +1,11 @@
+import type {ValidationTranslator} from '@/i18n/types'
 import * as yup from 'yup'
 
-export const loginSchema = yup.object({
-	email: yup.string().email('Invalid email').required('Email is required'),
-	password: yup
-		.string()
-		.min(3, 'Password must be at least 3 characters')
-		.required('Password is required'),
-})
+export const createLoginSchema = (t: ValidationTranslator) =>
+	yup.object({
+		email: yup.string().email(t('emailInvalid')).required(t('emailRequired')),
+		password: yup
+			.string()
+			.min(3, t('passwordMin'))
+			.required(t('passwordRequired')),
+	})

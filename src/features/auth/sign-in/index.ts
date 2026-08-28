@@ -1,2 +1,2 @@
 export { SignInForm } from "./ui/SignInForm";
-export { loginSchema } from "./model/loginSchema";
+export { createLoginSchema } from "./model/loginSchema";

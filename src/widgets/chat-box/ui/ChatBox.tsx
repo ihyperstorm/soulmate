@@ -10,6 +10,7 @@ import {
 	type ChatRealtimeEvent,
 } from "@/entities/message";
 import toast from "react-hot-toast";
+import { useLocale, useTranslations } from "next-intl";
 import { useAppQueryClient } from "@/shared/api/providers";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -30,6 +31,8 @@ type Props = {
 };
 
 const ChatBox = ({ chatId, senderId, receiverId, systemNotice, draft }: Props) => {
+	const t = useTranslations("chat");
+	const locale = useLocale();
 	const [messages, setMessages] = useState<ChatMessagePayload[]>([]);
 	// Предзаполнение опенером (айсбрейкер из карточки). ChatBox монтируется заново
 	// на каждый chatId (key в MessagesPage), поэтому init из props достаточно.
@@ -189,7 +192,7 @@ const ChatBox = ({ chatId, senderId, receiverId, systemNotice, draft }: Props) =
 				.catch(() => {});
 			queryClient.invalidateQueries({ queryKey: ["chats"] });
 		} catch (error) {
-			toast.error("Error sending message");
+			toast.error(t("sendError"));
 			console.error("Error sending message", error);
 		} finally {
 			setSending(false);
@@ -205,7 +208,7 @@ const ChatBox = ({ chatId, senderId, receiverId, systemNotice, draft }: Props) =
 	};
 
 	const readText = lastPeerReadAt
-		? new Date(lastPeerReadAt).toLocaleTimeString([], {
+		? new Date(lastPeerReadAt).toLocaleTimeString(locale, {
 				weekday: "long",
 				hour: "2-digit",
 				minute: "2-digit",
@@ -216,11 +219,11 @@ const ChatBox = ({ chatId, senderId, receiverId, systemNotice, draft }: Props) =
 		<div className="flex flex-col h-175 bg-surface border border-divider rounded-2xl overflow-hidden">
 			<div className="flex flex-col gap-1 px-4 py-2 border-b border-divider min-h-12 justify-center">
 				{systemNotice && <div className="text-xs text-muted">{systemNotice}</div>}
-				{isPeerTyping && <div className="text-xs text-primary">typing…</div>}
+				{isPeerTyping && <div className="text-xs text-primary">{t("typing")}</div>}
 				{readText && !isPeerTyping && (
-					<div className="text-xs text-faint">Read at {readText}</div>
+					<div className="text-xs text-faint">{t("readAt", { time: readText })}</div>
 				)}
-				{!isOnline && <div className="text-xs text-warning">Reconnecting…</div>}
+				{!isOnline && <div className="text-xs text-warning">{t("reconnecting")}</div>}
 			</div>
 			<MessageScrollerProvider autoScroll defaultScrollPosition="end">
 				<MessageScroller className="flex-1 min-h-0 bg-background">
@@ -275,10 +278,10 @@ const ChatBox = ({ chatId, senderId, receiverId, systemNotice, draft }: Props) =
 						}
 					}}
 					className="flex-1"
-					placeholder="Type a message…"
+					placeholder={t("placeholder")}
 				/>
 				<Button disabled={sending || !text.trim()} type="submit">
-					{sending ? "Sending…" : "Send"}
+					{sending ? t("sending") : t("send")}
 				</Button>
 			</form>
 		</div>

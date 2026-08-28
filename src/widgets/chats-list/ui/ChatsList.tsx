@@ -1,6 +1,7 @@
 import axios from 'axios'
 import ChatsItem from './ChatsItem'
 import {useQuery} from '@tanstack/react-query'
+import {useTranslations} from 'next-intl'
 import type {IUser} from '@/entities/user'
 import {useCurrentUser} from '@/entities/user'
 import {buildChatId} from '@/entities/chat'
@@ -24,6 +25,7 @@ type ChatsListProps = {
 }
 
 const ChatsList = ({onSelectChat}: ChatsListProps) => {
+	const t = useTranslations('chat')
 	const {data: chats = []} = useQuery<IChat[]>({
 		queryKey: ['chats'],
 		queryFn: () => axios.get('/api/chats').then(res => res.data)
@@ -36,7 +38,7 @@ const ChatsList = ({onSelectChat}: ChatsListProps) => {
 	return (
 		<div className='flex flex-col bg-surface border border-divider rounded-2xl h-fit overflow-hidden'>
 			<div className='px-4 py-3 border-b border-divider'>
-				<h2 className='text-sm font-semibold text-ink'>Chats</h2>
+				<h2 className='text-sm font-semibold text-ink'>{t('listTitle')}</h2>
 			</div>
 			<div className='flex flex-col p-2'>
 				{realUsers?.length > 0 ? (
@@ -54,14 +56,14 @@ const ChatsList = ({onSelectChat}: ChatsListProps) => {
 									chatId: buildChatId(me._id, chat.peer._id),
 									senderId: me._id,
 									receiverId: chat.peer._id,
-									systemNotice: `You started a chat with ${chat.peer.username}`
+									systemNotice: t('systemNotice', {name: chat.peer.username})
 								})
 							}}
 						/>
 					))
 				) : (
 					<div className='flex justify-center items-center py-12 text-sm text-muted'>
-						No chats yet
+						{t('listEmpty')}
 					</div>
 				)}
 			</div>

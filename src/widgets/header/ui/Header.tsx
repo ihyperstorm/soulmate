@@ -1,13 +1,16 @@
 "use client"
 import { useCurrentUser } from "@/entities/user"
 import { LogoutButton } from "@/features/auth/logout"
+import { LocaleSwitcher } from "@/features/locale/switch-locale"
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar"
 import { LogIn } from "lucide-react"
+import { useTranslations } from "next-intl"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 
 const Header = () => {
 	const router = useRouter()
+	const t = useTranslations("header")
 
 	const { data: user } = useCurrentUser()
 
@@ -19,6 +22,7 @@ const Header = () => {
 					Soulmate
 				</Link>
 				<div className="flex items-center gap-2">
+					<LocaleSwitcher />
 					{user && (
 						<Link href="/users/me" className="flex items-center gap-2 pl-1 pr-3 py-1 rounded-full bg-surface-muted">
 							<Avatar className="size-7">
@@ -34,7 +38,7 @@ const Header = () => {
 							onClick={() => router.push("/signin")}
 						>
 							<LogIn className="w-4 h-4" />
-							Sign in
+							{t("signIn")}
 						</button>
 					) : (
 						<LogoutButton />

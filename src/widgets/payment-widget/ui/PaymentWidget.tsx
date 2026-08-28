@@ -1,9 +1,16 @@
 "use client"
 
+import { useLocale, useTranslations } from "next-intl"
 import { useState } from "react"
 
 // TipTopPay payment widget. Docs: https://developers.tiptoppay.kz/#platezhnyy-vidzhet
 const WIDGET_SRC = "https://widget.tiptoppay.kz/bundles/widget.js"
+
+// Виджет TipTopPay ждёт полный тег культуры, а не двухбуквенный код.
+const WIDGET_CULTURE: Record<string, string> = {
+	ru: "ru-RU",
+	en: "en-US",
+}
 
 type TipTopResult = {
 	type?: "payment" | "cancel" | "error" | string
@@ -22,8 +29,9 @@ declare global {
 }
 
 // Load widget.js once and resolve when `tiptop` is available.
+// Сообщение об ошибке приходит из переводов вызывающего компонента.
 let scriptPromise: Promise<void> | null = null
-const loadWidgetScript = (): Promise<void> => {
+const loadWidgetScript = (errorMessage: string): Promise<void> => {
 	if (window.tiptop) return Promise.resolve()
 	if (!scriptPromise) {
 		scriptPromise = new Promise((resolve, reject) => {
@@ -31,7 +39,7 @@ const loadWidgetScript = (): Promise<void> => {
 			script.src = WIDGET_SRC
 			script.async = true
 			script.onload = () => resolve()
-			script.onerror = () => reject(new Error("Failed to load TipTopPay widget"))
+			script.onerror = () => reject(new Error(errorMessage))
 			document.head.appendChild(script)
 		})
 	}
@@ -61,6 +69,8 @@ export const PaymentWidget = ({
 	onFail,
 	onCancel,
 }: PaymentWidgetProps) => {
+	const t = useTranslations("payment")
+	const locale = useLocale()
 	const [loading, setLoading] = useState(false)
 	const [error, setError] = useState<string | null>(null)
 
@@ -68,9 +78,9 @@ export const PaymentWidget = ({
 		setError(null)
 		setLoading(true)
 		try {
-			await loadWidgetScript()
+			await loadWidgetScript(t("scriptFailed"))
 			const Widget = window.tiptop?.Widget
-			if (!Widget) throw new Error("TipTopPay widget is unavailable")
+			if (!Widget) throw new Error(t("widgetUnavailable"))
 
 			const widget = new Widget()
 			const result = await widget.start({
@@ -81,7 +91,7 @@ export const PaymentWidget = ({
 				description,
 				externalId,
 				receiptEmail: email,
-				culture: "ru-RU",
+				culture: WIDGET_CULTURE[locale] ?? "ru-RU",
 			})
 
 			if (result.type === "payment" && result.status === "success") {
@@ -92,7 +102,7 @@ export const PaymentWidget = ({
 				onFail?.(result)
 			}
 		} catch (err) {
-			setError(err instanceof Error ? err.message : "Payment failed")
+			setError(err instanceof Error ? err.message : t("failed"))
 		} finally {
 			setLoading(false)
 		}
@@ -106,7 +116,7 @@ export const PaymentWidget = ({
 				disabled={loading}
 				className="inline-flex items-center justify-center px-4 py-2.5 rounded-lg text-sm font-medium text-white bg-primary hover:bg-primary-hover transition-colors disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
 			>
-				{loading ? "Processing…" : "Pay"}
+				{loading ? t("processing") : t("pay")}
 			</button>
 			{error && <p className="text-xs text-danger">{error}</p>}
 		</div>

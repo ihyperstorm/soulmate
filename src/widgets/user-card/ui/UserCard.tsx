@@ -13,6 +13,7 @@ import {
 } from "@/entities/interest"
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
+import { useLocale, useTranslations } from "next-intl"
 import Link from "next/link"
 import { useMemo } from "react"
 
@@ -52,6 +53,8 @@ const getNamedInterest = (
 }
 
 export const UserCard = ({ user, myWeights, idfMap, onChatClick }: UserCardProps) => {
+	const t = useTranslations("userCard")
+	const locale = useLocale()
 	const theirWeights = userInterestsToWeights(user.userInterests)
 	const coveragePercent = calculateCoveragePercent(
 		myWeights ?? {},
@@ -82,10 +85,10 @@ export const UserCard = ({ user, myWeights, idfMap, onChatClick }: UserCardProps
 		() =>
 			iceSource.slice(0, 3).map((i) => ({
 				interest: i.name,
-				question: pickQuestion(i.name),
+				question: pickQuestion(i.name, locale),
 			})),
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-		[iceKey],
+		[iceKey, locale],
 	)
 
 	const matchColorClass =
@@ -98,8 +101,8 @@ export const UserCard = ({ user, myWeights, idfMap, onChatClick }: UserCardProps
 	const sharedCount = shared.length
 	const subtitle =
 		sharedCount === 0
-			? "No shared interests yet"
-			: `${sharedCount} shared ${sharedCount === 1 ? "interest" : "interests"}`
+			? t("noShared")
+			: t("sharedInterests", { count: sharedCount })
 
 	const ringRadius = (MATCH_RING_SIZE - MATCH_RING_STROKE) / 2
 	const ringCircumference = 2 * Math.PI * ringRadius
@@ -120,7 +123,7 @@ export const UserCard = ({ user, myWeights, idfMap, onChatClick }: UserCardProps
 				<div
 					className={`relative shrink-0 ${matchColorClass}`}
 					style={{ width: MATCH_RING_SIZE, height: MATCH_RING_SIZE }}
-					title={`Covers ${coveragePercent}% of your interests`}
+					title={t("coverage", { percent: coveragePercent })}
 				>
 					<svg
 						width={MATCH_RING_SIZE}
@@ -152,7 +155,7 @@ export const UserCard = ({ user, myWeights, idfMap, onChatClick }: UserCardProps
 					<div className="absolute inset-0 flex flex-col items-center justify-center leading-none">
 						<span className="text-lg font-extrabold text-ink">{coveragePercent}</span>
 						<span className="text-[9px] font-semibold uppercase tracking-wide text-muted">
-							match
+							{t("match")}
 						</span>
 					</div>
 				</div>
@@ -161,7 +164,7 @@ export const UserCard = ({ user, myWeights, idfMap, onChatClick }: UserCardProps
 			{shared.length > 0 && (
 				<div className="mt-4">
 					<p className="text-[11px] uppercase tracking-wider text-muted font-semibold mb-2">
-						You both like
+						{t("youBothLike")}
 					</p>
 					<div className="flex flex-wrap gap-1.5">
 						{shared.map((interest) => {
@@ -174,7 +177,7 @@ export const UserCard = ({ user, myWeights, idfMap, onChatClick }: UserCardProps
 											? "bg-amber-100 text-amber-700 ring-1 ring-amber-300"
 											: "bg-accent-soft text-accent"
 									}`}
-									title={isRare ? "Rare interest" : undefined}
+									title={isRare ? t("rareInterest") : undefined}
 								>
 									{isRare ? (
 										<span aria-hidden>🔥</span>
@@ -202,7 +205,7 @@ export const UserCard = ({ user, myWeights, idfMap, onChatClick }: UserCardProps
 			{other.length > 0 && (
 				<div className="mt-3">
 					<p className="text-[11px] uppercase tracking-wider text-muted font-semibold mb-2">
-						Also into
+						{t("alsoInto")}
 					</p>
 					<div className="flex flex-wrap gap-1.5">
 						{other.slice(0, 6).map((interest) => (
@@ -225,7 +228,7 @@ export const UserCard = ({ user, myWeights, idfMap, onChatClick }: UserCardProps
 			{onChatClick && icebreakers.length > 0 && (
 				<div className="mt-4">
 					<p className="text-[11px] uppercase tracking-wider text-muted font-semibold mb-2">
-						💬 Break the ice
+						{t("breakIce")}
 					</p>
 					<div className="flex flex-col gap-1.5">
 						{icebreakers.map((ice, i) => (
@@ -248,14 +251,14 @@ export const UserCard = ({ user, myWeights, idfMap, onChatClick }: UserCardProps
 						className="w-full"
 						onClick={() => onChatClick(user._id, user.username)}
 					>
-						Start chat
+						{t("startChat")}
 					</Button>
 				)}
 				<Link
 					href={`/users/${user._id}`}
 					className="text-center text-xs text-muted hover:text-ink transition-colors"
 				>
-					View full profile
+					{t("viewProfile")}
 				</Link>
 			</div>
 		</div>

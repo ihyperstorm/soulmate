@@ -1,6 +1,7 @@
 'use client'
 import {ChatBox} from '@/widgets/chat-box'
 import {ChatsList} from '@/widgets/chats-list'
+import {useTranslations} from 'next-intl'
 import {useSearchParams} from 'next/navigation'
 import {Suspense, useMemo, useState} from 'react'
 
@@ -14,6 +15,7 @@ type ChatSelection = {
 
 function MessagesContent() {
 	const searchParams = useSearchParams()
+	const t = useTranslations('chat')
 
 	const fromQuery = useMemo<ChatSelection>(() => {
 		if (!searchParams) {
@@ -31,13 +33,13 @@ function MessagesContent() {
 				chatId: qChatId,
 				senderId: qSenderId,
 				receiverId: qReceiverId,
-				systemNotice: qUsername ? `You started a chat with ${qUsername}` : null,
+				systemNotice: qUsername ? t('systemNotice', {name: qUsername}) : null,
 				draft: qDraft,
 			}
 		}
 
 		return {chatId: null, senderId: null, receiverId: null, systemNotice: null}
-	}, [searchParams])
+	}, [searchParams, t])
 
 	const [selectedChat, setSelectedChat] = useState<ChatSelection | null>(null)
 	const activeChat = selectedChat ?? fromQuery

@@ -2,11 +2,12 @@
 
 import {InterestStarRating} from '@/entities/interest'
 import {CURRENT_USER_KEY} from '@/entities/user'
-import {interestsSchema} from '@/features/interest/rate-interests'
+import {createInterestsSchema} from '@/features/interest/rate-interests'
 import {yupResolver} from '@hookform/resolvers/yup'
 import {mongoIdString} from '@/shared/lib/mongoId'
 import {useAppQueryClient} from '@/shared/api/providers'
 import axios from 'axios'
+import {useTranslations} from 'next-intl'
 import {useRouter} from 'next/navigation'
 import {useEffect, useMemo, useState} from 'react'
 import {FieldErrors, Resolver, useForm} from 'react-hook-form'
@@ -29,6 +30,8 @@ export default function InterestsPage() {
 	const [error, setError] = useState<string | null>(null)
 	const router = useRouter()
 	const queryClient = useAppQueryClient()
+	const t = useTranslations('interests')
+	const tValidation = useTranslations('validation')
 
 	const {
 		handleSubmit,
@@ -42,7 +45,9 @@ export default function InterestsPage() {
 			interests: [],
 			ratings: {},
 		},
-		resolver: yupResolver(interestsSchema) as Resolver<InterestsFormData>,
+		resolver: yupResolver(
+			createInterestsSchema(tValidation),
+		) as Resolver<InterestsFormData>,
 	})
 
 	const [ratings, setRatings] = useState<Record<string, number>>({})
@@ -73,14 +78,14 @@ export default function InterestsPage() {
 				if (axios.isAxiosError(err) && err.response?.data?.error) {
 					setError(err.response.data.error)
 				} else {
-					setError('Failed to load interests')
+					setError(t('loadError'))
 				}
 			} finally {
 				setIsLoading(false)
 			}
 		}
 		fetchInterests()
-	}, [])
+	}, [t])
 
 	useEffect(() => {
 		setValue('ratings', ratings, {
@@ -99,7 +104,7 @@ export default function InterestsPage() {
 		})
 	}, [ratings, interests, setValue])
 
-	const onSubmit = async (_data: InterestsFormData) => {
+	const onSubmit = async () => {
 		setError(null)
 		// Локальный state — единственный надёжный источник: setValue('ratings') внутри setState
 		// иногда не попадает в data при submit из-за порядка обновлений RHF.
@@ -126,22 +131,22 @@ export default function InterestsPage() {
 					ratingsPayload,
 				})
 			}
-			toast.error('Select at least one interest by rating')
+			toast.error(t('rateAtLeastOne'))
 			return
 		}
 		if (ratedCount < 3) {
-			toast.error('Select at least 3 interests')
+			toast.error(tValidation('interestsMin'))
 			return
 		}
 		if (ratedCount > 10) {
-			toast.error('You can select at most 10 interests')
+			toast.error(tValidation('interestsMax'))
 			return
 		}
 		// Получаем userId из localStorage
 		const userId = localStorage.getItem('userId')
 
 		if (!userId) {
-			setError('You must be logged in to save interests')
+			setError(t('mustBeLoggedIn'))
 			return
 		}
 
@@ -175,7 +180,7 @@ export default function InterestsPage() {
 			await queryClient.invalidateQueries({queryKey: CURRENT_USER_KEY})
 			await queryClient.invalidateQueries({queryKey: ['users']})
 
-			toast.success('Interests saved successfully')
+			toast.success(t('saved'))
 
 			router.push('/dashboard')
 		} catch (err) {
@@ -183,7 +188,7 @@ export default function InterestsPage() {
 			if (axios.isAxiosError(err) && err.response?.data?.error) {
 				setError(err.response.data.error)
 			} else {
-				setError('Failed to save interests')
+				setError(t('saveError'))
 			}
 		} finally {
 			setIsLoading(false)
@@ -209,7 +214,7 @@ export default function InterestsPage() {
 				w => typeof w === 'number' && w >= 1 && w <= 5,
 			).length
 			if (!wasRated && countBefore >= 10) {
-				queueMicrotask(() => toast.error('You can select at most 10 interests'))
+				queueMicrotask(() => toast.error(tValidation('interestsMax')))
 				return prev
 			}
 			return {...prev, [idKey]: weight}
@@ -225,7 +230,7 @@ export default function InterestsPage() {
 	if (isLoading) {
 		return (
 			<div className='flex flex-col items-center justify-center min-h-screen bg-background'>
-				<p className='text-sm text-muted animate-pulse'>Loading interests…</p>
+				<p className='text-sm text-muted animate-pulse'>{t('loading')}</p>
 			</div>
 		)
 	}
@@ -233,7 +238,7 @@ export default function InterestsPage() {
 	if (error) {
 		return (
 			<div className='flex flex-col items-center justify-center min-h-screen bg-background'>
-				<p className='text-sm text-danger'>Error: {error}</p>
+				<p className='text-sm text-danger'>{t('errorPrefix', {message: error})}</p>
 			</div>
 		)
 	}
@@ -243,18 +248,16 @@ export default function InterestsPage() {
 			<div className='w-full max-w-3xl bg-surface border border-divider rounded-2xl p-8 md:p-10'>
 				<div className='mb-6'>
 					<h1 className='text-2xl md:text-3xl font-semibold text-ink mb-1'>
-						Select your interests
+						{t('title')}
 					</h1>
-					<p className='text-sm text-muted'>
-						Pick 3–10 interests and rate each one. Continue unlocks when valid.
-					</p>
+					<p className='text-sm text-muted'>{t('subtitle')}</p>
 				</div>
 				<div className='flex items-center gap-2 mb-6'>
 					<span className='inline-flex items-center px-2.5 py-0.5 rounded-full bg-primary-soft text-primary text-xs font-medium'>
-						{selectedCount} / 10 selected
+						{t('selectedCount', {count: selectedCount})}
 					</span>
 					{selectedCount < 3 && (
-						<span className='text-xs text-faint'>at least 3 required</span>
+						<span className='text-xs text-faint'>{t('atLeastThree')}</span>
 					)}
 				</div>
 				<form onSubmit={handleSubmit(onSubmit, onInvalid)} className='w-full'>
@@ -297,14 +300,14 @@ export default function InterestsPage() {
 							disabled={!canContinue}
 							className='flex-1 inline-flex items-center justify-center px-4 py-2.5 rounded-lg text-sm font-medium text-white bg-primary hover:bg-primary-hover transition-colors disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer'
 						>
-							{isSubmitting ? 'Saving…' : 'Continue'}
+							{isSubmitting ? t('saving') : t('continue')}
 						</button>
 						<button
 							type='button'
 							onClick={handleReset}
 							className='inline-flex items-center justify-center px-4 py-2.5 rounded-lg text-sm font-medium text-muted bg-surface border border-line hover:bg-surface-muted transition-colors cursor-pointer'
 						>
-							Reset
+							{t('reset')}
 						</button>
 					</div>
 				</form>

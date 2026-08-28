@@ -1,1 +1,4 @@
-export {default as RootLayout, metadata as rootMetadata} from './ui/RootLayout'
+export {
+	default as RootLayout,
+	generateMetadata as generateRootMetadata,
+} from './ui/RootLayout'

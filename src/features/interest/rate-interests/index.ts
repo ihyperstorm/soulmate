@@ -1,1 +1,1 @@
-export {interestsSchema} from './model/interestsSchema'
+export {createInterestsSchema} from './model/interestsSchema'

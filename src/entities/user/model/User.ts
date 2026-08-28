@@ -1,5 +1,6 @@
 import { IInterest } from "@/entities/interest/model/Interest"
 import { IUserInterest } from "@/entities/interest/model/UserInterest"
+import { MOOD_IDS, type ConversationMood } from "@/entities/mood/server"
 import mongoose, { Document, Model, Schema } from "mongoose"
 
 export interface IUser extends Document {
@@ -20,6 +21,8 @@ export interface IUser extends Document {
 	balance: number
 	interests: IInterest[]
 	userInterests: IUserInterest[]
+	moods: ConversationMood[]
+	moodUpdatedAt: Date | null
 }
 
 const UserSchema = new Schema<IUser>(
@@ -63,6 +66,17 @@ const UserSchema = new Schema<IUser>(
 		isPremium: {
 			type: Boolean,
 			default: false,
+		},
+		// Настроение общения на сегодня. Протухает через MOOD_TTL_MS —
+		// считается при чтении (getActiveMoods), в базе не чистится.
+		moods: {
+			type: [String],
+			enum: MOOD_IDS,
+			default: [],
+		},
+		moodUpdatedAt: {
+			type: Date,
+			default: null,
 		},
 	},
 	{

@@ -2,6 +2,7 @@
 import type { IUser } from "@/entities/user"
 import { useCurrentUser } from "@/entities/user"
 import { pickQuestion } from "@/shared/data/talkQuestions"
+import { useLocale, useTranslations } from "next-intl"
 import { useMemo } from "react"
 
 type NamedInterest = { _id: string; name: string }
@@ -17,6 +18,8 @@ const getInterestNames = (me: IUser | null | undefined): NamedInterest[] => {
 
 const TalkIdeas = () => {
 	const { data: me, isLoading } = useCurrentUser()
+	const t = useTranslations("talkIdeas")
+	const locale = useLocale()
 
 	const interests = getInterestNames(me)
 	// Ключ из имён интересов: useMemo пересчитывает рандом только когда меняется
@@ -29,25 +32,21 @@ const TalkIdeas = () => {
 			interests.map((interest) => ({
 				id: interest._id,
 				name: interest.name,
-				question: pickQuestion(interest.name),
+				question: pickQuestion(interest.name, locale),
 			})),
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-		[namesKey],
+		[namesKey, locale],
 	)
 
 	if (isLoading) return null
 
 	return (
 		<section>
-			<h1 className="text-3xl font-bold text-ink mb-1">Talk ideas</h1>
-			<p className="text-sm text-muted">
-				Conversation starters based on your interests.
-			</p>
+			<h1 className="text-3xl font-bold text-ink mb-1">{t("title")}</h1>
+			<p className="text-sm text-muted">{t("subtitle")}</p>
 
 			{ideas.length === 0 ? (
-				<p className="mt-5 text-sm text-muted">
-					Rate some interests to get personal talk ideas.
-				</p>
+				<p className="mt-5 text-sm text-muted">{t("empty")}</p>
 			) : (
 				<div className="mt-5 flex flex-col gap-3">
 					{ideas.map(({ id, name, question }) => (

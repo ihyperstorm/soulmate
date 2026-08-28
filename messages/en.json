@@ -1,0 +1,280 @@
+{
+	"app": {
+		"name": "Soulmate",
+		"title": "Soulmate — Connect by interests",
+		"description": "Find your perfect match through shared interests."
+	},
+	"common": {
+		"loading": "Loading…",
+		"save": "Save",
+		"cancel": "Cancel",
+		"error": "Something went wrong",
+		"requestFailed": "Request failed",
+		"loadError": "Error. Please try again later."
+	},
+	"nav": {
+		"dashboard": "Dashboard",
+		"overview": "Overview",
+		"activity": "Activity",
+		"users": "Users",
+		"allUsers": "All users",
+		"matches": "Matches",
+		"messages": "Messages",
+		"inbox": "Inbox",
+		"requests": "Requests",
+		"settings": "Settings",
+		"account": "Account",
+		"billing": "Billing",
+		"notifications": "Notifications",
+		"platform": "Platform"
+	},
+	"header": {
+		"signIn": "Sign in",
+		"signOut": "Sign out",
+		"signingOut": "Signing out…",
+		"profile": "Profile"
+	},
+	"localeSwitcher": {
+		"label": "Interface language"
+	},
+	"sidebar": {
+		"freePlan": "Free plan",
+		"workspaces": "Workspaces",
+		"addWorkspace": "Add workspace",
+		"upgradeToPro": "Upgrade to Pro",
+		"guest": "Guest"
+	},
+	"home": {
+		"hero": {
+			"badge": "Find people who share your spark",
+			"title": "Welcome to Soulmate",
+			"subtitle": "Connect with people who share your interests and start meaningful conversations.",
+			"cta": "Get Started"
+		},
+		"advantages": {
+			"match": {
+				"title": "Perfect match",
+				"description": "Discover people who naturally align with your interests and vibe."
+			},
+			"conversations": {
+				"title": "Interesting conversations",
+				"description": "Skip small talk and dive straight into what really matters to you."
+			},
+			"connections": {
+				"title": "Real connections",
+				"description": "Build genuine relationships, online and beyond the screen."
+			}
+		}
+	},
+	"footer": {
+		"rights": "© {year} Soulmate. All rights reserved.",
+		"version": "Version {version}",
+		"craftedBy": "Crafted by <author>Your Name</author>"
+	},
+	"auth": {
+		"signIn": {
+			"title": "Welcome back",
+			"subtitle": "Sign in to continue to Soulmate",
+			"submit": "Sign in",
+			"submitting": "Signing in…",
+			"success": "Login successful!",
+			"noAccount": "Don't have an account?",
+			"signUpLink": "Sign up"
+		},
+		"signUp": {
+			"title": "Create account",
+			"subtitle": "Join Soulmate and meet your people",
+			"submit": "Sign up",
+			"submitting": "Creating account…",
+			"success": "Registration successful!",
+			"failed": "Registration failed",
+			"hasAccount": "Already have an account?",
+			"signInLink": "Sign in"
+		},
+		"fields": {
+			"name": "Full name",
+			"namePlaceholder": "Your name",
+			"email": "Email",
+			"emailPlaceholder": "you@example.com",
+			"password": "Password"
+		}
+	},
+	"validation": {
+		"nameRequired": "Name is required",
+		"emailInvalid": "Invalid email",
+		"emailRequired": "Email is required",
+		"passwordMin": "Password must be at least 3 characters",
+		"passwordRequired": "Password is required",
+		"interestsMin": "Select at least 3 interests",
+		"interestsMax": "You can select at most 10 interests"
+	},
+	"dashboard": {
+		"welcomeBack": "Welcome back, {name}",
+		"welcome": "Welcome to Soulmate",
+		"title": "Meet people who share your interests",
+		"subtitle": "Rate what you love — Soulmate surfaces the people who overlap with you the most."
+	},
+	"topSouls": {
+		"title": "Top matches",
+		"subtitle": "People who share your interests the most.",
+		"empty": "No matches yet — add or tweak your interests to surface people who overlap with you.",
+		"editInterests": "Edit interests"
+	},
+	"recentSouls": {
+		"title": "Recent chats",
+		"subtitle": "People you've been talking to.",
+		"emptySubtitle": "No conversations yet.",
+		"emptyHint": "Break the ice with someone from your matches and start your first chat.",
+		"findPeople": "Find people"
+	},
+	"talkIdeas": {
+		"title": "Talk ideas",
+		"subtitle": "Conversation starters based on your interests.",
+		"empty": "Rate some interests to get personal talk ideas."
+	},
+	"users": {
+		"loading": "Loading…",
+		"loadError": "Error. Please try again later."
+	},
+	"userCard": {
+		"noShared": "No shared interests yet",
+		"sharedInterests": "{count, plural, one {# shared interest} other {# shared interests}}",
+		"match": "match",
+		"coverage": "Covers {percent}% of your interests",
+		"rareInterest": "Rare interest",
+		"youBothLike": "You both like",
+		"alsoInto": "Also into",
+		"breakIce": "💬 Break the ice",
+		"startChat": "Start chat",
+		"viewProfile": "View full profile"
+	},
+	"mood": {
+		"deep-talks": {
+			"label": "Deep talks",
+			"description": "Up for a conversation that actually matters"
+		},
+		"casual-chat": {
+			"label": "Casual chat",
+			"description": "Nothing heavy — just an easy conversation"
+		},
+		"exchange-ideas": {
+			"label": "Exchange ideas",
+			"description": "Talk through projects, thoughts and plans"
+		},
+		"hobbies": {
+			"label": "Talk about hobbies",
+			"description": "Talk about what we're into"
+		},
+		"personal": {
+			"label": "Something personal",
+			"description": "Up for something warmer and closer"
+		},
+		"fun": {
+			"label": "Have some fun",
+			"description": "Joke around, nothing serious"
+		}
+	},
+	"chat": {
+		"listTitle": "Chats",
+		"listEmpty": "No chats yet",
+		"systemNotice": "You started a chat with {name}",
+		"typing": "typing…",
+		"readAt": "Read at {time}",
+		"reconnecting": "Reconnecting…",
+		"placeholder": "Type a message…",
+		"send": "Send",
+		"sending": "Sending…",
+		"sendError": "Error sending message"
+	},
+	"profile": {
+		"online": "Online",
+		"offline": "Offline",
+		"joined": "Joined {date}",
+		"bio": "Bio",
+		"location": "Location",
+		"birthday": "Birthday",
+		"gender": "Gender",
+		"edit": "Edit profile"
+	},
+	"profileEdit": {
+		"title": "Edit profile",
+		"changePhoto": "Change photo",
+		"username": "Username",
+		"bio": "Bio",
+		"location": "Location",
+		"birthday": "Birthday",
+		"gender": "Gender",
+		"submit": "Save changes",
+		"cancel": "Cancel",
+		"saved": "User updated",
+		"saveError": "Error updating user"
+	},
+	"interests": {
+		"title": "Select your interests",
+		"subtitle": "Pick 3–10 interests and rate each one. Continue unlocks when valid.",
+		"selectedCount": "{count} / 10 selected",
+		"atLeastThree": "at least 3 required",
+		"continue": "Continue",
+		"saving": "Saving…",
+		"reset": "Reset",
+		"loading": "Loading interests…",
+		"loadError": "Failed to load interests",
+		"saveError": "Failed to save interests",
+		"saved": "Interests saved successfully",
+		"mustBeLoggedIn": "You must be logged in to save interests",
+		"rateAtLeastOne": "Select at least one interest by rating",
+		"errorPrefix": "Error: {message}"
+	},
+	"interestsEditor": {
+		"title": "Interests",
+		"selectedCount": "{count} selected",
+		"searchPlaceholder": "Search interests…",
+		"notFound": "No interests found",
+		"save": "Save interests",
+		"saving": "Saving…",
+		"saved": "Interests updated",
+		"mustBeSignedIn": "You must be signed in",
+		"addAtLeastOne": "Add at least one interest",
+		"saveError": "Failed to save interests",
+		"remove": "Remove {name}"
+	},
+	"rating": {
+		"groupLabel": "Rating",
+		"starLabel": "{value} of 5 stars"
+	},
+	"settings": {
+		"title": "Settings",
+		"subtitle": "Manage your account preferences.",
+		"premiumTitle": "Premium",
+		"premiumDescription": "Unlock premium features for {price} ₸."
+	},
+	"premium": {
+		"active": "Premium active",
+		"activating": "Activating premium…",
+		"activated": "Premium activated! 🎉",
+		"activationError": "Could not activate premium.",
+		"description": "Soulmate Premium"
+	},
+	"payment": {
+		"pay": "Pay",
+		"processing": "Processing…",
+		"failed": "Payment failed",
+		"scriptFailed": "Failed to load TipTopPay widget",
+		"widgetUnavailable": "TipTopPay widget is unavailable"
+	},
+	"notFound": {
+		"title": "404 — Not Found",
+		"description": "The page you are looking for does not exist."
+	},
+	"api": {
+		"credentialsRequired": "Email and password are required",
+		"userNotFound": "User not found",
+		"invalidPassword": "Invalid password",
+		"userIdRequired": "User ID is required",
+		"invalidUserId": "Invalid user ID",
+		"ratedInterestRequired": "At least one rated interest (1–5) is required",
+		"noValidInterests": "No valid interests found for given ratings",
+		"invalidPayload": "Invalid request payload",
+		"serverError": "Internal server error"
+	}
+}

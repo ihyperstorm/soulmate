@@ -6,11 +6,12 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { yupResolver } from "@hookform/resolvers/yup"
 import axios from "axios"
+import { useTranslations } from "next-intl"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
-import { useState } from "react"
+import { useMemo, useState } from "react"
 import { useForm } from "react-hook-form"
-import { registerSchema } from "../model/registerSchema"
+import { createRegisterSchema } from "../model/registerSchema"
 
 type RegisterFormData = {
 	username: string
@@ -23,6 +24,11 @@ export const SignUpForm = () => {
 	const [success, setSuccess] = useState(false)
 	const router = useRouter()
 	const queryClient = useAppQueryClient()
+	const t = useTranslations("auth.signUp")
+	const tFields = useTranslations("auth.fields")
+	const tValidation = useTranslations("validation")
+
+	const schema = useMemo(() => createRegisterSchema(tValidation), [tValidation])
 
 	const {
 		register,
@@ -34,7 +40,7 @@ export const SignUpForm = () => {
 			email: "",
 			password: "",
 		},
-		resolver: yupResolver(registerSchema),
+		resolver: yupResolver(schema),
 	})
 
 	const onSubmit = async (data: RegisterFormData) => {
@@ -57,7 +63,7 @@ export const SignUpForm = () => {
 			router.replace("/interests")
 		} catch (err) {
 			queryClient.setQueryData(CURRENT_USER_KEY, null)
-			setError("Registration failed")
+			setError(t("failed"))
 			console.error(err)
 		}
 	}
@@ -65,32 +71,32 @@ export const SignUpForm = () => {
 	return (
 		<div className="w-full max-w-sm bg-surface border border-divider rounded-2xl p-8">
 			<div className="text-center mb-6">
-				<h1 className="text-2xl font-semibold text-ink mb-1">Create account</h1>
-				<p className="text-sm text-muted">Join Soulmate and meet your people</p>
+				<h1 className="text-2xl font-semibold text-ink mb-1">{t("title")}</h1>
+				<p className="text-sm text-muted">{t("subtitle")}</p>
 			</div>
 			<form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-3">
 				{error && <p className="text-sm text-danger bg-danger-soft border border-danger/20 rounded-lg px-3 py-2">{error}</p>}
-				{success && <p className="text-sm text-accent bg-accent-soft border border-accent/20 rounded-lg px-3 py-2">Registration successful!</p>}
+				{success && <p className="text-sm text-accent bg-accent-soft border border-accent/20 rounded-lg px-3 py-2">{t("success")}</p>}
 				<div className="flex flex-col gap-1">
-					<label className="text-xs font-medium text-muted">Full name</label>
+					<label className="text-xs font-medium text-muted">{tFields("name")}</label>
 					<Input
 						type="text"
-						placeholder="Your name"
+						placeholder={tFields("namePlaceholder")}
 						{...register("username")}
 					/>
 					{errors.username && <p className="text-xs text-danger mt-0.5">{errors.username.message}</p>}
 				</div>
 				<div className="flex flex-col gap-1">
-					<label className="text-xs font-medium text-muted">Email</label>
+					<label className="text-xs font-medium text-muted">{tFields("email")}</label>
 					<Input
 						type="email"
-						placeholder="you@example.com"
+						placeholder={tFields("emailPlaceholder")}
 						{...register("email")}
 					/>
 					{errors.email && <p className="text-xs text-danger mt-0.5">{errors.email.message}</p>}
 				</div>
 				<div className="flex flex-col gap-1">
-					<label className="text-xs font-medium text-muted">Password</label>
+					<label className="text-xs font-medium text-muted">{tFields("password")}</label>
 					<Input
 						type="password"
 						placeholder="••••••••"
@@ -99,11 +105,11 @@ export const SignUpForm = () => {
 					{errors.password && <p className="text-xs text-danger mt-0.5">{errors.password.message}</p>}
 				</div>
 				<Button type="submit" disabled={isSubmitting} className="mt-2 w-full">
-					{isSubmitting ? "Creating account…" : "Sign up"}
+					{isSubmitting ? t("submitting") : t("submit")}
 				</Button>
 			</form>
 			<Link href="/signin" className="block text-sm text-center mt-5 text-muted hover:text-primary transition-colors">
-				Already have an account? <span className="text-primary font-medium">Sign in</span>
+				{t("hasAccount")} <span className="text-primary font-medium">{t("signInLink")}</span>
 			</Link>
 		</div>
 	)

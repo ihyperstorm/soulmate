@@ -1,0 +1,280 @@
+{
+	"app": {
+		"name": "Soulmate",
+		"title": "Soulmate — знакомства по интересам",
+		"description": "Находите тех, кто разделяет ваши интересы."
+	},
+	"common": {
+		"loading": "Загрузка…",
+		"save": "Сохранить",
+		"cancel": "Отмена",
+		"error": "Что-то пошло не так",
+		"requestFailed": "Запрос не удался",
+		"loadError": "Ошибка. Попробуйте позже."
+	},
+	"nav": {
+		"dashboard": "Главная",
+		"overview": "Обзор",
+		"activity": "Активность",
+		"users": "Пользователи",
+		"allUsers": "Все пользователи",
+		"matches": "Совпадения",
+		"messages": "Сообщения",
+		"inbox": "Входящие",
+		"requests": "Запросы",
+		"settings": "Настройки",
+		"account": "Аккаунт",
+		"billing": "Оплата",
+		"notifications": "Уведомления",
+		"platform": "Платформа"
+	},
+	"header": {
+		"signIn": "Войти",
+		"signOut": "Выйти",
+		"signingOut": "Выходим…",
+		"profile": "Профиль"
+	},
+	"localeSwitcher": {
+		"label": "Язык интерфейса"
+	},
+	"sidebar": {
+		"freePlan": "Бесплатный план",
+		"workspaces": "Рабочие пространства",
+		"addWorkspace": "Добавить пространство",
+		"upgradeToPro": "Перейти на Pro",
+		"guest": "Гость"
+	},
+	"home": {
+		"hero": {
+			"badge": "Найдите тех, кто зажигается от того же",
+			"title": "Добро пожаловать в Soulmate",
+			"subtitle": "Общайтесь с людьми, которые разделяют ваши интересы, и начинайте разговоры, которые действительно важны.",
+			"cta": "Начать"
+		},
+		"advantages": {
+			"match": {
+				"title": "Идеальное совпадение",
+				"description": "Находите людей, которые совпадают с вами по интересам и настроению."
+			},
+			"conversations": {
+				"title": "Интересные разговоры",
+				"description": "Пропустите разговоры о погоде и переходите сразу к главному."
+			},
+			"connections": {
+				"title": "Настоящие связи",
+				"description": "Стройте искренние отношения — онлайн и за пределами экрана."
+			}
+		}
+	},
+	"footer": {
+		"rights": "© {year} Soulmate. Все права защищены.",
+		"version": "Версия {version}",
+		"craftedBy": "Сделано <author>Your Name</author>"
+	},
+	"auth": {
+		"signIn": {
+			"title": "С возвращением",
+			"subtitle": "Войдите, чтобы продолжить в Soulmate",
+			"submit": "Войти",
+			"submitting": "Входим…",
+			"success": "Вход выполнен!",
+			"noAccount": "Ещё нет аккаунта?",
+			"signUpLink": "Зарегистрироваться"
+		},
+		"signUp": {
+			"title": "Создать аккаунт",
+			"subtitle": "Присоединяйтесь к Soulmate и найдите своих",
+			"submit": "Зарегистрироваться",
+			"submitting": "Создаём аккаунт…",
+			"success": "Регистрация прошла успешно!",
+			"failed": "Не удалось зарегистрироваться",
+			"hasAccount": "Уже есть аккаунт?",
+			"signInLink": "Войти"
+		},
+		"fields": {
+			"name": "Имя",
+			"namePlaceholder": "Ваше имя",
+			"email": "Email",
+			"emailPlaceholder": "you@example.com",
+			"password": "Пароль"
+		}
+	},
+	"validation": {
+		"nameRequired": "Укажите имя",
+		"emailInvalid": "Некорректный email",
+		"emailRequired": "Укажите email",
+		"passwordMin": "Пароль должен быть не короче 3 символов",
+		"passwordRequired": "Укажите пароль",
+		"interestsMin": "Выберите минимум 3 интереса",
+		"interestsMax": "Можно выбрать максимум 10 интересов"
+	},
+	"dashboard": {
+		"welcomeBack": "С возвращением, {name}",
+		"welcome": "Добро пожаловать в Soulmate",
+		"title": "Знакомьтесь с теми, кто разделяет ваши интересы",
+		"subtitle": "Оцените то, что вам нравится — Soulmate покажет людей, которые совпадают с вами сильнее всего."
+	},
+	"topSouls": {
+		"title": "Лучшие совпадения",
+		"subtitle": "Люди, которые совпадают с вами по интересам сильнее всего.",
+		"empty": "Совпадений пока нет — добавьте или измените интересы, чтобы найти похожих людей.",
+		"editInterests": "Изменить интересы"
+	},
+	"recentSouls": {
+		"title": "Недавние чаты",
+		"subtitle": "Люди, с которыми вы общались.",
+		"emptySubtitle": "Разговоров пока нет.",
+		"emptyHint": "Растопите лёд с кем-то из совпадений и начните первый чат.",
+		"findPeople": "Найти людей"
+	},
+	"talkIdeas": {
+		"title": "О чём поговорить",
+		"subtitle": "Темы для разговора на основе ваших интересов.",
+		"empty": "Оцените интересы, чтобы получить персональные темы для разговора."
+	},
+	"users": {
+		"loading": "Загрузка…",
+		"loadError": "Ошибка. Попробуйте позже."
+	},
+	"userCard": {
+		"noShared": "Общих интересов пока нет",
+		"sharedInterests": "{count, plural, one {# общий интерес} few {# общих интереса} many {# общих интересов} other {# общих интереса}}",
+		"match": "матч",
+		"coverage": "Совпадает с {percent}% ваших интересов",
+		"rareInterest": "Редкий интерес",
+		"youBothLike": "Вам обоим нравится",
+		"alsoInto": "Ещё увлекается",
+		"breakIce": "💬 Растопить лёд",
+		"startChat": "Написать",
+		"viewProfile": "Открыть профиль"
+	},
+	"mood": {
+		"deep-talks": {
+			"label": "Глубокие разговоры",
+			"description": "Хочется поговорить о чём-то по-настоящему важном"
+		},
+		"casual-chat": {
+			"label": "Просто поболтать",
+			"description": "Без напряга, лёгкий разговор"
+		},
+		"exchange-ideas": {
+			"label": "Обменяться идеями",
+			"description": "Обсудить проекты, мысли, планы"
+		},
+		"hobbies": {
+			"label": "Про увлечения",
+			"description": "Поговорить о том, чем горим"
+		},
+		"personal": {
+			"label": "Что-то личное",
+			"description": "Хочется разговора потеплее и поближе"
+		},
+		"fun": {
+			"label": "Повеселиться",
+			"description": "Пошутить и поболтать без серьёзности"
+		}
+	},
+	"chat": {
+		"listTitle": "Чаты",
+		"listEmpty": "Чатов пока нет",
+		"systemNotice": "Вы начали чат с {name}",
+		"typing": "печатает…",
+		"readAt": "Прочитано в {time}",
+		"reconnecting": "Переподключаемся…",
+		"placeholder": "Напишите сообщение…",
+		"send": "Отправить",
+		"sending": "Отправляем…",
+		"sendError": "Не удалось отправить сообщение"
+	},
+	"profile": {
+		"online": "В сети",
+		"offline": "Не в сети",
+		"joined": "С нами с {date}",
+		"bio": "О себе",
+		"location": "Город",
+		"birthday": "День рождения",
+		"gender": "Пол",
+		"edit": "Редактировать профиль"
+	},
+	"profileEdit": {
+		"title": "Редактирование профиля",
+		"changePhoto": "Сменить фото",
+		"username": "Имя пользователя",
+		"bio": "О себе",
+		"location": "Город",
+		"birthday": "День рождения",
+		"gender": "Пол",
+		"submit": "Сохранить изменения",
+		"cancel": "Отмена",
+		"saved": "Профиль обновлён",
+		"saveError": "Не удалось обновить профиль"
+	},
+	"interests": {
+		"title": "Выберите интересы",
+		"subtitle": "Отметьте 3–10 интересов и оцените каждый. Кнопка «Продолжить» разблокируется, когда всё готово.",
+		"selectedCount": "{count} / 10 выбрано",
+		"atLeastThree": "минимум 3",
+		"continue": "Продолжить",
+		"saving": "Сохраняем…",
+		"reset": "Сбросить",
+		"loading": "Загружаем интересы…",
+		"loadError": "Не удалось загрузить интересы",
+		"saveError": "Не удалось сохранить интересы",
+		"saved": "Интересы сохранены",
+		"mustBeLoggedIn": "Чтобы сохранить интересы, нужно войти",
+		"rateAtLeastOne": "Оцените хотя бы один интерес",
+		"errorPrefix": "Ошибка: {message}"
+	},
+	"interestsEditor": {
+		"title": "Интересы",
+		"selectedCount": "выбрано: {count}",
+		"searchPlaceholder": "Поиск интересов…",
+		"notFound": "Интересы не найдены",
+		"save": "Сохранить интересы",
+		"saving": "Сохраняем…",
+		"saved": "Интересы обновлены",
+		"mustBeSignedIn": "Нужно войти в аккаунт",
+		"addAtLeastOne": "Добавьте хотя бы один интерес",
+		"saveError": "Не удалось сохранить интересы",
+		"remove": "Убрать {name}"
+	},
+	"rating": {
+		"groupLabel": "Оценка",
+		"starLabel": "{value} из 5 звёзд"
+	},
+	"settings": {
+		"title": "Настройки",
+		"subtitle": "Управляйте настройками аккаунта.",
+		"premiumTitle": "Premium",
+		"premiumDescription": "Откройте премиум-возможности за {price} ₸."
+	},
+	"premium": {
+		"active": "Premium активен",
+		"activating": "Активируем премиум…",
+		"activated": "Премиум активирован! 🎉",
+		"activationError": "Не удалось активировать премиум.",
+		"description": "Soulmate Premium"
+	},
+	"payment": {
+		"pay": "Оплатить",
+		"processing": "Обрабатываем…",
+		"failed": "Оплата не прошла",
+		"scriptFailed": "Не удалось загрузить виджет TipTopPay",
+		"widgetUnavailable": "Виджет TipTopPay недоступен"
+	},
+	"notFound": {
+		"title": "404 — страница не найдена",
+		"description": "Страницы, которую вы ищете, не существует."
+	},
+	"api": {
+		"credentialsRequired": "Укажите email и пароль",
+		"userNotFound": "Пользователь не найден",
+		"invalidPassword": "Неверный пароль",
+		"userIdRequired": "Нужен ID пользователя",
+		"invalidUserId": "Некорректный ID пользователя",
+		"ratedInterestRequired": "Оцените хотя бы один интерес (1–5)",
+		"noValidInterests": "По этим оценкам не найдено ни одного интереса",
+		"invalidPayload": "Некорректные данные запроса",
+		"serverError": "Внутренняя ошибка сервера"
+	}
+}

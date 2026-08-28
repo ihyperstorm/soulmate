@@ -1,2 +1,2 @@
 export { SignUpForm } from "./ui/SignUpForm";
-export { registerSchema } from "./model/registerSchema";
+export { createRegisterSchema } from "./model/registerSchema";

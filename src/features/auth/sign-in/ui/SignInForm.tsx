@@ -1,10 +1,11 @@
 'use client'
 
-import {loginSchema} from '../model/loginSchema'
+import {createLoginSchema} from '../model/loginSchema'
 import {yupResolver} from '@hookform/resolvers/yup'
 import axios from 'axios'
+import {useTranslations} from 'next-intl'
 import Link from 'next/link'
-import {useState} from 'react'
+import {useMemo, useState} from 'react'
 import {useForm} from 'react-hook-form'
 import {CURRENT_USER_KEY} from '@/entities/user'
 import {useAppQueryClient} from '@/shared/api/providers'
@@ -20,6 +21,12 @@ export const SignInForm = () => {
 	const [error, setError] = useState<string | null>(null)
 	const [success, setSuccess] = useState(false)
 	const queryClient = useAppQueryClient()
+	const t = useTranslations('auth.signIn')
+	const tFields = useTranslations('auth.fields')
+	const tValidation = useTranslations('validation')
+	const tCommon = useTranslations('common')
+
+	const schema = useMemo(() => createLoginSchema(tValidation), [tValidation])
 
 	const {
 		register,
@@ -30,7 +37,7 @@ export const SignInForm = () => {
 			email: '',
 			password: '',
 		},
-		resolver: yupResolver(loginSchema),
+		resolver: yupResolver(schema),
 	})
 
 	const onSubmit = async (data: LoginFormData) => {
@@ -55,7 +62,7 @@ export const SignInForm = () => {
 			if (axios.isAxiosError(error) && error.response?.data?.error) {
 				setError(error.response.data.error)
 			} else {
-				setError('Request failed')
+				setError(tCommon('requestFailed'))
 			}
 		}
 	}
@@ -63,8 +70,8 @@ export const SignInForm = () => {
 	return (
 		<div className='w-full max-w-sm bg-surface border border-divider rounded-2xl p-8'>
 			<div className='text-center mb-6'>
-				<h1 className='text-2xl font-semibold text-ink mb-1'>Welcome back</h1>
-				<p className='text-sm text-muted'>Sign in to continue to Soulmate</p>
+				<h1 className='text-2xl font-semibold text-ink mb-1'>{t('title')}</h1>
+				<p className='text-sm text-muted'>{t('subtitle')}</p>
 			</div>
 			<form onSubmit={handleSubmit(onSubmit)} className='flex flex-col gap-3'>
 				{error && (
@@ -74,14 +81,16 @@ export const SignInForm = () => {
 				)}
 				{success && (
 					<p className='text-sm text-accent bg-accent-soft border border-accent/20 rounded-lg px-3 py-2'>
-						Login successful!
+						{t('success')}
 					</p>
 				)}
 				<div className='flex flex-col gap-1'>
-					<label className='text-xs font-medium text-muted'>Email</label>
+					<label className='text-xs font-medium text-muted'>
+						{tFields('email')}
+					</label>
 					<Input
 						type='email'
-						placeholder='you@example.com'
+						placeholder={tFields('emailPlaceholder')}
 						{...register('email')}
 					/>
 					{errors.email && (
@@ -89,7 +98,9 @@ export const SignInForm = () => {
 					)}
 				</div>
 				<div className='flex flex-col gap-1'>
-					<label className='text-xs font-medium text-muted'>Password</label>
+					<label className='text-xs font-medium text-muted'>
+						{tFields('password')}
+					</label>
 					<Input
 						type='password'
 						placeholder='••••••••'
@@ -102,15 +113,15 @@ export const SignInForm = () => {
 					)}
 				</div>
 				<Button type='submit' disabled={isSubmitting} className='mt-2 w-full'>
-					{isSubmitting ? 'Signing in…' : 'Sign in'}
+					{isSubmitting ? t('submitting') : t('submit')}
 				</Button>
 			</form>
 			<Link
 				href='/signup'
 				className='block text-sm text-center mt-5 text-muted hover:text-primary transition-colors'
 			>
-				Don&apos;t have an account?{' '}
-				<span className='text-primary font-medium'>Sign up</span>
+				{t('noAccount')}{' '}
+				<span className='text-primary font-medium'>{t('signUpLink')}</span>
 			</Link>
 		</div>
 	)

@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server'
 import connectDB from '@/shared/lib/mongodb/db'
 import {Interest, UserInterest} from '@/entities/interest/server'
 import mongoose from 'mongoose'
+import { getTranslations } from 'next-intl/server'
 
 // GET - получить все доступные интересы
 export async function GET() {
@@ -13,26 +14,27 @@ export async function GET() {
 		return NextResponse.json(interests)
 	} catch (error) {
 		console.error('Error fetching interests:', error)
-		return NextResponse.json(
-			{ error: error instanceof Error ? error.message : 'Internal server error' },
-			{ status: 500 }
-		)
+		const t = await getTranslations('api')
+		return NextResponse.json({ error: t('serverError') }, { status: 500 })
 	}
 }
 
 // POST - сохранить интересы пользователя
 export async function POST(request: Request) {
+	// Локаль берётся из cookie NEXT_LOCALE — та же, что и в UI.
+	const t = await getTranslations('api')
+
 	try {
 		await connectDB()
 
 		const { ratings, userId } = await request.json()
 
 		if (!userId) {
-			return NextResponse.json({ error: 'User ID is required' }, { status: 400 })
+			return NextResponse.json({ error: t('userIdRequired') }, { status: 400 })
 		}
 
 		if (!mongoose.Types.ObjectId.isValid(userId)) {
-			return NextResponse.json({ error: 'Invalid user ID' }, { status: 400 })
+			return NextResponse.json({ error: t('invalidUserId') }, { status: 400 })
 		}
 
 		const safeRatings =
@@ -59,7 +61,7 @@ export async function POST(request: Request) {
 
 		if (candidates.length === 0) {
 			return NextResponse.json(
-				{ error: 'At least one rated interest (1–5) is required' },
+				{ error: t('ratedInterestRequired') },
 				{ status: 400 },
 			)
 		}
@@ -81,7 +83,7 @@ export async function POST(request: Request) {
 
 		if (userInterests.length === 0) {
 			return NextResponse.json(
-				{ error: 'No valid interests found for given ratings' },
+				{ error: t('noValidInterests') },
 				{ status: 400 },
 			)
 		}
@@ -109,9 +111,6 @@ export async function POST(request: Request) {
 		return NextResponse.json({ message: 'Interests saved successfully' }, { status: 200 })
 	} catch (error) {
 		console.error('Error saving interests:', error)
-		return NextResponse.json(
-			{ error: error instanceof Error ? error.message : 'Internal server error' },
-			{ status: 500 }
-		)
+		return NextResponse.json({ error: t('serverError') }, { status: 500 })
 	}
 }
