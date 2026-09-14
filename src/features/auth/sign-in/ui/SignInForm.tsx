@@ -80,7 +80,7 @@ export const SignInForm = () => {
 					</p>
 				)}
 				{success && (
-					<p className='text-sm text-accent bg-accent-soft border border-accent/20 rounded-lg px-3 py-2'>
+					<p className='text-sm text-success bg-success-soft border border-success/20 rounded-lg px-3 py-2'>
 						{t('success')}
 					</p>
 				)}

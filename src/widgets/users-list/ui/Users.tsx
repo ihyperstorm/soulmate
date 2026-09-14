@@ -1,18 +1,10 @@
-import { calculateCoveragePercent, userInterestsToWeights, type IdfMap } from "@/entities/interest"
-import { useCurrentUser } from "@/entities/user"
-import { UserCard, type UserCardData } from "@/widgets/user-card"
-import { useQuery } from "@tanstack/react-query"
-import axios from "axios"
+"use client"
+
+import { buildChatHref, useMatchCandidates, type RankedCandidate } from "@/features/match/rank-candidates"
+import { UserCard } from "@/widgets/user-card"
 import { useTranslations } from "next-intl"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
-
-interface IUser extends UserCardData {
-	email: string
-	bio: string
-	createdAt: string
-	updatedAt: string
-}
 
 type UsersDirection = "row" | "col" | "grid2"
 
@@ -35,48 +27,33 @@ const Users = ({ userCount, direction = "col", minMatchPercent, onlyUserIds, emp
 	const router = useRouter()
 	const t = useTranslations("users")
 
-	const {
-		data: users,
-		isLoading,
-		isError,
-	} = useQuery<IUser[]>({
-		queryKey: ["users"],
-		queryFn: () => axios.get("/api/users").then((res) => res.data),
-	})
-
-	const { data: me } = useCurrentUser()
-
-	const { data: idfMap } = useQuery<IdfMap>({
-		queryKey: ["interests", "idf"],
-		queryFn: () => axios.get("/api/interests/idf").then((res) => res.data),
-		staleTime: 5 * 60 * 1000,
-	})
+	// Общий источник кандидатов: себя исключает, сортирует по score
+	// (проценту по интересам + невидимый буст за совпавшее настроение).
+	// Раньше загрузка и фильтрация были здесь инлайном и сортировки не было
+	// вообще — «лучшие совпадения» показывались в порядке выдачи БД.
+	const { ranked, myId, myWeights, myMoods, idfMap, isLoading, isError } = useMatchCandidates()
 
 	const handleChatClick = (receiverId: string, receiverUsername: string, draft?: string) => {
-		if (!me?._id) return
-		const chatId = [me._id, receiverId].sort().join("_")
-		const draftParam = draft ? `&draft=${encodeURIComponent(draft)}` : ""
-		router.push(
-			`/messages?chatId=${chatId}&senderId=${me._id}&receiverId=${receiverId}&username=${encodeURIComponent(receiverUsername)}${draftParam}`,
-		)
+		if (!myId) return
+		router.push(buildChatHref(myId, receiverId, receiverUsername, draft))
 	}
 
 	if (isLoading) return <div className="flex justify-center items-center py-20 text-muted text-sm">{t("loading")}</div>
 	if (isError) return <div className="flex justify-center items-center py-20 text-danger text-sm">{t("loadError")}</div>
 
-	const myWeights = userInterestsToWeights(me?.userInterests)
-
-	let candidates = users?.filter((user) => user._id !== me?._id) ?? []
+	let candidates: RankedCandidate[] = ranked
 
 	if (onlyUserIds) {
-		const byId = new Map(candidates.map((u) => [u._id, u]))
-		candidates = onlyUserIds.map((id) => byId.get(id)).filter((u): u is IUser => u !== undefined)
+		// Порядок задаёт вызывающий (RecentSouls — по свежести переписки),
+		// поэтому здесь сортировка по score намеренно перекрывается.
+		const byId = new Map(candidates.map((candidate) => [candidate.user._id, candidate]))
+		candidates = onlyUserIds.map((id) => byId.get(id)).filter((candidate): candidate is RankedCandidate => candidate !== undefined)
 	}
 
 	if (typeof minMatchPercent === "number") {
-		candidates = candidates.filter(
-			(user) => calculateCoveragePercent(myWeights, userInterestsToWeights(user.userInterests), idfMap) >= minMatchPercent,
-		)
+		// Порог по интересам, не по score: иначе настроение протаскивало бы
+		// в «лучшие совпадения» людей с парой общих тем.
+		candidates = candidates.filter((candidate) => candidate.coveragePercent >= minMatchPercent)
 	}
 
 	const visible = candidates.slice(0, userCount ?? candidates.length)
@@ -100,8 +77,8 @@ const Users = ({ userCount, direction = "col", minMatchPercent, onlyUserIds, emp
 
 	return (
 		<div className={directionClass[direction]}>
-			{visible.map((user) => (
-				<UserCard key={user._id} user={user} myWeights={myWeights} idfMap={idfMap} onChatClick={handleChatClick} />
+			{visible.map(({ user }) => (
+				<UserCard key={user._id} user={user} myWeights={myWeights} myMoods={myMoods} idfMap={idfMap} onChatClick={handleChatClick} />
 			))}
 		</div>
 	)

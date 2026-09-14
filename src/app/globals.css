@@ -18,8 +18,9 @@
 	--color-primary-hover: #4f46e5;
 	--color-primary-soft: #eef2ff;
 
-	--color-accent: #10b981;
-	--color-accent-soft: #ecfdf5;
+	/* accent отдан shadcn: это фон ховера в меню, дропдаунах и комбобоксе.
+	   Изумрудный «успех/подтверждено» приложения живёт в success / success-soft. */
+	--color-accent: var(--accent);
 
 	--color-ink: #0f172a;
 	--color-muted: #64748b;
@@ -29,6 +30,7 @@
 	--color-danger-soft: #fef2f2;
 	--color-warning: #f59e0b;
 	--color-success: #10b981;
+	--color-success-soft: #ecfdf5;
 	--color-online: #22c55e;
 
 	--font-sans: var(--font-sans);
@@ -124,6 +126,43 @@
 	}
 }
 
+/* Вращающаяся градиентная рамка «человека дня».
+   @property обязателен: без него браузер считает --daily-angle просто строкой
+   и анимирует её скачком 0deg → 360deg в конце цикла, вместо плавного оборота. */
+@property --daily-angle {
+	syntax: "<angle>";
+	initial-value: 0deg;
+	inherits: false;
+}
+
+@keyframes daily-ring-spin {
+	to {
+		--daily-angle: 360deg;
+	}
+}
+
+.daily-ring {
+	padding: 6px;
+	/* Радиус карточки (rounded-2xl) + толщина рамки, иначе внутренний угол
+	   выпирает из внешнего. */
+	border-radius: calc(var(--radius) * 1.8 + 2px);
+	background: conic-gradient(
+		from var(--daily-angle),
+		var(--daily-ring-from),
+		var(--daily-ring-via),
+		var(--daily-ring-from)
+	);
+	animation: daily-ring-spin 1s linear infinite;
+}
+
+/* При «меньше движения» остаётся статичный градиент — рамка всё ещё выделяет
+   карточку, но не крутится. */
+@media (prefers-reduced-motion: reduce) {
+	.daily-ring {
+		animation: none;
+	}
+}
+
 body {
 	font-family: var(--font-geist-sans);
 	-webkit-font-smoothing: antialiased;
@@ -167,26 +206,41 @@ body {
 	--secondary-foreground: oklch(0.205 0 0);
 	--muted: oklch(0.97 0 0);
 	--muted-foreground: oklch(0.556 0 0);
-	--accent: oklch(0.97 0 0);
-	--accent-foreground: oklch(0.205 0 0);
+	/* Ховер в меню/дропдаунах/комбобоксе — тот же мягкий индиго,
+	   что у активного пункта сайдбара и у чипов в карточках. */
+	--accent: #eef2ff; /* primary-soft */
+	--accent-foreground: #6366f1; /* primary */
 	--destructive: oklch(0.577 0.245 27.325);
-	--border: oklch(0.922 0 0);
-	--input: oklch(0.922 0 0);
-	--ring: oklch(0.708 0 0);
+	--border: #eef0f3; /* divider — рамки shadcn-компонентов = рамки карточек */
+	--input: #e5e7eb; /* line — у полей ввода рамка чуть заметнее */
+	--ring: #6366f1; /* primary — фокус везде индиго, а не серый */
+
+	/* Градиент рамки «человека дня» = primary → success из палитры.
+	   Значения продублированы: @theme inline не отдаёт свои переменные
+	   в рантайм (bg-primary компилируется в литерал), а conic-gradient
+	   в рукописном CSS может читать только настоящие custom properties. */
+	--daily-ring-from: #6366f1;
+	--daily-ring-via: #10b981;
 	--chart-1: oklch(0.87 0 0);
 	--chart-2: oklch(0.556 0 0);
 	--chart-3: oklch(0.439 0 0);
 	--chart-4: oklch(0.371 0 0);
 	--chart-5: oklch(0.269 0 0);
 	--radius: 0.625rem;
-	--sidebar: oklch(0.985 0 0);
-	--sidebar-foreground: oklch(0.145 0 0);
-	--sidebar-primary: oklch(0.205 0 0);
-	--sidebar-primary-foreground: oklch(0.985 0 0);
-	--sidebar-accent: oklch(0.97 0 0);
-	--sidebar-accent-foreground: oklch(0.205 0 0);
-	--sidebar-border: oklch(0.922 0 0);
-	--sidebar-ring: oklch(0.708 0 0);
+	/* Сайдбар — часть дизайн-системы, а не отдельный shadcn-остров.
+	   Значения продублированы из палитры @theme inline выше: переменные @theme
+	   не читаются из :root, поэтому связь держится комментарием.
+	   Меняешь палитру — проверь и этот блок. */
+	--sidebar: #ffffff; /* surface — та же плоскость, что у карточек;
+	                      на белом primary-soft читается как чип в карточке,
+	                      на сером он выглядел грязным */
+	--sidebar-foreground: #0f172a; /* ink */
+	--sidebar-primary: #6366f1; /* primary */
+	--sidebar-primary-foreground: #ffffff;
+	--sidebar-accent: #eef2ff; /* primary-soft — hover и активный пункт */
+	--sidebar-accent-foreground: #6366f1; /* primary */
+	--sidebar-border: #eef0f3; /* divider — стыкуется с границей хедера */
+	--sidebar-ring: #6366f1; /* primary */
 }
 
 .dark {

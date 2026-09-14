@@ -11,8 +11,15 @@ import {
 	calculateCoveragePercent,
 	userInterestsToWeights,
 } from "@/entities/interest"
+import {
+	getActiveMoods,
+	MoodChip,
+	sharedMoods,
+	type ConversationMood,
+} from "@/entities/mood"
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
+import { cn } from "@/lib/utils"
 import { useLocale, useTranslations } from "next-intl"
 import Link from "next/link"
 import { useMemo } from "react"
@@ -23,13 +30,20 @@ export interface UserCardData {
 	avatarUrl?: string
 	interests?: IInterest[]
 	userInterests?: PopulatedUserInterest[]
+	/** Сырые поля из БД — читать только через getActiveMoods(), они протухают. */
+	moods?: ConversationMood[]
+	moodUpdatedAt?: string | null
 }
 
 interface UserCardProps {
 	user: UserCardData
 	myWeights?: InterestWeights
 	idfMap?: IdfMap
+	/** Мои активные настроения — чтобы подсветить совпавшие. */
+	myMoods?: readonly ConversationMood[]
 	onChatClick?: (userId: string, username: string, draft?: string) => void
+	/** Для обёрток вокруг карточки — например градиентной рамки «человека дня». */
+	className?: string
 }
 
 const FALLBACK_AVATAR = "/9dba1c75826cde0e6cf64a5a8fd25bf6.jpg"
@@ -52,7 +66,7 @@ const getNamedInterest = (
 	}
 }
 
-export const UserCard = ({ user, myWeights, idfMap, onChatClick }: UserCardProps) => {
+export const UserCard = ({ user, myWeights, idfMap, myMoods, onChatClick, className }: UserCardProps) => {
 	const t = useTranslations("userCard")
 	const locale = useLocale()
 	const theirWeights = userInterestsToWeights(user.userInterests)
@@ -61,6 +75,11 @@ export const UserCard = ({ user, myWeights, idfMap, onChatClick }: UserCardProps
 		theirWeights,
 		idfMap,
 	)
+
+	// Настроения считаются здесь, симметрично проценту по интересам: карточка
+	// самодостаточна, вызывающему достаточно передать myMoods рядом с myWeights.
+	const theirMoods = getActiveMoods(user)
+	const moodsInCommon = sharedMoods(myMoods ?? [], theirMoods)
 
 	const myIds = new Set(Object.keys(myWeights ?? {}))
 	const interests = user.userInterests ?? []
@@ -109,7 +128,12 @@ export const UserCard = ({ user, myWeights, idfMap, onChatClick }: UserCardProps
 	const ringOffset = ringCircumference * (1 - coveragePercent / 100)
 
 	return (
-		<div className="flex flex-col justify-between bg-surface border border-divider rounded-2xl p-5 transition-all hover:border-line hover:-translate-y-0.5 hover:shadow-lg">
+		<div
+			className={cn(
+				"flex flex-col justify-between bg-surface border border-divider rounded-2xl p-5 transition-all hover:border-line hover:-translate-y-0.5 hover:shadow-lg",
+				className,
+			)}
+		>
 			<div className="flex items-center gap-4">
 				<Avatar className="size-16 shrink-0">
 					<AvatarImage src={user.avatarUrl || FALLBACK_AVATAR} alt="avatar" />
@@ -175,7 +199,7 @@ export const UserCard = ({ user, myWeights, idfMap, onChatClick }: UserCardProps
 									className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-sm font-medium ${
 										isRare
 											? "bg-amber-100 text-amber-700 ring-1 ring-amber-300"
-											: "bg-accent-soft text-accent"
+											: "bg-success-soft text-success"
 									}`}
 									title={isRare ? t("rareInterest") : undefined}
 								>
@@ -198,6 +222,26 @@ export const UserCard = ({ user, myWeights, idfMap, onChatClick }: UserCardProps
 								</span>
 							)
 						})}
+					</div>
+				</div>
+			)}
+
+			{/* Настроение на сегодня. Если общего нет, но у человека настрой задан —
+			    показываем приглушённо: это тоже информация, просто слабее сигнал.
+			    Нет ничего — блок не рендерим, пустая строка хуже отсутствия. */}
+			{(moodsInCommon.length > 0 || theirMoods.length > 0) && (
+				<div className="mt-4">
+					<p className="text-[11px] uppercase tracking-wider text-muted font-semibold mb-2">
+						{moodsInCommon.length > 0 ? t("rightNow") : t("theyAreUpFor")}
+					</p>
+					<div className="flex flex-wrap gap-1.5">
+						{(moodsInCommon.length > 0 ? moodsInCommon : theirMoods).map((mood) => (
+							<MoodChip
+								key={mood}
+								mood={mood}
+								variant={moodsInCommon.length > 0 ? "shared" : "muted"}
+							/>
+						))}
 					</div>
 				</div>
 			)}

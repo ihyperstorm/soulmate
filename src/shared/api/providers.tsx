@@ -2,9 +2,15 @@
 
 import {QueryClient, QueryClientProvider} from '@tanstack/react-query'
 import {createContext, useContext, useState} from 'react'
+import {installAuthRefresh} from './authRefresh'
 
 const FIVE_MINUTES_MS = 1000 * 60 * 5
 const QueryClientContext = createContext<QueryClient | null>(null)
+
+// На уровне модуля, а не в эффекте: интерцептор должен стоять до первого
+// запроса, иначе самый ранний 401 (например /api/users/me при монтировании)
+// пролетит мимо refresh. Внутри стоит защита от повторной установки.
+installAuthRefresh()
 
 export default function Providers({children}: {children: React.ReactNode}) {
 	const [client] = useState(

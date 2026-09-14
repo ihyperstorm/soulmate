@@ -1,5 +1,6 @@
 "use client"
 import type { IInterest, PopulatedUserInterest } from "@/entities/interest"
+import { getActiveMoods, MoodChip, type ConversationMood } from "@/entities/mood"
 import { useCurrentUser } from "@/entities/user"
 import { useQuery } from "@tanstack/react-query"
 import axios from "axios"
@@ -21,6 +22,8 @@ interface IUser {
 	updatedAt: string
 	interests: IInterest[]
 	userInterests: PopulatedUserInterest[]
+	moods?: ConversationMood[]
+	moodUpdatedAt?: string | null
 }
 
 export default function UserDetailPage() {
@@ -43,7 +46,10 @@ export default function UserDetailPage() {
 
 	const { data: me } = useCurrentUser()
 
-	const isOnline = true
+	// Честный сигнал вместо заглушки `isOnline = true`: человек заходил и осознанно
+	// сказал, чего хочет, менее суток назад. Presence-инфраструктуры для этого не нужно.
+	const theirMoods = getActiveMoods(user)
+	const isOpenToChat = theirMoods.length > 0
 	const createdAt = user?.createdAt ? new Date(user.createdAt).toLocaleDateString(locale) : "—"
 
 	if (isLoading)
@@ -68,12 +74,26 @@ export default function UserDetailPage() {
 					<div className="flex flex-col gap-3 flex-1">
 						<div className="flex items-center gap-3 flex-wrap">
 							<h1 className="text-3xl font-semibold text-ink">{user?.username}</h1>
-							<span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-accent-soft text-accent text-xs font-medium">
-								<span className="w-1.5 h-1.5 rounded-full bg-online"></span>
-								{isOnline ? t("online") : t("offline")}
-							</span>
+							{isOpenToChat ? (
+								<span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-success-soft text-success text-xs font-medium">
+									<span className="w-1.5 h-1.5 rounded-full bg-online"></span>
+									{t("openToChat")}
+								</span>
+							) : (
+								<span className="inline-flex items-center px-2 py-0.5 rounded-full bg-surface-muted text-muted text-xs font-medium">
+									{t("notRightNow")}
+								</span>
+							)}
 						</div>
 						<p className="text-xs text-faint">{t("joined", { date: createdAt })}</p>
+
+						{theirMoods.length > 0 && (
+							<div className="flex flex-wrap gap-1.5 mt-1">
+								{theirMoods.map((mood) => (
+									<MoodChip key={mood} mood={mood} />
+								))}
+							</div>
+						)}
 
 						<div className="flex flex-wrap gap-1.5 mt-2">
 							{(user?.userInterests ?? []).map((userInterest: PopulatedUserInterest) =>

@@ -1,9 +1,14 @@
 import {jwtVerify, SignJWT, type JWTPayload} from 'jose'
 
-// TTL access-токена (совпадает с maxAge cookie в /api/auth/login).
-export const ACCESS_TOKEN_TTL_SECONDS = 60 * 30
-// Sliding session: перевыпускаем токен, если до истечения осталось меньше порога.
-export const REFRESH_THRESHOLD_SECONDS = 60 * 15
+/**
+ * TTL access-токена. Короткий намеренно: он stateless и до истечения неотзываем,
+ * поэтому украденный токен должен жить как можно меньше. Продление больше не
+ * происходит в proxy — этим занимается refresh-flow (/api/auth/refresh).
+ */
+export const ACCESS_TOKEN_TTL_SECONDS = 60 * 15
+
+/** TTL refresh-сессии: столько пользователь может не заходить и не разлогиниться. */
+export const REFRESH_TOKEN_TTL_SECONDS = 60 * 60 * 24 * 30
 
 const secretKey = (secret: string) => new TextEncoder().encode(secret)
 

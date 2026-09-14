@@ -13,10 +13,12 @@ import {useEffect, useMemo, useState} from 'react'
 import {FieldErrors, Resolver, useForm} from 'react-hook-form'
 import toast from 'react-hot-toast'
 
+// Форма ответа /api/interests в объёме, нужном этому экрану.
+// Interest.weight здесь намеренно не описан: это глобальный вес интереса,
+// а не оценка пользователя (та лежит в UserInterest.weight и в локальном ratings).
 type Interest = {
 	_id: string
 	name: string
-	weight: number
 }
 
 type InterestsFormData = {
@@ -279,14 +281,7 @@ export default function InterestsPage() {
 										{interest.name}
 									</span>
 									<InterestStarRating
-										value={
-											ratings[id] ??
-											(typeof interest.weight === 'number' &&
-											interest.weight >= 1 &&
-											interest.weight <= 5
-												? interest.weight
-												: 0)
-										}
+										value={ratings[id] ?? 0}
 										onChangeAction={n => handleRating(id, n)}
 										size={22}
 									/>

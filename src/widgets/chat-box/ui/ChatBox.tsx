@@ -12,6 +12,7 @@ import {
 import toast from "react-hot-toast";
 import { useLocale, useTranslations } from "next-intl";
 import { useAppQueryClient } from "@/shared/api/providers";
+import { ensureFreshSession } from "@/shared/api/authRefresh";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -137,6 +138,11 @@ const ChatBox = ({ chatId, senderId, receiverId, systemNotice, draft }: Props) =
 		source.onerror = (err) => {
 			setIsOnline(false);
 			console.log("SSE error", err);
+			// Частая причина — истёк access-токен: EventSource не ходит через axios,
+			// поэтому молчаливый refresh его не касается, и все авто-реконнекты
+			// получают 401. Обновляем cookie через axios — следующий реконнект,
+			// который EventSource сделает сам, пройдёт уже с живым токеном.
+			void ensureFreshSession();
 		};
 
 		return () => {

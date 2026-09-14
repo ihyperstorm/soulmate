@@ -76,7 +76,7 @@ export const SignUpForm = () => {
 			</div>
 			<form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-3">
 				{error && <p className="text-sm text-danger bg-danger-soft border border-danger/20 rounded-lg px-3 py-2">{error}</p>}
-				{success && <p className="text-sm text-accent bg-accent-soft border border-accent/20 rounded-lg px-3 py-2">{t("success")}</p>}
+				{success && <p className="text-sm text-success bg-success-soft border border-success/20 rounded-lg px-3 py-2">{t("success")}</p>}
 				<div className="flex flex-col gap-1">
 					<label className="text-xs font-medium text-muted">{tFields("name")}</label>
 					<Input

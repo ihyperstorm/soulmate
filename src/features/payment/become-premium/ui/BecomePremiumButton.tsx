@@ -19,7 +19,7 @@ export const BecomePremiumButton = () => {
 
 	if (user?.isPremium) {
 		return (
-			<div className='inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-accent-soft text-accent text-sm font-medium'>
+			<div className='inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-success-soft text-success text-sm font-medium'>
 				<span aria-hidden>✨</span> {t('active')}
 			</div>
 		)
@@ -52,7 +52,7 @@ export const BecomePremiumButton = () => {
 				<p className='text-xs text-muted'>{t('activating')}</p>
 			)}
 			{status === 'done' && (
-				<p className='text-xs text-accent'>{t('activated')}</p>
+				<p className='text-xs text-success'>{t('activated')}</p>
 			)}
 			{status === 'error' && (
 				<p className='text-xs text-danger'>{t('activationError')}</p>

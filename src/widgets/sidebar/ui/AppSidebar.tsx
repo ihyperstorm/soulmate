@@ -53,7 +53,7 @@ const NAV = [
 		url: "/users",
 		items: [
 			{ title: "allUsers", url: "/users" },
-			{ title: "matches", url: "#" },
+			{ title: "matches", url: "/users/matches" },
 		],
 	},
 	{
@@ -107,19 +107,19 @@ export function AppSidebar() {
 	return (
 		<Sidebar collapsible="icon">
 			{/* Свитчер воркспейса (заглушка) */}
-			<SidebarHeader>
+			<SidebarHeader className="p-3 pb-2">
 				<SidebarMenu>
 					<SidebarMenuItem>
 						<DropdownMenu>
 							<DropdownMenuTrigger
 								render={
-									<SidebarMenuButton size="lg">
-										<div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-primary text-sm font-semibold text-white">
+									<SidebarMenuButton size="lg" className="rounded-xl px-2.5">
+										<div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sm font-semibold text-sidebar-primary-foreground">
 											S
 										</div>
 										<div className="grid flex-1 text-left text-sm leading-tight">
 											<span className="truncate font-semibold">Soulmate</span>
-											<span className="truncate text-xs text-sidebar-foreground/70">{t("freePlan")}</span>
+											<span className="truncate text-xs text-muted">{t("freePlan")}</span>
 										</div>
 										<ChevronsUpDown className="ml-auto" />
 									</SidebarMenuButton>
@@ -139,9 +139,9 @@ export function AppSidebar() {
 			</SidebarHeader>
 
 			<SidebarContent>
-				<SidebarGroup>
-					<SidebarGroupLabel>{tNav("platform")}</SidebarGroupLabel>
-					<SidebarMenu>
+				<SidebarGroup className="px-3 py-4">
+					<SidebarGroupLabel className="mb-1 px-2.5">{tNav("platform")}</SidebarGroupLabel>
+					<SidebarMenu className="gap-1">
 						{NAV.map((item) => {
 							const sectionActive =
 								pathname === item.url || pathname.startsWith(item.url + "/") || item.items.some((s) => s.url !== "#" && pathname === s.url)
@@ -155,7 +155,7 @@ export function AppSidebar() {
 									<SidebarMenuItem>
 										<CollapsibleTrigger
 											render={
-												<SidebarMenuButton tooltip={tNav(item.title)}>
+												<SidebarMenuButton tooltip={tNav(item.title)} className="h-10 gap-2.5 rounded-xl px-2.5">
 													<item.icon />
 													<span>{tNav(item.title)}</span>
 													<ChevronRight className="ml-auto transition-transform group-data-open/collapsible:rotate-90" />
@@ -163,10 +163,14 @@ export function AppSidebar() {
 											}
 										/>
 										<CollapsibleContent>
-											<SidebarMenuSub>
+											<SidebarMenuSub className="mt-1 gap-0.5 py-1">
 												{item.items.map((sub) => (
 													<SidebarMenuSubItem key={sub.title}>
-														<SidebarMenuSubButton isActive={sub.url !== "#" && pathname === sub.url} render={<Link href={sub.url} />}>
+														<SidebarMenuSubButton
+															isActive={sub.url !== "#" && pathname === sub.url}
+															className="h-9 rounded-lg px-2.5"
+															render={<Link href={sub.url} />}
+														>
 															<span>{tNav(sub.title)}</span>
 														</SidebarMenuSubButton>
 													</SidebarMenuSubItem>
@@ -182,20 +186,20 @@ export function AppSidebar() {
 			</SidebarContent>
 
 			{/* Футер: меню пользователя */}
-			<SidebarFooter>
+			<SidebarFooter className="border-t border-sidebar-border p-3">
 				<SidebarMenu>
 					<SidebarMenuItem>
 						<DropdownMenu>
 							<DropdownMenuTrigger
 								render={
-									<SidebarMenuButton size="lg">
+									<SidebarMenuButton size="lg" className="rounded-xl px-2.5">
 										<Avatar className="size-8 rounded-lg">
 											<AvatarImage src={me?.avatarUrl || "/9dba1c75826cde0e6cf64a5a8fd25bf6.jpg"} alt={me?.username ?? "avatar"} />
 											<AvatarFallback className="rounded-lg">{initial}</AvatarFallback>
 										</Avatar>
 										<div className="grid flex-1 text-left text-sm leading-tight">
 											<span className="truncate font-semibold">{me?.username ?? t("guest")}</span>
-											<span className="truncate text-xs text-sidebar-foreground/70">{me?.email ?? ""}</span>
+											<span className="truncate text-xs text-muted">{me?.email ?? ""}</span>
 										</div>
 										<ChevronsUpDown className="ml-auto size-4" />
 									</SidebarMenuButton>
@@ -205,8 +209,8 @@ export function AppSidebar() {
 								{/* Не DropdownMenuLabel: это блок личности, а не заголовок группы
 								    (Base UI GroupLabel требует обёртку Menu.Group) */}
 								<div className="grid px-1.5 py-1 text-left text-sm leading-tight">
-									<span className="truncate font-semibold text-foreground">{me?.username ?? t("guest")}</span>
-									<span className="truncate text-xs text-muted-foreground">{me?.email ?? ""}</span>
+									<span className="truncate font-semibold text-ink">{me?.username ?? t("guest")}</span>
+									<span className="truncate text-xs text-muted">{me?.email ?? ""}</span>
 								</div>
 								<DropdownMenuSeparator />
 								<DropdownMenuItem>

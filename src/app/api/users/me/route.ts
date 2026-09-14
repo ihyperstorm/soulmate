@@ -1,28 +1,22 @@
-import {verifyToken} from '@/entities/session/server'
+import {getAuthUserId} from '@/entities/session/server'
 import connectDB from '@/shared/lib/mongodb/db'
 import {UserInterest} from '@/entities/interest/server'
 import {User} from '@/entities/user/server'
 import {Types} from 'mongoose'
-import {cookies} from 'next/headers'
 import {NextResponse} from 'next/server'
 import {mkdir, writeFile} from 'node:fs/promises'
 import path from 'node:path'
 
 export async function GET() {
 	try {
-		const cookieStore = await cookies()
-		const token = cookieStore.get('accessToken')?.value
-		if (!token) {
-			return NextResponse.json({error: 'Unauthorized'}, {status: 401})
-		}
-		const payload = await verifyToken(token)
-		if (!payload?.userId) {
+		const authUserId = await getAuthUserId()
+		if (!authUserId) {
 			return NextResponse.json({error: 'Unauthorized'}, {status: 401})
 		}
 
 		await connectDB()
 
-		const user = await User.findById(payload.userId).select('-password').lean()
+		const user = await User.findById(authUserId).select('-password').lean()
 
 		if (!user) {
 			return NextResponse.json({error: 'User not found'}, {status: 404})
@@ -41,17 +35,10 @@ export async function GET() {
 
 export async function PATCH(request: Request) {
 	try {
-		const cookieStore = await cookies()
-		const token = cookieStore.get('accessToken')?.value
-		if (!token) {
+		const id = await getAuthUserId()
+		if (!id) {
 			return NextResponse.json({error: 'Unauthorized'}, {status: 401})
 		}
-		const payload = await verifyToken(token)
-		if (!payload?.userId) {
-			return NextResponse.json({error: 'Unauthorized'}, {status: 401})
-		}
-
-		const id = payload.userId
 
 		if (!Types.ObjectId.isValid(id)) {
 			return NextResponse.json({error: 'Invalid user ID'}, {status: 400})

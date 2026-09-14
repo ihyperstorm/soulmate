@@ -114,6 +114,16 @@
 		"title": "Meet people who share your interests",
 		"subtitle": "Rate what you love — Soulmate surfaces the people who overlap with you the most."
 	},
+	"moodBoard": {
+		"title": "🌱 What are you up for today?",
+		"subtitle": "Mark the kind of conversation you're open to — it shapes who you'll see.",
+		"hint": "Change it anytime. Resets after a day.",
+		"saveError": "Couldn't save your mood"
+	},
+	"dailyMatch": {
+		"title": "✨ Daily match",
+		"subtitle": "One person for today — picked by interests and mood. Changes tomorrow."
+	},
 	"topSouls": {
 		"title": "Top matches",
 		"subtitle": "People who share your interests the most.",
@@ -127,14 +137,15 @@
 		"emptyHint": "Break the ice with someone from your matches and start your first chat.",
 		"findPeople": "Find people"
 	},
-	"talkIdeas": {
-		"title": "Talk ideas",
-		"subtitle": "Conversation starters based on your interests.",
-		"empty": "Rate some interests to get personal talk ideas."
-	},
 	"users": {
 		"loading": "Loading…",
 		"loadError": "Error. Please try again later."
+	},
+	"matches": {
+		"title": "Matches",
+		"subtitle": "People who share at least {percent}% of your interests.",
+		"empty": "No matches above {percent}% yet. Add or re-rate your interests — or browse All users.",
+		"editInterests": "Edit interests"
 	},
 	"userCard": {
 		"noShared": "No shared interests yet",
@@ -146,7 +157,9 @@
 		"alsoInto": "Also into",
 		"breakIce": "💬 Break the ice",
 		"startChat": "Start chat",
-		"viewProfile": "View full profile"
+		"viewProfile": "View full profile",
+		"rightNow": "You're both up for",
+		"theyAreUpFor": "They're up for today"
 	},
 	"mood": {
 		"deep-talks": {
@@ -187,14 +200,14 @@
 		"sendError": "Error sending message"
 	},
 	"profile": {
-		"online": "Online",
-		"offline": "Offline",
 		"joined": "Joined {date}",
 		"bio": "Bio",
 		"location": "Location",
 		"birthday": "Birthday",
 		"gender": "Gender",
-		"edit": "Edit profile"
+		"edit": "Edit profile",
+		"openToChat": "Open to conversations",
+		"notRightNow": "Taking time offline"
 	},
 	"profileEdit": {
 		"title": "Edit profile",
@@ -275,6 +288,7 @@
 		"ratedInterestRequired": "At least one rated interest (1–5) is required",
 		"noValidInterests": "No valid interests found for given ratings",
 		"invalidPayload": "Invalid request payload",
+		"sessionExpired": "Session expired, please sign in again",
 		"serverError": "Internal server error"
 	}
 }
