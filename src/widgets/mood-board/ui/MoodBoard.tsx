@@ -14,7 +14,7 @@ const MoodBoard = () => {
 	return (
 		<section>
 			<h2 className="text-3xl font-bold text-ink mb-1">{t("title")}</h2>
-			<p className="text-sm text-muted">{t("subtitle")}</p>
+			<p className="text-sm text-subtle">{t("subtitle")}</p>
 
 			{/* Срок жизни настроения показывает сам пикер — он знает состояние. */}
 			<div className="mt-5">

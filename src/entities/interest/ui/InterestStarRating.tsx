@@ -25,7 +25,7 @@ export function InterestStarRating({ value, onChangeAction, size = 24 }: Props) 
 					aria-label={t("starLabel", { value: n })}
 					onClick={() => onChangeAction(n)}
 				>
-					<Star size={size} strokeWidth={1.5} className={n <= clamped ? "fill-amber-400 text-amber-400" : "fill-transparent text-faint"} />
+					<Star size={size} strokeWidth={1.5} className={n <= clamped ? "fill-warning text-warning" : "fill-transparent text-faint"} />
 				</button>
 			))}
 		</div>

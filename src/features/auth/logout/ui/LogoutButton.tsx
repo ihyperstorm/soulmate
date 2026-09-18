@@ -31,7 +31,7 @@ export const LogoutButton = () => {
 
 	return (
 		<button
-			className='inline-flex items-center gap-2 text-sm font-medium text-muted hover:text-danger transition-colors px-3 py-2 rounded-lg hover:bg-surface-muted cursor-pointer disabled:opacity-50'
+			className='inline-flex items-center gap-2 text-sm font-medium text-subtle hover:text-danger transition-colors px-3 py-2 rounded-lg hover:bg-surface-muted cursor-pointer disabled:opacity-50'
 			onClick={logoutHandler}
 			disabled={isLoading}
 		>

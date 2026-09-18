@@ -112,10 +112,10 @@ export const UserCard = ({ user, myWeights, idfMap, myMoods, onChatClick, classN
 
 	const matchColorClass =
 		coveragePercent >= 70
-			? "text-emerald-500"
+			? "text-success"
 			: coveragePercent >= 40
-				? "text-amber-500"
-				: "text-slate-400"
+				? "text-warning"
+				: "text-faint"
 
 	const sharedCount = shared.length
 	const subtitle =
@@ -141,7 +141,7 @@ export const UserCard = ({ user, myWeights, idfMap, myMoods, onChatClick, classN
 				</Avatar>
 				<div className="flex-1 min-w-0">
 					<h3 className="text-lg font-bold text-ink truncate">{user.username}</h3>
-					<p className="text-xs text-muted mt-0.5">{subtitle}</p>
+					<p className="text-xs text-subtle mt-0.5">{subtitle}</p>
 				</div>
 				{/* % match — центральный визуальный элемент карточки */}
 				<div
@@ -178,7 +178,7 @@ export const UserCard = ({ user, myWeights, idfMap, myMoods, onChatClick, classN
 					</svg>
 					<div className="absolute inset-0 flex flex-col items-center justify-center leading-none">
 						<span className="text-lg font-extrabold text-ink">{coveragePercent}</span>
-						<span className="text-[9px] font-semibold uppercase tracking-wide text-muted">
+						<span className="text-[9px] font-semibold uppercase tracking-wide text-subtle">
 							{t("match")}
 						</span>
 					</div>
@@ -187,7 +187,7 @@ export const UserCard = ({ user, myWeights, idfMap, myMoods, onChatClick, classN
 
 			{shared.length > 0 && (
 				<div className="mt-4">
-					<p className="text-[11px] uppercase tracking-wider text-muted font-semibold mb-2">
+					<p className="text-[11px] uppercase tracking-wider text-subtle font-semibold mb-2">
 						{t("youBothLike")}
 					</p>
 					<div className="flex flex-wrap gap-1.5">
@@ -198,7 +198,7 @@ export const UserCard = ({ user, myWeights, idfMap, myMoods, onChatClick, classN
 									key={interest._id}
 									className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-sm font-medium ${
 										isRare
-											? "bg-amber-100 text-amber-700 ring-1 ring-amber-300"
+											? "bg-aura-cream-soft text-aura-cream-deep ring-1 ring-aura-cream"
 											: "bg-success-soft text-success"
 									}`}
 									title={isRare ? t("rareInterest") : undefined}
@@ -231,7 +231,7 @@ export const UserCard = ({ user, myWeights, idfMap, myMoods, onChatClick, classN
 			    Нет ничего — блок не рендерим, пустая строка хуже отсутствия. */}
 			{(moodsInCommon.length > 0 || theirMoods.length > 0) && (
 				<div className="mt-4">
-					<p className="text-[11px] uppercase tracking-wider text-muted font-semibold mb-2">
+					<p className="text-[11px] uppercase tracking-wider text-subtle font-semibold mb-2">
 						{moodsInCommon.length > 0 ? t("rightNow") : t("theyAreUpFor")}
 					</p>
 					<div className="flex flex-wrap gap-1.5">
@@ -248,20 +248,20 @@ export const UserCard = ({ user, myWeights, idfMap, myMoods, onChatClick, classN
 
 			{other.length > 0 && (
 				<div className="mt-3">
-					<p className="text-[11px] uppercase tracking-wider text-muted font-semibold mb-2">
+					<p className="text-[11px] uppercase tracking-wider text-subtle font-semibold mb-2">
 						{t("alsoInto")}
 					</p>
 					<div className="flex flex-wrap gap-1.5">
 						{other.slice(0, 6).map((interest) => (
 							<span
 								key={interest._id}
-								className="inline-flex items-center px-2 py-0.5 rounded-full bg-surface-muted text-muted text-xs"
+								className="inline-flex items-center px-2 py-0.5 rounded-full bg-surface-muted text-subtle text-xs"
 							>
 								{interest.name}
 							</span>
 						))}
 						{other.length > 6 && (
-							<span className="inline-flex items-center px-2 py-0.5 rounded-full text-muted text-xs">
+							<span className="inline-flex items-center px-2 py-0.5 rounded-full text-subtle text-xs">
 								+{other.length - 6}
 							</span>
 						)}
@@ -271,7 +271,7 @@ export const UserCard = ({ user, myWeights, idfMap, myMoods, onChatClick, classN
 
 			{onChatClick && icebreakers.length > 0 && (
 				<div className="mt-4">
-					<p className="text-[11px] uppercase tracking-wider text-muted font-semibold mb-2">
+					<p className="text-[11px] uppercase tracking-wider text-subtle font-semibold mb-2">
 						{t("breakIce")}
 					</p>
 					<div className="flex flex-col gap-1.5">
@@ -300,7 +300,7 @@ export const UserCard = ({ user, myWeights, idfMap, myMoods, onChatClick, classN
 				)}
 				<Link
 					href={`/users/${user._id}`}
-					className="text-center text-xs text-muted hover:text-ink transition-colors"
+					className="text-center text-xs text-subtle hover:text-ink transition-colors"
 				>
 					{t("viewProfile")}
 				</Link>

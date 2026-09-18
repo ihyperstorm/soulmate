@@ -80,7 +80,7 @@ export default function UserDetailPage() {
 									{t("openToChat")}
 								</span>
 							) : (
-								<span className="inline-flex items-center px-2 py-0.5 rounded-full bg-surface-muted text-muted text-xs font-medium">
+								<span className="inline-flex items-center px-2 py-0.5 rounded-full bg-surface-muted text-subtle text-xs font-medium">
 									{t("notRightNow")}
 								</span>
 							)}

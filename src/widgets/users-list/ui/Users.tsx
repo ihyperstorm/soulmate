@@ -38,7 +38,7 @@ const Users = ({ userCount, direction = "col", minMatchPercent, onlyUserIds, emp
 		router.push(buildChatHref(myId, receiverId, receiverUsername, draft))
 	}
 
-	if (isLoading) return <div className="flex justify-center items-center py-20 text-muted text-sm">{t("loading")}</div>
+	if (isLoading) return <div className="flex justify-center items-center py-20 text-subtle text-sm">{t("loading")}</div>
 	if (isError) return <div className="flex justify-center items-center py-20 text-danger text-sm">{t("loadError")}</div>
 
 	let candidates: RankedCandidate[] = ranked
@@ -62,7 +62,7 @@ const Users = ({ userCount, direction = "col", minMatchPercent, onlyUserIds, emp
 		if (!emptyMessage) return null
 		return (
 			<div className="flex flex-col items-center gap-3 rounded-xl border border-dashed border-line py-10 px-6 text-center">
-				<p className="max-w-xs text-sm text-muted">{emptyMessage}</p>
+				<p className="max-w-xs text-sm text-subtle">{emptyMessage}</p>
 				{emptyAction && (
 					<Link
 						href={emptyAction.href}

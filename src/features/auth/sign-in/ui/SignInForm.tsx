@@ -71,7 +71,7 @@ export const SignInForm = () => {
 		<div className='w-full max-w-sm bg-surface border border-divider rounded-2xl p-8'>
 			<div className='text-center mb-6'>
 				<h1 className='text-2xl font-semibold text-ink mb-1'>{t('title')}</h1>
-				<p className='text-sm text-muted'>{t('subtitle')}</p>
+				<p className='text-sm text-subtle'>{t('subtitle')}</p>
 			</div>
 			<form onSubmit={handleSubmit(onSubmit)} className='flex flex-col gap-3'>
 				{error && (
@@ -85,7 +85,7 @@ export const SignInForm = () => {
 					</p>
 				)}
 				<div className='flex flex-col gap-1'>
-					<label className='text-xs font-medium text-muted'>
+					<label className='text-xs font-medium text-subtle'>
 						{tFields('email')}
 					</label>
 					<Input
@@ -98,7 +98,7 @@ export const SignInForm = () => {
 					)}
 				</div>
 				<div className='flex flex-col gap-1'>
-					<label className='text-xs font-medium text-muted'>
+					<label className='text-xs font-medium text-subtle'>
 						{tFields('password')}
 					</label>
 					<Input
@@ -118,7 +118,7 @@ export const SignInForm = () => {
 			</form>
 			<Link
 				href='/signup'
-				className='block text-sm text-center mt-5 text-muted hover:text-primary transition-colors'
+				className='block text-sm text-center mt-5 text-subtle hover:text-primary transition-colors'
 			>
 				{t('noAccount')}{' '}
 				<span className='text-primary font-medium'>{t('signUpLink')}</span>

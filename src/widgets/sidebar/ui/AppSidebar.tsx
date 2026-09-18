@@ -7,9 +7,7 @@ import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/component
 import {
 	DropdownMenu,
 	DropdownMenuContent,
-	DropdownMenuGroup,
 	DropdownMenuItem,
-	DropdownMenuLabel,
 	DropdownMenuSeparator,
 	DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
@@ -31,6 +29,7 @@ import {
 import axios from "axios"
 import { Bell, ChevronRight, ChevronsUpDown, CircleUserRound, CreditCard, Home, LogOut, MessageCircle, Settings, Sparkles, Users } from "lucide-react"
 import { useTranslations } from "next-intl"
+import Image from "next/image"
 import Link from "next/link"
 import { usePathname, useRouter } from "next/navigation"
 import { useState } from "react"
@@ -83,6 +82,7 @@ export function AppSidebar() {
 	const queryClient = useAppQueryClient()
 	const { data: me } = useCurrentUser()
 	const t = useTranslations("sidebar")
+	const tApp = useTranslations("app")
 	const tNav = useTranslations("nav")
 	const tHeader = useTranslations("header")
 
@@ -106,34 +106,37 @@ export function AppSidebar() {
 
 	return (
 		<Sidebar collapsible="icon">
-			{/* Свитчер воркспейса (заглушка) */}
+			{/* Логотип. Раньше здесь был свитчер воркспейсов-заглушка: он обещал
+			    функциональность, которой нет, и занимал самое заметное место. */}
 			<SidebarHeader className="p-3 pb-2">
 				<SidebarMenu>
 					<SidebarMenuItem>
-						<DropdownMenu>
-							<DropdownMenuTrigger
-								render={
-									<SidebarMenuButton size="lg" className="rounded-xl px-2.5">
-										<div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sm font-semibold text-sidebar-primary-foreground">
-											S
-										</div>
-										<div className="grid flex-1 text-left text-sm leading-tight">
-											<span className="truncate font-semibold">Soulmate</span>
-											<span className="truncate text-xs text-muted">{t("freePlan")}</span>
-										</div>
-										<ChevronsUpDown className="ml-auto" />
-									</SidebarMenuButton>
-								}
-							/>
-							<DropdownMenuContent align="start" side="bottom" className="w-56">
-								{/* GroupLabel в Base UI обязан быть внутри Menu.Group */}
-								<DropdownMenuGroup>
-									<DropdownMenuLabel>{t("workspaces")}</DropdownMenuLabel>
-									<DropdownMenuItem>Soulmate</DropdownMenuItem>
-									<DropdownMenuItem>{t("addWorkspace")}</DropdownMenuItem>
-								</DropdownMenuGroup>
-							</DropdownMenuContent>
-						</DropdownMenu>
+						<SidebarMenuButton
+							size="lg"
+							className="rounded-xl px-2.5 hover:bg-sidebar-accent"
+							render={<Link href="/dashboard" aria-label={tApp("name")} />}
+						>
+							{/* Плитка под маскотом: у картинки прозрачный фон, и на белом
+							    сайдбаре она бы «плавала». Градиент даёт ей форму
+							    логотипа и повторяет порядок кругов палитры. */}
+							<span className="flex aspect-square size-9 shrink-0 items-center justify-center overflow-hidden rounded-xl bg-linear-to-br from-aura-blue-soft via-aura-lilac-soft to-aura-pink-soft ring-1 ring-aura-lilac/40">
+								<Image
+									src="/mascot.png"
+									alt=""
+									width={36}
+									height={36}
+									sizes="36px"
+									priority
+									className="size-9 object-contain"
+								/>
+							</span>
+							<div className="grid flex-1 text-left leading-tight">
+								<span className="truncate text-base font-bold tracking-tight text-ink">
+									{tApp("name")}
+								</span>
+								<span className="truncate text-[11px] text-subtle">{t("tagline")}</span>
+							</div>
+						</SidebarMenuButton>
 					</SidebarMenuItem>
 				</SidebarMenu>
 			</SidebarHeader>
@@ -199,7 +202,7 @@ export function AppSidebar() {
 										</Avatar>
 										<div className="grid flex-1 text-left text-sm leading-tight">
 											<span className="truncate font-semibold">{me?.username ?? t("guest")}</span>
-											<span className="truncate text-xs text-muted">{me?.email ?? ""}</span>
+											<span className="truncate text-xs text-subtle">{me?.email ?? ""}</span>
 										</div>
 										<ChevronsUpDown className="ml-auto size-4" />
 									</SidebarMenuButton>
@@ -210,7 +213,7 @@ export function AppSidebar() {
 								    (Base UI GroupLabel требует обёртку Menu.Group) */}
 								<div className="grid px-1.5 py-1 text-left text-sm leading-tight">
 									<span className="truncate font-semibold text-ink">{me?.username ?? t("guest")}</span>
-									<span className="truncate text-xs text-muted">{me?.email ?? ""}</span>
+									<span className="truncate text-xs text-subtle">{me?.email ?? ""}</span>
 								</div>
 								<DropdownMenuSeparator />
 								<DropdownMenuItem>

@@ -88,7 +88,7 @@ export default function UserEditPage() {
 		}
 	}
 
-	if (isLoading) return <div className="flex justify-center items-center min-h-[60vh] text-sm text-muted">{tCommon("loading")}</div>
+	if (isLoading) return <div className="flex justify-center items-center min-h-[60vh] text-sm text-subtle">{tCommon("loading")}</div>
 	if (isError) return <div className="flex justify-center items-center py-20 text-sm text-danger">{tCommon("loadError")}</div>
 
 	const inputClass =
@@ -129,32 +129,32 @@ export default function UserEditPage() {
 					<h1 className="text-2xl font-semibold text-ink mb-6">{t("title")}</h1>
 					<form onSubmit={onSubmit} className="flex flex-col gap-4">
 						<div className="flex flex-col gap-1">
-							<label htmlFor="username" className="text-xs font-medium text-muted">
+							<label htmlFor="username" className="text-xs font-medium text-subtle">
 								{t("username")}
 							</label>
 							<Input type="text" id="username" name="username" value={username} onChange={(e) => setUsername(e.target.value)} />
 						</div>
 						<div className="flex flex-col gap-1">
-							<label htmlFor="bio" className="text-xs font-medium text-muted">
+							<label htmlFor="bio" className="text-xs font-medium text-subtle">
 								{t("bio")}
 							</label>
 							<textarea id="bio" name="bio" value={bio} onChange={(e) => setBio(e.target.value)} className={`${inputClass} resize-none h-24`} />
 						</div>
 						<div className="flex flex-col gap-1">
-							<label htmlFor="location" className="text-xs font-medium text-muted">
+							<label htmlFor="location" className="text-xs font-medium text-subtle">
 								{t("location")}
 							</label>
 							<Input type="text" id="location" name="location" value={location} onChange={(e) => setLocation(e.target.value)} />
 						</div>
 						<div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
 							<div className="flex flex-col gap-1">
-								<label htmlFor="birthday" className="text-xs font-medium text-muted">
+								<label htmlFor="birthday" className="text-xs font-medium text-subtle">
 									{t("birthday")}
 								</label>
 								<Input type="date" id="birthday" name="birthday" value={birthday} onChange={(e) => setBirthday(e.target.value)} />
 							</div>
 							<div className="flex flex-col gap-1">
-								<label htmlFor="gender" className="text-xs font-medium text-muted">
+								<label htmlFor="gender" className="text-xs font-medium text-subtle">
 									{t("gender")}
 								</label>
 								<Input type="text" id="gender" name="gender" value={sex} onChange={(e) => setSex(e.target.value)} />
@@ -173,7 +173,7 @@ export default function UserEditPage() {
 					    молча менял бы твоё собственное. */}
 					{me?._id && user?._id === me._id && (
 						<div className="mt-8 pt-6 border-t border-divider">
-							<h2 className="text-sm font-medium text-muted">{t("mood")}</h2>
+							<h2 className="text-sm font-medium text-subtle">{t("mood")}</h2>
 							<p className="mt-1 text-xs text-faint">{t("moodHint")}</p>
 							<div className="mt-3">
 								<MoodPicker />

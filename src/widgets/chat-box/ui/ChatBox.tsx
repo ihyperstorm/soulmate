@@ -224,7 +224,7 @@ const ChatBox = ({ chatId, senderId, receiverId, systemNotice, draft }: Props) =
 	return (
 		<div className="flex flex-col h-175 bg-surface border border-divider rounded-2xl overflow-hidden">
 			<div className="flex flex-col gap-1 px-4 py-2 border-b border-divider min-h-12 justify-center">
-				{systemNotice && <div className="text-xs text-muted">{systemNotice}</div>}
+				{systemNotice && <div className="text-xs text-subtle">{systemNotice}</div>}
 				{isPeerTyping && <div className="text-xs text-primary">{t("typing")}</div>}
 				{readText && !isPeerTyping && (
 					<div className="text-xs text-faint">{t("readAt", { time: readText })}</div>

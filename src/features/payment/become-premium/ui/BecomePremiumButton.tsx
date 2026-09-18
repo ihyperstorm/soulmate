@@ -49,7 +49,7 @@ export const BecomePremiumButton = () => {
 				onFail={() => setStatus('error')}
 			/>
 			{status === 'upgrading' && (
-				<p className='text-xs text-muted'>{t('activating')}</p>
+				<p className='text-xs text-subtle'>{t('activating')}</p>
 			)}
 			{status === 'done' && (
 				<p className='text-xs text-success'>{t('activated')}</p>

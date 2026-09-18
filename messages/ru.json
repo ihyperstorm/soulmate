@@ -38,11 +38,9 @@
 		"label": "Язык интерфейса"
 	},
 	"sidebar": {
-		"freePlan": "Бесплатный план",
-		"workspaces": "Рабочие пространства",
-		"addWorkspace": "Добавить пространство",
 		"upgradeToPro": "Перейти на Pro",
-		"guest": "Гость"
+		"guest": "Гость",
+		"tagline": "Общение по интересам"
 	},
 	"home": {
 		"hero": {

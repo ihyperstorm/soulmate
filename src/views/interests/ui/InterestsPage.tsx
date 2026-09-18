@@ -232,7 +232,7 @@ export default function InterestsPage() {
 	if (isLoading) {
 		return (
 			<div className='flex flex-col items-center justify-center min-h-screen bg-background'>
-				<p className='text-sm text-muted animate-pulse'>{t('loading')}</p>
+				<p className='text-sm text-subtle animate-pulse'>{t('loading')}</p>
 			</div>
 		)
 	}
@@ -252,7 +252,7 @@ export default function InterestsPage() {
 					<h1 className='text-2xl md:text-3xl font-semibold text-ink mb-1'>
 						{t('title')}
 					</h1>
-					<p className='text-sm text-muted'>{t('subtitle')}</p>
+					<p className='text-sm text-subtle'>{t('subtitle')}</p>
 				</div>
 				<div className='flex items-center gap-2 mb-6'>
 					<span className='inline-flex items-center px-2.5 py-0.5 rounded-full bg-primary-soft text-primary text-xs font-medium'>
@@ -300,7 +300,7 @@ export default function InterestsPage() {
 						<button
 							type='button'
 							onClick={handleReset}
-							className='inline-flex items-center justify-center px-4 py-2.5 rounded-lg text-sm font-medium text-muted bg-surface border border-line hover:bg-surface-muted transition-colors cursor-pointer'
+							className='inline-flex items-center justify-center px-4 py-2.5 rounded-lg text-sm font-medium text-subtle bg-surface border border-line hover:bg-surface-muted transition-colors cursor-pointer'
 						>
 							{t('reset')}
 						</button>

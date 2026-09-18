@@ -38,11 +38,9 @@
 		"label": "Interface language"
 	},
 	"sidebar": {
-		"freePlan": "Free plan",
-		"workspaces": "Workspaces",
-		"addWorkspace": "Add workspace",
 		"upgradeToPro": "Upgrade to Pro",
-		"guest": "Guest"
+		"guest": "Guest",
+		"tagline": "Connect by interests"
 	},
 	"home": {
 		"hero": {

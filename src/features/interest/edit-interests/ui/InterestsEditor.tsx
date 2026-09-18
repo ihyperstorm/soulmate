@@ -150,7 +150,7 @@ export function InterestsEditor({onSavedAction}: InterestsEditorProps) {
 	return (
 		<div className='flex flex-col gap-3'>
 			<div className='flex items-center justify-between'>
-				<h2 className='text-sm font-medium text-muted'>{t('title')}</h2>
+				<h2 className='text-sm font-medium text-subtle'>{t('title')}</h2>
 				<span className='text-xs text-faint'>
 					{t('selectedCount', {count: selected.length})}
 				</span>

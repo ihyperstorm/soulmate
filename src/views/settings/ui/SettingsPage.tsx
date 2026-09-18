@@ -11,13 +11,13 @@ export default async function SettingsPage() {
 		<div className='py-10'>
 			<section className='bg-surface border border-divider rounded-2xl p-6 max-w-2xl'>
 				<h1 className='text-2xl font-semibold text-ink mb-1'>{t('title')}</h1>
-				<p className='text-sm text-muted'>{t('subtitle')}</p>
+				<p className='text-sm text-subtle'>{t('subtitle')}</p>
 
 				<div className='mt-6 border-t border-divider pt-6'>
 					<h2 className='text-lg font-semibold text-ink mb-1'>
 						{t('premiumTitle')}
 					</h2>
-					<p className='text-sm text-muted mb-3'>
+					<p className='text-sm text-subtle mb-3'>
 						{t('premiumDescription', {price: PREMIUM_PRICE_KZT})}
 					</p>
 					<BecomePremiumButton />

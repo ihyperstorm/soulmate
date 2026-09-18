@@ -25,9 +25,9 @@ const RecentSouls = () => {
 		return (
 			<section>
 				<h1 className="text-3xl font-bold text-ink mb-1">{t("title")}</h1>
-				<p className="text-sm text-muted">{t("emptySubtitle")}</p>
+				<p className="text-sm text-subtle">{t("emptySubtitle")}</p>
 				<div className="mt-4 flex flex-col items-center gap-3 rounded-xl border border-dashed border-line py-8 px-6 text-center">
-					<p className="text-sm text-muted">{t("emptyHint")}</p>
+					<p className="text-sm text-subtle">{t("emptyHint")}</p>
 					<Button onClick={() => router.push("/users")}>{t("findPeople")}</Button>
 				</div>
 			</section>
@@ -39,7 +39,7 @@ const RecentSouls = () => {
 	return (
 		<section>
 			<h1 className="text-3xl font-bold text-ink mb-1">{t("title")}</h1>
-			<p className="text-sm text-muted">{t("subtitle")}</p>
+			<p className="text-sm text-subtle">{t("subtitle")}</p>
 			<div className="mt-5">
 				<Users direction="row" onlyUserIds={peerIds} />
 			</div>

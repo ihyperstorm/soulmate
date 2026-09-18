@@ -72,13 +72,13 @@ export const SignUpForm = () => {
 		<div className="w-full max-w-sm bg-surface border border-divider rounded-2xl p-8">
 			<div className="text-center mb-6">
 				<h1 className="text-2xl font-semibold text-ink mb-1">{t("title")}</h1>
-				<p className="text-sm text-muted">{t("subtitle")}</p>
+				<p className="text-sm text-subtle">{t("subtitle")}</p>
 			</div>
 			<form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-3">
 				{error && <p className="text-sm text-danger bg-danger-soft border border-danger/20 rounded-lg px-3 py-2">{error}</p>}
 				{success && <p className="text-sm text-success bg-success-soft border border-success/20 rounded-lg px-3 py-2">{t("success")}</p>}
 				<div className="flex flex-col gap-1">
-					<label className="text-xs font-medium text-muted">{tFields("name")}</label>
+					<label className="text-xs font-medium text-subtle">{tFields("name")}</label>
 					<Input
 						type="text"
 						placeholder={tFields("namePlaceholder")}
@@ -87,7 +87,7 @@ export const SignUpForm = () => {
 					{errors.username && <p className="text-xs text-danger mt-0.5">{errors.username.message}</p>}
 				</div>
 				<div className="flex flex-col gap-1">
-					<label className="text-xs font-medium text-muted">{tFields("email")}</label>
+					<label className="text-xs font-medium text-subtle">{tFields("email")}</label>
 					<Input
 						type="email"
 						placeholder={tFields("emailPlaceholder")}
@@ -96,7 +96,7 @@ export const SignUpForm = () => {
 					{errors.email && <p className="text-xs text-danger mt-0.5">{errors.email.message}</p>}
 				</div>
 				<div className="flex flex-col gap-1">
-					<label className="text-xs font-medium text-muted">{tFields("password")}</label>
+					<label className="text-xs font-medium text-subtle">{tFields("password")}</label>
 					<Input
 						type="password"
 						placeholder="••••••••"
@@ -108,7 +108,7 @@ export const SignUpForm = () => {
 					{isSubmitting ? t("submitting") : t("submit")}
 				</Button>
 			</form>
-			<Link href="/signin" className="block text-sm text-center mt-5 text-muted hover:text-primary transition-colors">
+			<Link href="/signin" className="block text-sm text-center mt-5 text-subtle hover:text-primary transition-colors">
 				{t("hasAccount")} <span className="text-primary font-medium">{t("signInLink")}</span>
 			</Link>
 		</div>

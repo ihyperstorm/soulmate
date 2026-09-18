@@ -2,36 +2,179 @@
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
 
+/* Тёмной темы в приложении нет: ни переключателя, ни `.dark` на <html>.
+   Вариант всё равно объявлен явно — без него Tailwind включил бы `dark:`
+   по prefers-color-scheme, и `dark:`-классы внутри shadcn-компонентов
+   сработали бы поверх светлой палитры, дав полудохлую тёмную тему. */
 @custom-variant dark (&:is(.dark *));
+
+/* ══════════════════════════════════════════════════════════════════════
+   Палитра. Единственный источник правды — :root ниже, @theme inline
+   только раздаёт эти переменные утилитам Tailwind.
+
+   Почему не наоборот: @theme inline подставляет значение прямо в утилиту
+   и НЕ создаёт настоящих custom properties. Держи палитру внутри него —
+   и рукописный CSS (conic-gradient рамки, scrollbar) её не прочитает,
+   значения придётся дублировать. Держи в :root — читают все.
+   ══════════════════════════════════════════════════════════════════════ */
+
+:root {
+	/* ——— Aura ————————————————————————————————————————————————————————
+	   Пять пастельных кругов исходной палитры: голубой → сиреневый →
+	   розовый → персиковый → кремовый.
+
+	   Базовый тон  — сама пастель: заливки, кольца, градиенты.
+	   -soft        — та же пастель, разведённая до уровня фона.
+	   -deep        — насыщенная версия под текст и иконки: пастель на
+	                  белом даёт контраст ~1.5:1 и как текст нечитаема,
+	                  все -deep держат ≥ 4.5:1. */
+	--aura-blue: #a9c8f2;
+	--aura-blue-soft: #ecf3fd;
+	--aura-blue-deep: #3a72bd;
+
+	--aura-lilac: #b7a9f0;
+	--aura-lilac-soft: #f1eefe;
+	--aura-lilac-deep: #6e5de0;
+
+	--aura-pink: #eda9ec;
+	--aura-pink-soft: #fceefb;
+	--aura-pink-deep: #b348af;
+
+	--aura-peach: #f9d6c6;
+	--aura-peach-soft: #fdf2ec;
+	--aura-peach-deep: #b2612f;
+
+	--aura-cream: #fbe4b3;
+	--aura-cream-soft: #fdf6e7;
+	--aura-cream-deep: #8f6a13;
+
+	/* ——— Поверхности и текст ————————————————————————————————————————
+	   Нейтрали не серые, а с сиреневым подмесом: чистый slate рядом с
+	   пастелью выглядит грязным. */
+	--surface: #ffffff;
+	--surface-muted: #f7f5fb;
+	--divider: #efecf7;
+	--line: #e3dff0;
+
+	--ink: #1e1b2e;
+	--subtle: #6b6880;
+	--faint: #9a97ae;
+
+	/* ——— Акценты ————————————————————————————————————————————————————
+	   Бренд — сиреневый круг палитры. */
+	--primary: var(--aura-lilac-deep);
+	--primary-hover: #5a48d1;
+	--primary-soft: var(--aura-lilac-soft);
+
+	/* Состояния. Зелёного и красного в палитре нет, но подменять их
+	   пастелью нельзя: «успех» и «ошибка» читаются цветом, а не тоном.
+	   Взяты мятный и розово-красный — приглушённые настолько, чтобы
+	   стоять рядом с пастелью, и насыщенные настолько, чтобы означать. */
+	--success: #12a594;
+	--success-soft: #e7f7f3;
+	--danger: #d94459;
+	--danger-soft: #fdeef0;
+	--warning: #e0952e;
+	--online: #35c08c;
+
+	/* Ползунок скроллбара — на шаг темнее линии, иначе теряется на фоне. */
+	--scrollbar-thumb: #dcd6ec;
+	--scrollbar-thumb-hover: var(--faint);
+
+	/* ——— shadcn ——————————————————————————————————————————————————————
+	   Свои имена shadcn-компонентов, сведённые к палитре выше. Отдельного
+	   набора значений здесь нет намеренно: пока это были литералы, сайдбар
+	   и карточки разъезжались при каждой правке палитры. */
+	--background: var(--surface);
+	--foreground: var(--ink);
+	--card: var(--surface);
+	--card-foreground: var(--ink);
+	--popover: var(--surface);
+	--popover-foreground: var(--ink);
+	--primary-foreground: #ffffff;
+	--secondary: var(--surface-muted);
+	--secondary-foreground: var(--ink);
+	/* muted у shadcn — это подложка (скелетоны, фолбэк аватара, ховер
+	   ghost-кнопки), а не цвет текста. Вторичный текст приложения живёт
+	   в --subtle. */
+	--muted: var(--surface-muted);
+	--muted-foreground: var(--subtle);
+	/* accent — фон ховера в меню, дропдаунах и комбобоксе. Тот же мягкий
+	   сиреневый, что у активного пункта сайдбара и чипов в карточках. */
+	--accent: var(--primary-soft);
+	--accent-foreground: var(--primary);
+	--destructive: var(--danger);
+	--border: var(--divider); /* рамки shadcn-компонентов = рамки карточек */
+	--input: var(--line); /* у полей ввода рамка чуть заметнее */
+	--ring: var(--primary); /* фокус везде сиреневый, а не серый */
+
+	--chart-1: var(--aura-blue);
+	--chart-2: var(--aura-lilac);
+	--chart-3: var(--aura-pink);
+	--chart-4: var(--aura-peach);
+	--chart-5: var(--aura-cream);
+
+	--radius: 0.625rem;
+
+	/* Сайдбар — часть дизайн-системы, а не отдельный shadcn-остров.
+	   Плоскость та же, что у карточек: на белом primary-soft читается
+	   как чип в карточке, на сером выглядел грязным. */
+	--sidebar: var(--surface);
+	--sidebar-foreground: var(--ink);
+	--sidebar-primary: var(--primary);
+	--sidebar-primary-foreground: #ffffff;
+	--sidebar-accent: var(--primary-soft); /* hover и активный пункт */
+	--sidebar-accent-foreground: var(--primary);
+	--sidebar-border: var(--divider); /* стыкуется с границей хедера */
+	--sidebar-ring: var(--primary);
+}
 
 @theme inline {
 	--color-background: var(--background);
 	--color-foreground: var(--foreground);
 
-	--color-surface: #ffffff;
-	--color-surface-muted: #f1f3f6;
+	/* Aura — для декора: градиенты, кольца, подложки чипов. */
+	--color-aura-blue: var(--aura-blue);
+	--color-aura-blue-soft: var(--aura-blue-soft);
+	--color-aura-blue-deep: var(--aura-blue-deep);
 
-	--color-divider: #eef0f3;
-	--color-line: #e5e7eb;
+	--color-aura-lilac: var(--aura-lilac);
+	--color-aura-lilac-soft: var(--aura-lilac-soft);
+	--color-aura-lilac-deep: var(--aura-lilac-deep);
 
-	--color-primary: #6366f1;
-	--color-primary-hover: #4f46e5;
-	--color-primary-soft: #eef2ff;
+	--color-aura-pink: var(--aura-pink);
+	--color-aura-pink-soft: var(--aura-pink-soft);
+	--color-aura-pink-deep: var(--aura-pink-deep);
 
-	/* accent отдан shadcn: это фон ховера в меню, дропдаунах и комбобоксе.
-	   Изумрудный «успех/подтверждено» приложения живёт в success / success-soft. */
-	--color-accent: var(--accent);
+	--color-aura-peach: var(--aura-peach);
+	--color-aura-peach-soft: var(--aura-peach-soft);
+	--color-aura-peach-deep: var(--aura-peach-deep);
 
-	--color-ink: #0f172a;
-	--color-muted: #64748b;
-	--color-faint: #94a3b8;
+	--color-aura-cream: var(--aura-cream);
+	--color-aura-cream-soft: var(--aura-cream-soft);
+	--color-aura-cream-deep: var(--aura-cream-deep);
 
-	--color-danger: #ef4444;
-	--color-danger-soft: #fef2f2;
-	--color-warning: #f59e0b;
-	--color-success: #10b981;
-	--color-success-soft: #ecfdf5;
-	--color-online: #22c55e;
+	/* Поверхности и текст. */
+	--color-surface: var(--surface);
+	--color-surface-muted: var(--surface-muted);
+	--color-divider: var(--divider);
+	--color-line: var(--line);
+
+	--color-ink: var(--ink);
+	--color-subtle: var(--subtle);
+	--color-faint: var(--faint);
+
+	/* Акценты и состояния. */
+	--color-primary: var(--primary);
+	--color-primary-hover: var(--primary-hover);
+	--color-primary-soft: var(--primary-soft);
+
+	--color-danger: var(--danger);
+	--color-danger-soft: var(--danger-soft);
+	--color-warning: var(--warning);
+	--color-success: var(--success);
+	--color-success-soft: var(--success-soft);
+	--color-online: var(--online);
 
 	--font-sans: var(--font-sans);
 
@@ -71,7 +214,11 @@
 
 	--color-destructive: var(--destructive);
 
+	--color-accent: var(--accent);
+
 	--color-accent-foreground: var(--accent-foreground);
+
+	--color-muted: var(--muted);
 
 	--color-muted-foreground: var(--muted-foreground);
 
@@ -146,11 +293,16 @@
 	/* Радиус карточки (rounded-2xl) + толщина рамки, иначе внутренний угол
 	   выпирает из внешнего. */
 	border-radius: calc(var(--radius) * 1.8 + 2px);
+	/* Вся палитра по кругу, с возвратом в голубой: без замыкающего стопа
+	   на 360° виден шов между кремовым и голубым. */
 	background: conic-gradient(
 		from var(--daily-angle),
-		var(--daily-ring-from),
-		var(--daily-ring-via),
-		var(--daily-ring-from)
+		var(--aura-blue),
+		var(--aura-lilac),
+		var(--aura-pink),
+		var(--aura-peach),
+		var(--aura-cream),
+		var(--aura-blue)
 	);
 	animation: daily-ring-spin 1s linear infinite;
 }
@@ -172,7 +324,7 @@ body {
 /* Quiet, neutral scrollbar */
 * {
 	scrollbar-width: thin;
-	scrollbar-color: #d4d7dc transparent;
+	scrollbar-color: var(--scrollbar-thumb) transparent;
 }
 
 *::-webkit-scrollbar {
@@ -185,96 +337,12 @@ body {
 }
 
 *::-webkit-scrollbar-thumb {
-	background-color: #d4d7dc;
+	background-color: var(--scrollbar-thumb);
 	border-radius: 9999px;
 }
 
 *::-webkit-scrollbar-thumb:hover {
-	background-color: #9aa0a8;
-}
-
-:root {
-	--background: oklch(1 0 0);
-	--foreground: oklch(0.145 0 0);
-	--card: oklch(1 0 0);
-	--card-foreground: oklch(0.145 0 0);
-	--popover: oklch(1 0 0);
-	--popover-foreground: oklch(0.145 0 0);
-	--primary: oklch(0.205 0 0);
-	--primary-foreground: oklch(0.985 0 0);
-	--secondary: oklch(0.97 0 0);
-	--secondary-foreground: oklch(0.205 0 0);
-	--muted: oklch(0.97 0 0);
-	--muted-foreground: oklch(0.556 0 0);
-	/* Ховер в меню/дропдаунах/комбобоксе — тот же мягкий индиго,
-	   что у активного пункта сайдбара и у чипов в карточках. */
-	--accent: #eef2ff; /* primary-soft */
-	--accent-foreground: #6366f1; /* primary */
-	--destructive: oklch(0.577 0.245 27.325);
-	--border: #eef0f3; /* divider — рамки shadcn-компонентов = рамки карточек */
-	--input: #e5e7eb; /* line — у полей ввода рамка чуть заметнее */
-	--ring: #6366f1; /* primary — фокус везде индиго, а не серый */
-
-	/* Градиент рамки «человека дня» = primary → success из палитры.
-	   Значения продублированы: @theme inline не отдаёт свои переменные
-	   в рантайм (bg-primary компилируется в литерал), а conic-gradient
-	   в рукописном CSS может читать только настоящие custom properties. */
-	--daily-ring-from: #6366f1;
-	--daily-ring-via: #10b981;
-	--chart-1: oklch(0.87 0 0);
-	--chart-2: oklch(0.556 0 0);
-	--chart-3: oklch(0.439 0 0);
-	--chart-4: oklch(0.371 0 0);
-	--chart-5: oklch(0.269 0 0);
-	--radius: 0.625rem;
-	/* Сайдбар — часть дизайн-системы, а не отдельный shadcn-остров.
-	   Значения продублированы из палитры @theme inline выше: переменные @theme
-	   не читаются из :root, поэтому связь держится комментарием.
-	   Меняешь палитру — проверь и этот блок. */
-	--sidebar: #ffffff; /* surface — та же плоскость, что у карточек;
-	                      на белом primary-soft читается как чип в карточке,
-	                      на сером он выглядел грязным */
-	--sidebar-foreground: #0f172a; /* ink */
-	--sidebar-primary: #6366f1; /* primary */
-	--sidebar-primary-foreground: #ffffff;
-	--sidebar-accent: #eef2ff; /* primary-soft — hover и активный пункт */
-	--sidebar-accent-foreground: #6366f1; /* primary */
-	--sidebar-border: #eef0f3; /* divider — стыкуется с границей хедера */
-	--sidebar-ring: #6366f1; /* primary */
-}
-
-.dark {
-	--background: oklch(0.145 0 0);
-	--foreground: oklch(0.985 0 0);
-	--card: oklch(0.205 0 0);
-	--card-foreground: oklch(0.985 0 0);
-	--popover: oklch(0.205 0 0);
-	--popover-foreground: oklch(0.985 0 0);
-	--primary: oklch(0.922 0 0);
-	--primary-foreground: oklch(0.205 0 0);
-	--secondary: oklch(0.269 0 0);
-	--secondary-foreground: oklch(0.985 0 0);
-	--muted: oklch(0.269 0 0);
-	--muted-foreground: oklch(0.708 0 0);
-	--accent: oklch(0.269 0 0);
-	--accent-foreground: oklch(0.985 0 0);
-	--destructive: oklch(0.704 0.191 22.216);
-	--border: oklch(1 0 0 / 10%);
-	--input: oklch(1 0 0 / 15%);
-	--ring: oklch(0.556 0 0);
-	--chart-1: oklch(0.87 0 0);
-	--chart-2: oklch(0.556 0 0);
-	--chart-3: oklch(0.439 0 0);
-	--chart-4: oklch(0.371 0 0);
-	--chart-5: oklch(0.269 0 0);
-	--sidebar: oklch(0.205 0 0);
-	--sidebar-foreground: oklch(0.985 0 0);
-	--sidebar-primary: oklch(0.488 0.243 264.376);
-	--sidebar-primary-foreground: oklch(0.985 0 0);
-	--sidebar-accent: oklch(0.269 0 0);
-	--sidebar-accent-foreground: oklch(0.985 0 0);
-	--sidebar-border: oklch(1 0 0 / 10%);
-	--sidebar-ring: oklch(0.556 0 0);
+	background-color: var(--scrollbar-thumb-hover);
 }
 
 @layer base {

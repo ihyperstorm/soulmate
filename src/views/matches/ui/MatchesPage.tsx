@@ -15,7 +15,7 @@ export default function MatchesPage() {
 		<div className="py-10">
 			<header className="mb-6">
 				<h1 className="text-3xl font-bold text-ink mb-1">{t("title")}</h1>
-				<p className="text-sm text-muted">{t("subtitle", { percent: MIN_MATCH_PERCENT })}</p>
+				<p className="text-sm text-subtle">{t("subtitle", { percent: MIN_MATCH_PERCENT })}</p>
 			</header>
 
 			{/* userCount не задаём: на отдельной странице показываем всех, кто прошёл порог */}

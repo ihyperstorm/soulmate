@@ -20,7 +20,7 @@ type Props = {
 const BASE = "inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-sm font-medium"
 
 const ACCENT = "bg-primary-soft text-primary border border-primary/15"
-const MUTED = "bg-surface-muted text-muted border border-transparent"
+const MUTED = "bg-surface-muted text-subtle border border-transparent"
 
 export function MoodChip({ mood, variant = "shared", onSelectAction, selected = false, className }: Props) {
 	const t = useTranslations("mood")

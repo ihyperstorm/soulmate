@@ -21,7 +21,7 @@ const Advantages = () => {
 						<Icon className='w-5 h-5 text-primary' />
 					</div>
 					<h3 className='text-base font-semibold text-ink'>{t(`${key}.title`)}</h3>
-					<p className='text-sm text-muted leading-relaxed'>
+					<p className='text-sm text-subtle leading-relaxed'>
 						{t(`${key}.description`)}
 					</p>
 				</div>

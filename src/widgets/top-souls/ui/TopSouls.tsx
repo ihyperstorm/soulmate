@@ -7,7 +7,7 @@ const TopSouls = () => {
 	return (
 		<section>
 			<h1 className="text-3xl font-bold text-ink mb-1">{t("title")}</h1>
-			<p className="text-sm text-muted">{t("subtitle")}</p>
+			<p className="text-sm text-subtle">{t("subtitle")}</p>
 			<div className="mt-5">
 				<Users
 					direction="row"

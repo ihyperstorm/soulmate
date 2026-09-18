@@ -62,7 +62,7 @@ const ChatsList = ({onSelectChat}: ChatsListProps) => {
 						/>
 					))
 				) : (
-					<div className='flex justify-center items-center py-12 text-sm text-muted'>
+					<div className='flex justify-center items-center py-12 text-sm text-subtle'>
 						{t('listEmpty')}
 					</div>
 				)}
