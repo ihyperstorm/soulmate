@@ -21,7 +21,8 @@ const SET_MOOD_KEY = ['setMood'] as const
 
 export const useSetMood = () => {
 	const queryClient = useAppQueryClient()
-	const t = useTranslations('moodBoard')
+	// Неймспейс фичи, а не виджета: пикер живёт и на дашборде, и в профиле.
+	const t = useTranslations('moodPicker')
 
 	return useMutation<MoodResponse, unknown, ConversationMood[], Context>({
 		mutationKey: SET_MOOD_KEY,

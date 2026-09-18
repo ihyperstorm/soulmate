@@ -4,10 +4,12 @@ import {
 	getActiveMoods,
 	MAX_MOODS,
 	MoodChip,
+	moodHoursLeft,
 	MOODS,
 	type ConversationMood,
 } from '@/entities/mood'
 import {useCurrentUser} from '@/entities/user'
+import {useTranslations} from 'next-intl'
 import {useSetMood} from '../api/useSetMood'
 
 /**
@@ -21,8 +23,10 @@ import {useSetMood} from '../api/useSetMood'
 export const MoodPicker = () => {
 	const {data: me} = useCurrentUser()
 	const {mutate: setMood} = useSetMood()
+	const t = useTranslations('moodPicker')
 
 	const selected = getActiveMoods(me)
+	const hoursLeft = moodHoursLeft(me?.moodUpdatedAt)
 
 	const toggle = (mood: ConversationMood) => {
 		const next = selected.includes(mood)
@@ -35,15 +39,22 @@ export const MoodPicker = () => {
 	}
 
 	return (
-		<div className='flex flex-wrap gap-2'>
-			{MOODS.map(mood => (
-				<MoodChip
-					key={mood.id}
-					mood={mood.id}
-					selected={selected.includes(mood.id)}
-					onSelectAction={toggle}
-				/>
-			))}
+		<div className='flex flex-col gap-3'>
+			<div className='flex flex-wrap gap-2'>
+				{MOODS.map(mood => (
+					<MoodChip
+						key={mood.id}
+						mood={mood.id}
+						selected={selected.includes(mood.id)}
+						onSelectAction={toggle}
+					/>
+				))}
+			</div>
+
+			{/* Без явного счётчика исчезновение чипов через сутки читается как баг. */}
+			{hoursLeft !== null && (
+				<p className='text-xs text-faint'>{t('expiresIn', {hours: hoursLeft})}</p>
+			)}
 		</div>
 	)
 }

@@ -1,4 +1,10 @@
-export {getActiveMoods, isMoodFresh, MOOD_TTL_MS} from './lib/active'
+export {
+	getActiveMoods,
+	isMoodFresh,
+	MOOD_TTL_HOURS,
+	MOOD_TTL_MS,
+	moodHoursLeft,
+} from './lib/active'
 export {MOOD_BOOST_PER_MATCH, moodBoost, sharedMoods} from './lib/match'
 export {
 	isConversationMood,

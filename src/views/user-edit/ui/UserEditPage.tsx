@@ -4,7 +4,9 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import type { IUser } from "@/entities/user"
+import { useCurrentUser } from "@/entities/user"
 import { InterestsEditor } from "@/features/interest/edit-interests"
+import { MoodPicker } from "@/features/mood/set-mood"
 import { useAppQueryClient } from "@/shared/api/providers"
 import { useQuery } from "@tanstack/react-query"
 import axios from "axios"
@@ -30,6 +32,7 @@ export default function UserEditPage() {
 	const queryClient = useAppQueryClient()
 	const t = useTranslations("profileEdit")
 	const tCommon = useTranslations("common")
+	const { data: me } = useCurrentUser()
 
 	const {
 		data: user,
@@ -164,6 +167,19 @@ export default function UserEditPage() {
 							</Button>
 						</div>
 					</form>
+
+					{/* Настроение правится только своё: PATCH /api/users/me/mood всегда
+					    пишет текущему пользователю, и на чужом профиле этот блок
+					    молча менял бы твоё собственное. */}
+					{me?._id && user?._id === me._id && (
+						<div className="mt-8 pt-6 border-t border-divider">
+							<h2 className="text-sm font-medium text-muted">{t("mood")}</h2>
+							<p className="mt-1 text-xs text-faint">{t("moodHint")}</p>
+							<div className="mt-3">
+								<MoodPicker />
+							</div>
+						</div>
+					)}
 
 					<div className="mt-8 pt-6 border-t border-divider">
 						<InterestsEditor

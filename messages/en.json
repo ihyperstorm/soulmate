@@ -114,11 +114,13 @@
 		"title": "Meet people who share your interests",
 		"subtitle": "Rate what you love — Soulmate surfaces the people who overlap with you the most."
 	},
+	"moodPicker": {
+		"expiresIn": "Resets in {hours, plural, one {# hour} other {# hours}}",
+		"saveError": "Couldn't save your mood"
+	},
 	"moodBoard": {
 		"title": "🌱 What are you up for today?",
-		"subtitle": "Mark the kind of conversation you're open to — it shapes who you'll see.",
-		"hint": "Change it anytime. Resets after a day.",
-		"saveError": "Couldn't save your mood"
+		"subtitle": "Mark the kind of conversation you're open to — it shapes who you'll see."
 	},
 	"dailyMatch": {
 		"title": "✨ Daily match",
@@ -220,7 +222,9 @@
 		"submit": "Save changes",
 		"cancel": "Cancel",
 		"saved": "User updated",
-		"saveError": "Error updating user"
+		"saveError": "Error updating user",
+		"mood": "Today's mood",
+		"moodHint": "Lasts 24 hours from the moment you pick it, then clears itself."
 	},
 	"interests": {
 		"title": "Select your interests",

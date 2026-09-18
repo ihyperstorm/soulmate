@@ -16,11 +16,10 @@ const MoodBoard = () => {
 			<h2 className="text-3xl font-bold text-ink mb-1">{t("title")}</h2>
 			<p className="text-sm text-muted">{t("subtitle")}</p>
 
+			{/* Срок жизни настроения показывает сам пикер — он знает состояние. */}
 			<div className="mt-5">
 				<MoodPicker />
 			</div>
-
-			<p className="mt-3 text-xs text-faint">{t("hint")}</p>
 		</section>
 	)
 }
