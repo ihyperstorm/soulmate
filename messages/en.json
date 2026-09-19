@@ -77,7 +77,8 @@
 			"submitting": "Signing in…",
 			"success": "Login successful!",
 			"noAccount": "Don't have an account?",
-			"signUpLink": "Sign up"
+			"signUpLink": "Sign up",
+			"forgotPassword": "Forgot your password?"
 		},
 		"signUp": {
 			"title": "Create account",
@@ -95,6 +96,29 @@
 			"email": "Email",
 			"emailPlaceholder": "you@example.com",
 			"password": "Password"
+		},
+		"forgotPassword": {
+			"title": "Reset your password",
+			"subtitle": "Enter the email you signed up with — we’ll send a link to set a new password.",
+			"submit": "Send link",
+			"submitting": "Sending…",
+			"sentTitle": "Check your inbox",
+			"sentText": "If that address is registered, a link is on its way. It stays valid for one hour.",
+			"backToSignIn": "Back to sign in"
+		},
+		"resetPassword": {
+			"title": "New password",
+			"subtitle": "Pick the password you’ll sign in with from now on.",
+			"newPassword": "New password",
+			"passwordHint": "At least {min} characters",
+			"submit": "Save password",
+			"submitting": "Saving…",
+			"doneTitle": "Password changed",
+			"doneText": "Every other session has been signed out. Sign in with your new password.",
+			"goToSignIn": "Sign in",
+			"noTokenTitle": "Link is not valid",
+			"noTokenText": "The link looks incomplete. Request a new one — the old may have expired.",
+			"requestNew": "Request a new link"
 		}
 	},
 	"validation": {
@@ -261,7 +285,25 @@
 		"title": "Settings",
 		"subtitle": "Manage your account preferences.",
 		"premiumTitle": "Premium",
-		"premiumDescription": "Unlock premium features for {price} ₸."
+		"premiumDescription": "Unlock premium features for {price} ₸.",
+		"securityTitle": "Security",
+		"passwordDescription": "Changing your password signs out every other device.",
+		"currentPassword": "Current password",
+		"newPassword": "New password",
+		"passwordHint": "At least {min} characters",
+		"passwordSubmit": "Change password",
+		"passwordSaving": "Changing…",
+		"passwordChanged": "Password changed, other devices signed out",
+		"logoutEverywhereDescription": "Forgot to sign out on someone else’s device? End every session, including this one.",
+		"logoutEverywhere": "Sign out everywhere",
+		"logoutEverywhereLoading": "Ending sessions…",
+		"logoutEverywhereError": "Couldn’t end sessions",
+		"emailDescription": "Your email is the address password resets go to. Changing it requires your current password.",
+		"currentEmail": "Current: {email}",
+		"newEmail": "New email",
+		"emailSubmit": "Change email",
+		"emailSaving": "Changing…",
+		"emailChanged": "Email changed, the old address has been notified"
 	},
 	"premium": {
 		"active": "Premium active",
@@ -291,6 +333,16 @@
 		"noValidInterests": "No valid interests found for given ratings",
 		"invalidPayload": "Invalid request payload",
 		"sessionExpired": "Session expired, please sign in again",
-		"serverError": "Internal server error"
+		"serverError": "Internal server error",
+		"passwordTooShort": "Password must be at least {min} characters",
+		"avatarTooLarge": "File is too large, {max} MB max",
+		"avatarUnsupportedType": "Only JPEG, PNG and WebP are supported",
+		"resetMailSubject": "Reset your Soulmate password",
+		"resetMailBody": "You asked to reset your password.\n\nFollow this link to set a new one:\n{link}\n\nThe link is valid for one hour. If this wasn’t you, ignore this email — your password stays unchanged.",
+		"resetLinkInvalid": "This link is invalid or has expired. Request a new one.",
+		"emailInvalid": "That email address is not valid",
+		"emailTaken": "That email is already in use",
+		"emailChangedSubject": "Your Soulmate account email was changed",
+		"emailChangedBody": "The email on your account was changed to {email}.\n\nIf this wasn’t you, recover access from this address right away, while reset links still arrive here."
 	}
 }

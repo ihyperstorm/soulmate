@@ -117,8 +117,14 @@ export const SignInForm = () => {
 				</Button>
 			</form>
 			<Link
+				href='/forgot-password'
+				className='block text-sm text-center mt-4 text-subtle hover:text-primary transition-colors'
+			>
+				{t('forgotPassword')}
+			</Link>
+			<Link
 				href='/signup'
-				className='block text-sm text-center mt-5 text-subtle hover:text-primary transition-colors'
+				className='block text-sm text-center mt-3 text-subtle hover:text-primary transition-colors'
 			>
 				{t('noAccount')}{' '}
 				<span className='text-primary font-medium'>{t('signUpLink')}</span>

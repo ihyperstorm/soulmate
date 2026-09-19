@@ -1,3 +1,4 @@
+import type {ConversationMood} from '@/entities/mood'
 import type {Locale} from '@/i18n/config'
 import {defaultLocale} from '@/i18n/config'
 
@@ -7,6 +8,10 @@ import {defaultLocale} from '@/i18n/config'
 
 type QuestionPools = {
 	byInterest: Record<string, string[]>
+	// Вопросы под совпавшее настроение. Отвечают не на «о чём вы оба любите
+	// поговорить», а на «какой разговор вы оба хотите прямо сейчас» — поэтому
+	// формулировки нарочно не про темы, а про тон.
+	byMood: Record<ConversationMood, string[]>
 	// Запасные вопросы для интересов, у которых нет своего набора —
 	// чтобы каждый интерес пользователя всё равно получил бабл.
 	fallback: string[]
@@ -82,6 +87,38 @@ export const talkQuestions: Record<Locale, QuestionPools> = {
 				'Где ты чувствуешь себя по-настоящему спокойно?',
 				'Горы, лес или море?',
 				'Какой момент на природе ты запомнил надолго?',
+			],
+		},
+		byMood: {
+			'deep-talks': [
+				'В чём ты недавно поменял мнение?',
+				'Какая мысль не отпускает тебя последнее время?',
+				'Что из того, во что верят все вокруг, кажется тебе неправдой?',
+			],
+			'casual-chat': [
+				'Что хорошего было на этой неделе?',
+				'Какая мелочь недавно тебя порадовала?',
+				'Чем занимаешься, когда просто хочется выдохнуть?',
+			],
+			'exchange-ideas': [
+				'Над какой идеей ты сейчас думаешь?',
+				'Что бы ты сделал, будь у тебя свободный месяц и никаких ограничений?',
+				'Какой проект ты всё откладываешь, но он не даёт покоя?',
+			],
+			hobbies: [
+				'О каком увлечении можешь говорить часами?',
+				'Чему тебе хочется научиться в ближайшее время?',
+				'Как ты пришёл к тому, чем увлекаешься сейчас?',
+			],
+			personal: [
+				'Что тебя в последнее время радует?',
+				'Что помогает тебе, когда день не задался?',
+				'Каким своим решением ты гордишься?',
+			],
+			fun: [
+				'Какая самая нелепая вещь случилась с тобой недавно?',
+				'Что тебя рассмешило в последний раз?',
+				'Какой у тебя самый бесполезный талант?',
 			],
 		},
 		fallback: [
@@ -162,6 +199,38 @@ export const talkQuestions: Record<Locale, QuestionPools> = {
 				'Which moment in nature stayed with you?',
 			],
 		},
+		byMood: {
+			'deep-talks': [
+				'What did you change your mind about recently?',
+				'Which thought keeps coming back to you lately?',
+				'What does everyone around you believe that you think is wrong?',
+			],
+			'casual-chat': [
+				'What was good about your week?',
+				'What small thing made you happy recently?',
+				'What do you do when you just want to switch off?',
+			],
+			'exchange-ideas': [
+				'What idea are you turning over right now?',
+				'What would you do with a free month and no constraints?',
+				'Which project do you keep putting off but can’t let go of?',
+			],
+			hobbies: [
+				'What hobby could you talk about for hours?',
+				'What do you want to learn next?',
+				'How did you get into what you’re into now?',
+			],
+			personal: [
+				'What’s been making you happy lately?',
+				'What helps you when a day goes sideways?',
+				'Which decision of yours are you proud of?',
+			],
+			fun: [
+				'What’s the most ridiculous thing that happened to you recently?',
+				'What made you laugh last?',
+				'What’s your most useless talent?',
+			],
+		},
 		fallback: [
 			'What really got you into this?',
 			'How did you get into it?',
@@ -181,5 +250,19 @@ export const pickQuestion = (
 	const key = interestName.trim().toLowerCase()
 	const pools = talkQuestions[locale] ?? talkQuestions[defaultLocale]
 	const pool = pools.byInterest[key] ?? pools.fallback
+	return pool[Math.floor(Math.random() * pool.length)]
+}
+
+/**
+ * Вопрос под совпавшее настроение. Рандом такой же, как в pickQuestion, —
+ * вызывающий оборачивает результат в useMemo, чтобы вопрос не менялся
+ * на каждый ре-рендер.
+ */
+export const pickMoodQuestion = (
+	mood: ConversationMood,
+	locale: Locale = defaultLocale,
+): string => {
+	const pools = talkQuestions[locale] ?? talkQuestions[defaultLocale]
+	const pool = pools.byMood[mood]
 	return pool[Math.floor(Math.random() * pool.length)]
 }

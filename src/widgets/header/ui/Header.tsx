@@ -5,6 +5,7 @@ import { LocaleSwitcher } from "@/features/locale/switch-locale"
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar"
 import { LogIn } from "lucide-react"
 import { useTranslations } from "next-intl"
+import Image from "next/image"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 
@@ -18,7 +19,14 @@ const Header = () => {
 		<header className="sticky top-0 z-30 bg-surface/85 backdrop-blur border-b border-divider">
 			<div className="max-w-7xl mx-auto flex items-center justify-between px-6 py-3">
 				<Link href="/" className="flex items-center gap-2 text-ink text-base font-semibold tracking-tight">
-					<span className="inline-flex items-center justify-center w-7 h-7 rounded-lg bg-primary text-white text-sm font-semibold">S</span>
+					{/*
+						Маскот вместо буквенного бейджа. alt="" — рядом стоит слово
+						«Soulmate», так что скринридеру картинка ничего не добавляет.
+						Размер задан в width/height (а не только классами): по нему Next
+						строит srcset 32/64px, иначе на 576px-исходник ушёл бы весь
+						набор deviceSizes.
+					*/}
+					<Image src="/mascot.png" alt="" width={32} height={32} priority className="w-8 h-8 select-none" />
 					Soulmate
 				</Link>
 				<div className="flex items-center gap-2">

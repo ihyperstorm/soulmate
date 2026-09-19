@@ -1,10 +1,15 @@
 import connectDB from '@/shared/lib/mongodb/db'
+import {getAuthUserId} from '@/entities/session/server'
 import {User} from '@/entities/user/server'
 import {UserInterest} from '@/entities/interest/server'
+import {
+	isUploadedFile,
+	MAX_AVATAR_MB,
+	saveAvatar,
+} from '@/shared/lib/avatarUpload'
 import {Types} from 'mongoose'
+import {getTranslations} from 'next-intl/server'
 import {NextResponse} from 'next/server'
-import {mkdir, writeFile} from 'node:fs/promises'
-import path from 'node:path'
 
 export async function GET(
 	request: Request,
@@ -43,6 +48,8 @@ export async function PATCH(
 	request: Request,
 	{params}: {params: Promise<{id: string}>},
 ) {
+	const t = await getTranslations('api')
+
 	try {
 		await connectDB()
 
@@ -50,6 +57,17 @@ export async function PATCH(
 
 		if (!Types.ObjectId.isValid(id)) {
 			return NextResponse.json({error: 'Invalid user ID'}, {status: 400})
+		}
+
+		// Без этой проверки любой залогиненный мог PATCH'ить чужой профиль —
+		// подменить чужие имя и аватар. Сравниваем с id из access-токена,
+		// а не с тем, что пришло в запросе.
+		const authUserId = await getAuthUserId()
+		if (!authUserId) {
+			return NextResponse.json({error: 'Unauthorized'}, {status: 401})
+		}
+		if (authUserId !== id) {
+			return NextResponse.json({error: 'Forbidden'}, {status: 403})
 		}
 
 		const formData = await request.formData()
@@ -62,27 +80,22 @@ export async function PATCH(
 			updateData.username = username.trim()
 		}
 
-		const isUpload =
-			avatarFile !== null &&
-			typeof avatarFile === 'object' &&
-			'arrayBuffer' in avatarFile &&
-			'size' in avatarFile
+		if (isUploadedFile(avatarFile) && avatarFile.size > 0) {
+			const upload = await saveAvatar(avatarFile, id)
 
-		if (isUpload && Number(avatarFile.size) > 0) {
-			const uploadDir = path.join(process.cwd(), 'public', 'uploads', 'avatars')
-			await mkdir(uploadDir, {recursive: true})
+			if (!upload.ok) {
+				const tooLarge = upload.reason === 'too-large'
+				return NextResponse.json(
+					{
+						error: tooLarge
+							? t('avatarTooLarge', {max: MAX_AVATAR_MB})
+							: t('avatarUnsupportedType'),
+					},
+					{status: tooLarge ? 413 : 415},
+				)
+			}
 
-			const uploadFile = avatarFile as Blob & {name?: string; type?: string}
-			const fromName = uploadFile.name?.split('.').pop()?.toLowerCase()
-			const fromType = uploadFile.type?.split('/').pop()?.toLowerCase()
-			const fileExt = fromName || fromType || 'bin'
-			const safeExt = fileExt.replace(/[^a-z0-9]/g, '') || 'bin'
-			const fileName = `avatar-${id}-${Date.now()}.${safeExt}`
-			const filePath = path.join(uploadDir, fileName)
-			const fileBuffer = Buffer.from(await uploadFile.arrayBuffer())
-
-			await writeFile(filePath, fileBuffer)
-			updateData.avatarUrl = `/uploads/avatars/${fileName}`
+			updateData.avatarUrl = upload.url
 		}
 
 		if (!updateData.username && !updateData.avatarUrl) {

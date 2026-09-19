@@ -1,6 +1,6 @@
 "use client"
 
-import { pickQuestion } from "@/shared/data/talkQuestions"
+import { pickMoodQuestion, pickQuestion } from "@/shared/data/talkQuestions"
 import type {
 	IInterest,
 	IdfMap,
@@ -28,6 +28,7 @@ export interface UserCardData {
 	_id: string
 	username: string
 	avatarUrl?: string
+	bio?: string
 	interests?: IInterest[]
 	userInterests?: PopulatedUserInterest[]
 	/** Сырые поля из БД — читать только через getActiveMoods(), они протухают. */
@@ -93,22 +94,24 @@ export const UserCard = ({ user, myWeights, idfMap, myMoods, onChatClick, classN
 	}
 	shared.sort((a, b) => b.idf - a.idf)
 
-	// Айсбрейкеры из общих интересов (если общих нет — из прочих).
-	// useMemo по id, чтобы вопросы не перемешивались на каждый ре-рендер.
+	// Айсбрейкеры. Если настроение совпало — первый вопрос под него, остальные
+	// из общих интересов (если общих нет — из прочих). Это единственное место,
+	// где общий настрой напрямую меняет первую фразу, которую человек отправит.
+	// useMemo по ключу, чтобы вопросы не перемешивались на каждый ре-рендер.
 	const iceSource = shared.length > 0 ? shared : other
-	const iceKey = iceSource
-		.slice(0, 3)
-		.map((i) => i._id)
-		.join("|")
-	const icebreakers = useMemo(
-		() =>
-			iceSource.slice(0, 3).map((i) => ({
-				interest: i.name,
-				question: pickQuestion(i.name, locale),
-			})),
+	const leadMood = moodsInCommon[0] ?? null
+	const interestSlots = leadMood ? 2 : 3
+	const iceKey = [leadMood ?? "", ...iceSource.slice(0, interestSlots).map((i) => i._id)].join("|")
+
+	const icebreakers = useMemo(() => {
+		const fromInterests = iceSource.slice(0, interestSlots).map((i) => ({
+			key: i._id,
+			question: pickQuestion(i.name, locale),
+		}))
+		if (!leadMood) return fromInterests
+		return [{ key: `mood:${leadMood}`, question: pickMoodQuestion(leadMood, locale) }, ...fromInterests]
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-		[iceKey, locale],
-	)
+	}, [iceKey, locale])
 
 	const matchColorClass =
 		coveragePercent >= 70
@@ -184,6 +187,10 @@ export const UserCard = ({ user, myWeights, idfMap, myMoods, onChatClick, classN
 					</div>
 				</div>
 			</div>
+
+			{/* line-clamp-2, а не truncate: две строки дают представление о человеке,
+			    но не растягивают карточки в сетке до разной высоты. */}
+			{user.bio?.trim() && <p className="mt-3 text-sm text-subtle line-clamp-2">{user.bio}</p>}
 
 			{shared.length > 0 && (
 				<div className="mt-4">
@@ -275,9 +282,9 @@ export const UserCard = ({ user, myWeights, idfMap, myMoods, onChatClick, classN
 						{t("breakIce")}
 					</p>
 					<div className="flex flex-col gap-1.5">
-						{icebreakers.map((ice, i) => (
+						{icebreakers.map((ice) => (
 							<button
-								key={`${ice.interest}-${i}`}
+								key={ice.key}
 								type="button"
 								onClick={() => onChatClick(user._id, user.username, ice.question)}
 								className="text-left text-xs text-ink bg-surface-muted hover:bg-primary-soft hover:text-primary rounded-lg px-3 py-2 transition-colors cursor-pointer"

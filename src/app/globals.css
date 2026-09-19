@@ -253,7 +253,7 @@
 
 @theme {
 	/* Мягкий бесконечный «перелив» градиента (для текста с bg-clip-text). */
-	--animate-gradient-x: gradient-x 4s ease-in-out infinite;
+	--animate-gradient-x: gradient-x 2s ease-in-out infinite;
 }
 
 @keyframes gradient-x {
@@ -271,6 +271,36 @@
 	.animate-gradient-x {
 		animation: none;
 	}
+}
+
+/* Фирменный перелив заголовка: тот же круг палитры, что в рамке «человека
+   дня», развёрнутый в линию и так же замкнутый — оба конца хода садятся на
+   голубой. Больше трёх стопов в from/via/to не помещается, поэтому градиент
+   живёт здесь, а не в классах.
+
+   Два отличия от .daily-ring, оба вынужденные:
+   1. Взяты -deep, а не пастель: пастель — заливочный тон, в тексте на белом
+      она даёт 1.25–2.1:1 и не читается. Рамке контраст не нужен — там цвет
+      работает плашкой.
+   2. Тёплой половины круга здесь нет. У холодных тонов -deep — просто
+      насыщенная версия, а у персика и крема — коричневый #b2612f и
+      оливковый #8f6a13: светлым и читаемым на белом тёплый цвет быть не
+      может. Поэтому дуга разворачивается обратно через сиреневый. */
+.aura-text {
+	background-image: linear-gradient(
+		to right,
+		var(--aura-blue-deep),
+		var(--aura-lilac-deep),
+		var(--aura-pink-deep),
+		var(--aura-lilac-deep),
+		var(--aura-blue-deep)
+	);
+	/* Вдвое шире текста — иначе background-position нечего двигать
+	   и animate-gradient-x стоит на месте. */
+	background-size: 200% auto;
+	-webkit-background-clip: text;
+	background-clip: text;
+	color: transparent;
 }
 
 /* Вращающаяся градиентная рамка «человека дня».
@@ -346,13 +376,13 @@ body {
 }
 
 @layer base {
-  * {
-    @apply border-border outline-ring/50;
+	* {
+		@apply border-border outline-ring/50;
 	}
-  body {
-    @apply bg-background text-foreground;
+	body {
+		@apply bg-background text-foreground;
 	}
-  html {
-    @apply font-sans;
+	html {
+		@apply font-sans;
 	}
 }

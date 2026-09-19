@@ -18,3 +18,12 @@ export {
 } from './model/jwt'
 export {default as Session} from './model/Session'
 export type {ISession} from './model/Session'
+export {
+	consumePasswordResetToken,
+	invalidatePasswordResetTokens,
+	issuePasswordResetToken,
+	PASSWORD_RESET_TTL_MS,
+	type ConsumeResult,
+} from './lib/passwordReset'
+export {default as PasswordResetToken} from './model/PasswordResetToken'
+export type {IPasswordResetToken} from './model/PasswordResetToken'
