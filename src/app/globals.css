@@ -176,9 +176,12 @@
 	--color-success-soft: var(--success-soft);
 	--color-online: var(--online);
 
-	--font-sans: var(--font-sans);
-
-	--font-heading: var(--font-sans);
+	/* --font-app приходит из next/font, переменная объявлена на <html>.
+	   Имя нарочно без названия гарнитуры: смена шрифта не должна трогать CSS.
+	   Раньше здесь было --font-sans: var(--font-sans) — ссылка на саму себя,
+	   из-за чего утилита font-sans не давала ничего. */
+	--font-sans: var(--font-app), ui-sans-serif, system-ui, sans-serif;
+	--font-heading: var(--font-app), ui-sans-serif, system-ui, sans-serif;
 
 	--color-sidebar-ring: var(--sidebar-ring);
 
@@ -346,7 +349,7 @@
 }
 
 body {
-	font-family: var(--font-geist-sans);
+	/* font-family больше не дублируем: его задаёт html { @apply font-sans } ниже. */
 	-webkit-font-smoothing: antialiased;
 	text-rendering: optimizeLegibility;
 }
